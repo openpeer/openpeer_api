@@ -1,0 +1,2 @@
+class ApiUser < ApplicationRecord
+end
