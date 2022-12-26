@@ -33,5 +33,6 @@ FactoryBot.define do
   factory(:fiat_currency) do
     code { 'BRL'}
     name { 'Brazilian Real' }
+    country_code { 'br' }
   end
 end
