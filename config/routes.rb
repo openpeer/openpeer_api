@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       resources :lists, only: [:index]
       resources :tokens, only: [:index]
       resources :currencies, only: [:index]
+      resources :banks, only: [:index]
     end
 
     get "/webhooks", to: "webhooks#index"

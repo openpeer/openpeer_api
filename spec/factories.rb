@@ -35,4 +35,8 @@ FactoryBot.define do
     name { 'Brazilian Real' }
     country_code { 'br' }
   end
+
+  factory(:bank) do
+    name { 'PIX' }
+  end
 end

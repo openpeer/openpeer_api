@@ -59,4 +59,10 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true,
 
   config.active_job.queue_adapter = :sidekiq
+
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.raise = true # raise an error if an n+1 query occurs
+  end
 end
