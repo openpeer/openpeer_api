@@ -39,4 +39,12 @@ FactoryBot.define do
   factory(:bank) do
     name { 'PIX' }
   end
+
+  factory(:payment_method) do
+    user
+    bank
+    account_name { Faker::Name.name_with_middle }
+    account_number { Faker::Bank.account_number }
+    details { "IBAN #{Faker::Bank.iban}"}
+  end
 end

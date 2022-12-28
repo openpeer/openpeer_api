@@ -1,8 +1,8 @@
 class PaymentMethod < ApplicationRecord
   belongs_to :user
-  has_and_belongs_to_many :banks
+  belongs_to :bank
 
   def as_json(options)
-    super({ include: [:user, :banks] }.merge(options))
+    super({ include: [:user, :bank] }.merge(options))
   end
 end
