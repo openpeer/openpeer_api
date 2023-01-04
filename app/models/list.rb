@@ -5,6 +5,7 @@ class List < ApplicationRecord
   belongs_to :seller, class_name: 'User'
   belongs_to :token
   belongs_to :fiat_currency
+  belongs_to :payment_method
 
   def as_json(options)
     super({ include: [:fiat_currency, :token, :seller] }.merge(options))
