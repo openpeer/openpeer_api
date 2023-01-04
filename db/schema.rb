@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_27_140509) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_02_151836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,8 +53,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_27_140509) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "payment_method_id"
     t.index ["chain_id", "seller_id"], name: "index_lists_on_chain_id_and_seller_id"
     t.index ["fiat_currency_id"], name: "index_lists_on_fiat_currency_id"
+    t.index ["payment_method_id"], name: "index_lists_on_payment_method_id"
     t.index ["seller_id"], name: "index_lists_on_seller_id"
     t.index ["token_id"], name: "index_lists_on_token_id"
   end
