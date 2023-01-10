@@ -10,7 +10,7 @@ module Api
         @lists = List.includes(:seller, :token, :fiat_currency).where(status_condition).where(chain_id_condition)
         @lists = @lists.joins(:seller)
                        .where('lower(users.address) = ?', seller.downcase) if seller
-        render json: @lists, status: :ok
+        render json:@lists, each_serializer: ListSerializer, include: "**", status: :ok
       end
 
       def create

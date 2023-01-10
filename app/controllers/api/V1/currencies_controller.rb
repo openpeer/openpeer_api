@@ -3,7 +3,7 @@ module Api
     class CurrenciesController < BaseController
       def index
         @currencies = FiatCurrency.all
-        render json: @currencies, status: :ok
+        render json: @currencies, each_serializer: FiatCurrencySerializer, status: :ok
       end
     end
   end
