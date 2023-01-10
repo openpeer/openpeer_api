@@ -4,7 +4,7 @@ module Api
       def index
         chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
         @tokens = Token.where(chain_id_condition)
-        render json: @tokens, status: :ok
+        render json: @tokens, each_serializer: TokenSerializer, status: :ok
       end
     end
   end

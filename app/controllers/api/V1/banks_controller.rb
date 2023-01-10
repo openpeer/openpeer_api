@@ -3,7 +3,7 @@ module Api
     class BanksController < BaseController
       def index
         @banks = Bank.where(fiat_currency_id: [params[:currency_id], nil])
-        render json: @banks, status: :ok
+        render json: @banks, each_serializer: BankSerializer, status: :ok
       end
     end
   end
