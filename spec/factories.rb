@@ -19,6 +19,7 @@ FactoryBot.define do
     margin_type { List.margin_types[:fixed] }
     margin { 1.1 }
     terms { Faker::Movie.quote }
+    payment_method
   end
 
   factory(:token) do

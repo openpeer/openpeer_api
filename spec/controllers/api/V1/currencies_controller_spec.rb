@@ -10,7 +10,8 @@ describe Api::V1::CurrenciesController, type: :request do
       get api_v1_currencies_path, headers: authentication_header
 
       expect(response).to be_successful
-      expect(response.body).to eq(currencies.to_json)
+      json = ActiveModelSerializers::SerializableResource.new(currencies, each_serializer: FiatCurrencySerializer).to_json
+      expect(response.body).to eq(json)
     end
   end
 end

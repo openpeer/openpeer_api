@@ -7,7 +7,8 @@ module Api
         chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
         seller = params[:seller]
 
-        @lists = List.includes(:seller, :token, :fiat_currency).where(status_condition).where(chain_id_condition)
+        @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, bank: [:fiat_currency]]])
+                     .where(status_condition).where(chain_id_condition)
         @lists = @lists.joins(:seller)
                        .where('lower(users.address) = ?', seller.downcase) if seller
         render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok

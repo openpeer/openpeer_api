@@ -14,7 +14,8 @@ describe Api::V1::TokensController, type: :request do
                                   headers: authentication_header
   
           expect(response).to be_successful
-          expect(response.body).to eq([tokens[0]].to_json)
+          json = ActiveModelSerializers::SerializableResource.new([tokens[0]], each_serializer: TokenSerializer).to_json
+          expect(response.body).to eq(json)
         end
       end
 
@@ -23,7 +24,8 @@ describe Api::V1::TokensController, type: :request do
           get api_v1_tokens_path, headers: authentication_header
   
           expect(response).to be_successful
-          expect(response.body).to eq(tokens.to_json)
+          json = ActiveModelSerializers::SerializableResource.new(tokens, each_serializer: TokenSerializer).to_json
+          expect(response.body).to eq(json)
         end
       end
     end

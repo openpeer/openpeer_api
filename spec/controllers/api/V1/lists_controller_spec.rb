@@ -14,7 +14,9 @@ describe Api::V1::ListsController, type: :request do
                                   headers: authentication_header
   
           expect(response).to be_successful
-          expect(response.body).to eq([lists[0]].to_json)
+          json = ActiveModelSerializers::SerializableResource.new([lists[0]],
+            include: '**', each_serializer: ListSerializer).to_json
+          expect(response.body).to eq(json)
         end
       end
       
@@ -23,7 +25,9 @@ describe Api::V1::ListsController, type: :request do
           get api_v1_lists_path, headers: authentication_header
   
           expect(response).to be_successful
-          expect(response.body).to eq(lists.to_json)
+          json = ActiveModelSerializers::SerializableResource.new(lists,
+            include: '**', each_serializer: ListSerializer).to_json
+          expect(response.body).to eq(json)
         end
       end
     end
@@ -35,7 +39,9 @@ describe Api::V1::ListsController, type: :request do
                                   headers: authentication_header
   
           expect(response).to be_successful
-          expect(response.body).to eq([lists[0]].to_json)
+          json = ActiveModelSerializers::SerializableResource.new([lists[0]], 
+                  include: '**', each_serializer: ListSerializer).to_json
+          expect(response.body).to eq(json)
         end
       end
     end
@@ -48,7 +54,9 @@ describe Api::V1::ListsController, type: :request do
                                   headers: authentication_header
   
           expect(response).to be_successful
-          expect(response.body).to eq([lists[0]].to_json)
+          json = ActiveModelSerializers::SerializableResource.new([lists[0]], 
+                  include: '**', each_serializer: ListSerializer).to_json
+          expect(response.body).to eq(json)
         end
       end
     end

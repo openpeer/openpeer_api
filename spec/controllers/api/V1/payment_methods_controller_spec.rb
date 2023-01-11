@@ -11,7 +11,8 @@ describe Api::V1::PaymentMethodsController, type: :request do
                                                     headers: authentication_header
 
         expect(response).to be_successful
-        expect(response.body).to eq([payment_methods[0]].to_json)
+        json = ActiveModelSerializers::SerializableResource.new([payment_methods[0]], each_serializer: PaymentMethodSerializer).to_json
+        expect(response.body).to eq(json)
       end
     end
   end
