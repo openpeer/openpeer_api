@@ -60,3 +60,5 @@ gem 'sidekiq'
 gem 'strscan', '3.0.3'
 gem 'bullet'
 gem 'active_model_serializers', '~> 0.10.0'
+gem 'email_address'
+gem "valid_email2"

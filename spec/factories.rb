@@ -6,6 +6,7 @@ FactoryBot.define do
 
   factory(:user, aliases: [:seller]) do
     address { Eth::Address.new(Faker::Blockchain::Ethereum.address).checksummed }
+    email { Faker::Internet.email }
   end
 
   factory(:list) do

@@ -3,7 +3,7 @@ class BankSerializer < ActiveModel::Serializer
   
   belongs_to :fiat_currency
   
-  def icon
+  attribute :icon do
     "https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/#{object.id}.png"
   end
 end
