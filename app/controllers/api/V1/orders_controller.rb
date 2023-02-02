@@ -2,8 +2,11 @@ module Api
   module V1
     class OrdersController < BaseController
       def index
-        @orders = Order.includes(:list, :buyer).where('lower(users.address) = ?', params[:address].downcase)
+        @orders = Order.includes(list: [:seller])
+                       .includes(:buyer)
                        .where(list: { chain_id: params[:chainId] })
+                       .where('lower(users.address) = ? OR lower(buyers_orders.address) = ?',
+                          params[:address].downcase, params[:address].downcase)
         render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok                       
       end
 

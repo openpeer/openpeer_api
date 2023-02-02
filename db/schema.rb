@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_12_091606) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_02_110800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_12_091606) do
     t.datetime "updated_at", null: false
     t.bigint "fiat_currency_id"
     t.index ["fiat_currency_id"], name: "index_banks_on_fiat_currency_id"
+  end
+
+  create_table "escrows", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.string "tx"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_escrows_on_order_id"
   end
 
   create_table "fiat_currencies", force: :cascade do |t|
@@ -53,7 +62,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_12_091606) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "payment_method_id", null: false
+    t.bigint "payment_method_id"
     t.index ["chain_id", "seller_id"], name: "index_lists_on_chain_id_and_seller_id"
     t.index ["fiat_currency_id"], name: "index_lists_on_fiat_currency_id"
     t.index ["payment_method_id"], name: "index_lists_on_payment_method_id"
@@ -71,6 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_12_091606) do
     t.datetime "updated_at", null: false
     t.decimal "token_amount"
     t.decimal "price"
+    t.string "uuid"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
     t.index ["list_id"], name: "index_orders_on_list_id"
   end
@@ -114,4 +124,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_12_091606) do
     t.index "lower((address)::text)", name: "index_users_on_lower_address", unique: true
   end
 
+  add_foreign_key "escrows", "orders"
 end

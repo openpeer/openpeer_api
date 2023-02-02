@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       resources :banks, only: [:index]
       resources :payment_methods, only: [:index]
       resources :users, only: [:show, :update]
-      resources :orders, only: [:index, :create]
+      resources :orders, only: [:index, :create, :show]
     end
 
     get "/webhooks", to: "webhooks#index"
