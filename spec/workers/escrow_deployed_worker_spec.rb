@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe BlockchainEventWorker do
+describe EscrowDeployedWorker do
   subject { described_class.new }
 
   before do
@@ -15,9 +15,9 @@ describe BlockchainEventWorker do
     let(:seller) { create(:seller, address: '0x630220d00Cf136270f553c8577aF18300F7b812c') }
     let(:buyer) { create(:buyer, address: '0xb98206a86e61bc59e9632d06679a5515ebf02e81') }
     let(:escrow_address) { '0xd82ad457ab4ccb2dbf29557762a5019bd16f4e75' }
-    let(:uuid) { '0xb8f629f16eaf0000000000000000000000000000000000000000000000000000' }
+    let(:uuid) { '0x170d42a8469659195611063eba7f000000000000000000000000000000000000' }
     let(:list) { create(:list, seller: seller, token: token, chain_id: chain_id) }
-    let(:token_amount) { 1000000 }
+    let(:token_amount) { 0.000000000001 }
     let!(:order) do
       create(:order, uuid: uuid, buyer: buyer, list: list, token_amount: token_amount)
     end
@@ -166,7 +166,7 @@ describe BlockchainEventWorker do
 
     context 'with valid data' do
       let(:params) { file_fixture('event_webhook.json').read }
-      
+
       it 'creates an escrow' do
         expect(order.escrow).to be_nil
         escrow = subject.perform(params)
@@ -176,6 +176,11 @@ describe BlockchainEventWorker do
 
       it 'updates the order status' do
         expect { subject.perform(params) }.to change { order.reload.status }.from('created').to('escrowed')
+      end
+
+      it 'enqueues the setup worker' do
+        expect(EscrowEventsSetupWorker).to receive(:perform_async)
+        subject.perform(params)
       end
     end
   end

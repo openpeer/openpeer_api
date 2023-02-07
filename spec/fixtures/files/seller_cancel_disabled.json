@@ -1,0 +1,94 @@
+{
+  "confirmed": true,
+  "chainId": "0x89",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "CancelledByBuyer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "CancelledBySeller",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "DisputeOpened",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "DisputeResolved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "Released",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "SellerCancelDisabled",
+      "type": "event"
+    }
+  ],
+  "streamId": "test",
+  "tag": "escrows",
+  "retries": 0,
+  "block": {
+    "number": "39016404",
+    "hash": "0x13511d57ad0ccbdfb9b92e788a5386c3bf0e1d6aae62e85a60a1c93367afea54",
+    "timestamp": "1675771018"
+  },
+  "logs": [
+    {
+      "logIndex": "111",
+      "transactionHash": "0xa43ac20e36c318134e4e2d9b82d7b81ba24993f82c1d6f033658d4ba9bee119e",
+      "address": "0xf4ffad38bef7ab593843fd401cbfaafa4b2f9edf",
+      "data": "0x",
+      "topic0": "0x138833d1013e022eecab2c8cde4d91a92928e696dafc42b1e7327a1ea8d8d8f7",
+      "topic1": null,
+      "topic2": null,
+      "topic3": null
+    }
+  ],
+  "txs": [
+    {
+      "hash": "0xa43ac20e36c318134e4e2d9b82d7b81ba24993f82c1d6f033658d4ba9bee119e",
+      "gas": "28116",
+      "gasPrice": "163000000000",
+      "nonce": "64",
+      "input": "0xf86890b0",
+      "transactionIndex": "30",
+      "fromAddress": "0xb98206a86e61bc59e9632d06679a5515ebf02e81",
+      "toAddress": "0xf4ffad38bef7ab593843fd401cbfaafa4b2f9edf",
+      "value": "0",
+      "type": "2",
+      "v": "0",
+      "r": "25967441266785899915118346708394111772765915715716433092210020468654612353123",
+      "s": "35412487601120267686550973588837671464334157463555744178633456125356061853697",
+      "receiptCumulativeGasUsed": "4609585",
+      "receiptGasUsed": "26899",
+      "receiptContractAddress": null,
+      "receiptRoot": null,
+      "receiptStatus": "1"
+    }
+  ],
+  "txsInternal": [],
+  "erc20Transfers": [],
+  "erc20Approvals": [],
+  "nftTokenApprovals": [],
+  "nftApprovals": {
+    "ERC721": [],
+    "ERC1155": []
+  },
+  "nftTransfers": [],
+  "nativeBalances": []
+}

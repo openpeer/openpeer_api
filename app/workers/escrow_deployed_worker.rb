@@ -1,4 +1,4 @@
-class BlockchainEventWorker
+class EscrowDeployedWorker
   include Sidekiq::Worker
 
   def perform(json)
@@ -29,7 +29,8 @@ class BlockchainEventWorker
     seller = find_or_create_user(seller)
     buyer = find_or_create_user(buyer)
     order = Order.includes(:list)
-                 .find_by(uuid: uuid, status: :created, buyer_id: buyer.id, token_amount: amount / (10**token.decimals).to_f,
+                 .find_by(uuid: uuid, status: :created, buyer_id: buyer.id,
+                         token_amount: amount.to_f / (10**token.decimals).to_f,
                          lists: { chain_id: chain_id, seller_id: seller.id,
                                   token_id: token.id })
     return unless order
@@ -40,6 +41,9 @@ class BlockchainEventWorker
       order.update(status: :escrowed)
       order.create_escrow(tx: log['transactionHash'], address: address)
     end
+
+    EscrowEventsSetupWorker.perform_async(order.escrow.id)
+    return order.escrow
   end
 
   private

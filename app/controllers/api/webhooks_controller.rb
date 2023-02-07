@@ -5,7 +5,12 @@ module Api
     end
 
     def create
-      BlockchainEventWorker.perform_async(params.except(:controller, :action).to_json)
+      EscrowDeployedWorker.perform_async(params.except(:controller, :action).to_json)
+      render 'ok', status: :ok
+    end
+
+    def escrows
+      NewEscrowEventWorker.perform_async(params.except(:controller, :action).to_json)
       render 'ok', status: :ok
     end
   end
