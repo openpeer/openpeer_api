@@ -6,11 +6,11 @@ class Order < ApplicationRecord
   has_one :escrow
 
   before_create do
-    if !uuid 
-      uuid = Uuid.generate
+    if !self.uuid
+      self.uuid = Uuid.generate
 
       while(Order.where(uuid: uuid).any?)
-        uuid = Uuid.generate
+        self.uuid = Uuid.generate
       end
     end
   end

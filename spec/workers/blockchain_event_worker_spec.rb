@@ -11,14 +11,15 @@ describe BlockchainEventWorker do
   describe '.perform' do
     let(:params) { { streamId: 'test', chainId: '0x89', logs: [{ data: '' }] }}
     let(:chain_id) { 137 }
-    let(:token) { create(:token, address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F' )}
+    let(:token) { create(:token, address: '0x0000000000000000000000000000000000000000', decimals: 18) }
     let(:seller) { create(:seller, address: '0x630220d00Cf136270f553c8577aF18300F7b812c') }
-    let(:buyer) { create(:buyer, address: '0xFE6b7A4494B308f8c0025DCc635ac22630ec7330') }
-    let(:escrow_address) { '0xf7dbe61a0b758cff72195657e448339ac788d8cf' }
-    let(:uuid) { '0x33ca11fabf2821fad8b46c6fcec7000000000000000000000000000000000000' }
+    let(:buyer) { create(:buyer, address: '0xb98206a86e61bc59e9632d06679a5515ebf02e81') }
+    let(:escrow_address) { '0xd82ad457ab4ccb2dbf29557762a5019bd16f4e75' }
+    let(:uuid) { '0xb8f629f16eaf0000000000000000000000000000000000000000000000000000' }
     let(:list) { create(:list, seller: seller, token: token, chain_id: chain_id) }
+    let(:token_amount) { 1000000 }
     let!(:order) do
-      create(:order, uuid: uuid, buyer: buyer, list: list, token_amount: 1000000)
+      create(:order, uuid: uuid, buyer: buyer, list: list, token_amount: token_amount)
     end
 
 
@@ -39,7 +40,7 @@ describe BlockchainEventWorker do
     context 'with an invalid token' do
       it 'does not create an escrow' do
         allow(Eth::Abi).to receive(:decode)
-          .and_return(['id', true, escrow_address, seller.address, buyer.address, 'invalid', 1000000])
+          .and_return(['id', true, escrow_address, seller.address, buyer.address, 'invalid', token_amount])
         expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
       end
     end
@@ -47,7 +48,7 @@ describe BlockchainEventWorker do
     context 'with an invalid seller' do
       it 'does not create an escrow' do
         allow(Eth::Abi).to receive(:decode)
-          .and_return(['id', true, escrow_address, 'invalid', buyer.address, token.address, 1000000])
+          .and_return(['id', true, escrow_address, 'invalid', buyer.address, token.address, token_amount])
         expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
       end
     end
@@ -55,7 +56,7 @@ describe BlockchainEventWorker do
     context 'with an invalid buyer' do
       it 'does not create an escrow' do
         allow(Eth::Abi).to receive(:decode)
-          .and_return(['id', true, escrow_address, seller.address, 'invalid', token.address, 1000000])
+          .and_return(['id', true, escrow_address, seller.address, 'invalid', token.address, token_amount])
         expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
       end
     end
@@ -64,7 +65,7 @@ describe BlockchainEventWorker do
       it 'does not create an escrow' do
         allow(Eth::Abi).to receive(:decode)
           .and_return(['id', true, escrow_address, seller.address, buyer.address,
-            '0x0000000000000000000000000000000000000000', 1000000])
+            '0x0000000000000000000000000000000000000000', token_amount])
         expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
       end
     end
@@ -74,7 +75,7 @@ describe BlockchainEventWorker do
       it 'does not create an escrow' do
         allow(Eth::Abi).to receive(:decode)
           .and_return(['id', true, escrow_address, seller.address, buyer.address,
-            '0x0000000000000000000000000000000000000000', 1000000])
+            '0x0000000000000000000000000000000000000000', token_amount])
         expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
       end
     end
@@ -82,7 +83,7 @@ describe BlockchainEventWorker do
     context 'when the uuid cant be converted' do
       it 'does not create an escrow' do
         allow(Eth::Abi).to receive(:decode)
-          .and_return([nil, true, escrow_address, seller.address, buyer.address, token.address, 1000000])
+          .and_return([nil, true, escrow_address, seller.address, buyer.address, token.address, token_amount])
         expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
       end
     end
@@ -92,20 +93,20 @@ describe BlockchainEventWorker do
         it 'does not create an escrow' do
           allow(Eth::Abi).to receive(:decode)
             .and_return([Uuid.generate, true, escrow_address, seller.address, buyer.address,
-                         token.address, 1000000])
+                         token.address, token_amount])
           expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
         end
       end
 
       context 'wrong status' do
         let!(:order) do
-          create(:order, uuid: uuid, buyer: buyer, list: list, token_amount: 1000000, status: :dispute)
+          create(:order, uuid: uuid, buyer: buyer, list: list, token_amount: token_amount, status: :dispute)
         end
 
         it 'does not create an escrow' do
           allow(Eth::Abi).to receive(:decode)
             .and_return([uuid, true, escrow_address, seller.address, buyer.address,
-                         token.address, 1000000])
+                         token.address, token_amount])
           expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
         end
       end
@@ -116,7 +117,7 @@ describe BlockchainEventWorker do
         it 'does not create an escrow' do
           allow(Eth::Abi).to receive(:decode)
             .and_return([uuid, true, escrow_address, seller.address, another_buyer.address,
-                         token.address, 1000000])
+                         token.address, token_amount])
           expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
         end
       end
@@ -136,7 +137,7 @@ describe BlockchainEventWorker do
           it 'does not create an escrow' do
             allow(Eth::Abi).to receive(:decode)
               .and_return([uuid, true, escrow_address, seller.address, buyer.address,
-                          token.address, 1000000])
+                          token.address, token_amount])
             expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
           end
         end
@@ -146,7 +147,7 @@ describe BlockchainEventWorker do
           it 'does not create an escrow' do
             allow(Eth::Abi).to receive(:decode)
               .and_return([uuid, true, escrow_address, another_seller.address, buyer.address,
-                          token.address, 1000000])
+                          token.address, token_amount])
             expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
           end
         end
@@ -156,7 +157,7 @@ describe BlockchainEventWorker do
           it 'does not create an escrow' do
             allow(Eth::Abi).to receive(:decode)
               .and_return([uuid, true, escrow_address, seller.address, buyer.address,
-                           another_token.address, 1000000])
+                           another_token.address, token_amount])
             expect { subject.perform(params.to_json) }.to_not change { Escrow.count }
           end
         end
@@ -170,7 +171,7 @@ describe BlockchainEventWorker do
         expect(order.escrow).to be_nil
         escrow = subject.perform(params)
         expect(escrow.address).to eq(escrow_address)
-        expect(escrow.tx).to eq('0x4b05f122f43774f878842f0e04789d1023b2ca994c82334a0244a7aa419c6311')
+        expect(escrow.tx).to eq('0x20225d64d63be6f645963b4967b3546bf06122f2cba821a0e31a8578a2c32abe')
       end
 
       it 'updates the order status' do

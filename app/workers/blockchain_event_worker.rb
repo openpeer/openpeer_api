@@ -9,7 +9,9 @@ class BlockchainEventWorker
     return unless chain_id
 
     chain_id = Integer(chain_id)
-    log = json.fetch('logs')[0]
+    log = json.fetch('logs', [])[0]
+    return unless log
+
     data = log.fetch('data')
     event_inputs = ['bytes32', 'bool', 'address', 'address', 'address', 'address', 'uint256']
     order_id, exists, address, seller, buyer, token, amount = Eth::Abi.decode(event_inputs, data)
@@ -27,10 +29,12 @@ class BlockchainEventWorker
     seller = find_or_create_user(seller)
     buyer = find_or_create_user(buyer)
     order = Order.includes(:list)
-                 .find_by(uuid: uuid, status: :created, buyer_id: buyer.id, token_amount: amount,
+                 .find_by(uuid: uuid, status: :created, buyer_id: buyer.id, token_amount: amount / (10**token.decimals).to_f,
                          lists: { chain_id: chain_id, seller_id: seller.id,
                                   token_id: token.id })
     return unless order
+
+    return if order.escrow.present?
 
     Order.transaction do
       order.update(status: :escrowed)

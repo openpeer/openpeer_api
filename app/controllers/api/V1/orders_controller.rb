@@ -27,7 +27,7 @@ module Api
       end
 
       def show
-        @order = Order.find(params[:id])
+        @order = Order.find_by(uuid: params[:id])
         render json: @order, serializer: OrderSerializer, include: "**", status: :ok
       end
 

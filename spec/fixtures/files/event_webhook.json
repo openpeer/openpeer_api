@@ -13,12 +13,36 @@
         },
         {
           "components": [
-            { "internalType": "bool", "name": "exists", "type": "bool" },
-            { "internalType": "address", "name": "deployment", "type": "address" },
-            { "internalType": "address", "name": "seller", "type": "address" },
-            { "internalType": "address", "name": "buyer", "type": "address" },
-            { "internalType": "address", "name": "token", "type": "address" },
-            { "internalType": "uint256", "name": "amount", "type": "uint256" }
+            {
+              "internalType": "bool",
+              "name": "exists",
+              "type": "bool"
+            },
+            {
+              "internalType": "address",
+              "name": "deployment",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "buyer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
           ],
           "indexed": false,
           "internalType": "struct OpenPeerEscrowsDeployer.Escrow",
@@ -53,16 +77,16 @@
   "tag": "polygon-deployer",
   "retries": 0,
   "block": {
-    "number": "38786330",
-    "hash": "0x659c9c23acb6f2007f769c0b54019affda0ee9aa2d9f213f13c5c76105af533e",
-    "timestamp": "1675261587"
+    "number": "38827112",
+    "hash": "0x7cccd744b6222a264b3e6de9728b8d5da998861dad84b9f33112641502206310",
+    "timestamp": "1675350965"
   },
   "logs": [
     {
-      "logIndex": "125",
-      "transactionHash": "0x4b05f122f43774f878842f0e04789d1023b2ca994c82334a0244a7aa419c6311",
+      "logIndex": "79",
+      "transactionHash": "0x20225d64d63be6f645963b4967b3546bf06122f2cba821a0e31a8578a2c32abe",
       "address": "0x6aa7f6a54b2091bf52d18428438563583e59343b",
-      "data": "0x65363333636131316661626632383231666164386234366336666365633700000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000f7dbe61a0b758cff72195657e448339ac788d8cf000000000000000000000000630220d00cf136270f553c8577af18300f7b812c000000000000000000000000fe6b7a4494b308f8c0025dcc635ac22630ec7330000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f00000000000000000000000000000000000000000000000000000000000f4240",
+      "data": "0x170d42a8469659195611063eba7f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000d82ad457ab4ccb2dbf29557762a5019bd16f4e75000000000000000000000000630220d00cf136270f553c8577af18300f7b812c000000000000000000000000b98206a86e61bc59e9632d06679a5515ebf02e81000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f4240",
       "topic0": "0xfcdcd00a96387e05bbb38fe857431586503b3184eda4fdb057944e3fc83d8ec2",
       "topic1": null,
       "topic2": null,
@@ -71,21 +95,21 @@
   ],
   "txs": [
     {
-      "hash": "0x4b05f122f43774f878842f0e04789d1023b2ca994c82334a0244a7aa419c6311",
-      "gas": "2072532",
-      "gasPrice": "150000000000",
-      "nonce": "132",
-      "input": "0xe43d5c8f6536333363613131666162663238323166616438623436633666636563370000000000000000000000000000fe6b7a4494b308f8c0025dcc635ac22630ec7330000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f00000000000000000000000000000000000000000000000000000000000f4240",
-      "transactionIndex": "27",
+      "hash": "0x20225d64d63be6f645963b4967b3546bf06122f2cba821a0e31a8578a2c32abe",
+      "gas": "2051826",
+      "gasPrice": "270000000000",
+      "nonce": "135",
+      "input": "0xa1466c41170d42a8469659195611063eba7f000000000000000000000000000000000000000000000000000000000000b98206a86e61bc59e9632d06679a5515ebf02e8100000000000000000000000000000000000000000000000000000000000f4240",
+      "transactionIndex": "30",
       "fromAddress": "0x630220d00cf136270f553c8577af18300f7b812c",
       "toAddress": "0x6aa7f6a54b2091bf52d18428438563583e59343b",
       "value": "0",
       "type": "2",
-      "v": "0",
-      "r": "68246758859309560224204170031970640582895958108829062044538042815759213683710",
-      "s": "14565449733334190673853009032971313904884943692306102063030795499825283272446",
-      "receiptCumulativeGasUsed": "6458313",
-      "receiptGasUsed": "2072532",
+      "v": "1",
+      "r": "80483504363391759555928720318152136969161805911342811935257235293998131738769",
+      "s": "27235266927322878540849473102654022118089846569328924806991710922339953148395",
+      "receiptCumulativeGasUsed": "5571218",
+      "receiptGasUsed": "2051826",
       "receiptContractAddress": null,
       "receiptRoot": null,
       "receiptStatus": "1"
@@ -95,7 +119,10 @@
   "erc20Transfers": [],
   "erc20Approvals": [],
   "nftTokenApprovals": [],
-  "nftApprovals": { "ERC721": [], "ERC1155": [] },
+  "nftApprovals": {
+    "ERC721": [],
+    "ERC1155": []
+  },
   "nftTransfers": [],
   "nativeBalances": []
 }
