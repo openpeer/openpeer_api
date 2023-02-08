@@ -5,7 +5,7 @@ describe EscrowDeployedWorker do
 
   before do
     allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with('POLYGON_STREAM_ID').and_return('test')
+    allow(ENV).to receive(:[]).with('DEPLOYER_STREAM_ID').and_return('test')
   end
 
   describe '.perform' do

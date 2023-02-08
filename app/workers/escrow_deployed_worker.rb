@@ -3,7 +3,7 @@ class EscrowDeployedWorker
 
   def perform(json)
     json = JSON.parse(json)
-    return unless ENV['POLYGON_STREAM_ID'] == json['streamId']
+    return unless ENV['DEPLOYER_STREAM_ID'] == json['streamId']
 
     chain_id = json['chainId']
     return unless chain_id
@@ -43,6 +43,8 @@ class EscrowDeployedWorker
     end
 
     EscrowEventsSetupWorker.perform_async(order.escrow.id)
+    ActionCable.server.broadcast("OrdersChannel_#{order.uuid}",
+      ActiveModelSerializers::SerializableResource.new(order, include: '**').to_json)
     return order.escrow
   end
 
