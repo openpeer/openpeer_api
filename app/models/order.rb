@@ -5,6 +5,10 @@ class Order < ApplicationRecord
   belongs_to :buyer, class_name: 'User'
   has_one :escrow
 
+  scope :from_user, ->(address) do
+    where('lower(users.address) = ? OR lower(buyers_orders.address) = ?', address.downcase, address.downcase)
+  end
+
   before_create do
     if !self.uuid
       self.uuid = Uuid.generate
