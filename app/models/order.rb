@@ -6,7 +6,8 @@ class Order < ApplicationRecord
   has_one :escrow
 
   scope :from_user, ->(address) do
-    where('lower(users.address) = ? OR lower(buyers_orders.address) = ?', address.downcase, address.downcase)
+    joins(list: [:seller]).joins(:buyer)
+      .where('lower(users.address) = ? OR lower(buyers_orders.address) = ?', address.downcase, address.downcase)
   end
 
   before_create do

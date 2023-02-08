@@ -24,16 +24,20 @@ class NewEscrowEventWorker
     user = User.where('lower(address) = ?', tx['fromAddress'].downcase).first
 
     return unless escrow && user
+    order = escrow.order
 
     case tx['input']
     when MARK_AS_PAID
-      escrow.order.update(status: :release)
+      order.update(status: :release)
     when BUYER_CANCEL, SELLER_CANCEL
-      escrow.order.update(status: :cancelled)
+      order.update(status: :cancelled)
     when OPEN_DISPUTE
-      escrow.order.update(status: :dispute)
+      order.update(status: :dispute)
     when RELEASE
-      escrow.order.update(status: :closed)
+      order.update(status: :closed)
     end
+
+    ActionCable.server.broadcast("OrdersChannel_#{order.uuid}",
+      ActiveModelSerializers::SerializableResource.new(order, include: '**').to_json)
   end
 end
