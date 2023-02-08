@@ -7,18 +7,15 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 
-currency = FiatCurrency.create(name: 'Brazilian Real', code: 'BRL', symbol: 'R$', country_code: 'BR')
-FiatCurrency.create(name: 'Australian Dollar', code: 'AUD', symbol: 'A$', country_code: 'AU')
-FiatCurrency.create(name: 'Indian Ruppee', code: 'INR', symbol: '₹', country_code: 'IN')
+currencies = FiatCurrency.create([{ name: 'Brazilian Real', code: 'BRL', symbol: 'R$', country_code: 'BR' }],
+                                 [{ name: 'Australian Dollar', code: 'AUD', symbol: 'A$', country_code: 'AU' }],
+                                 [{ name: 'Indian Ruppee', code: 'INR', symbol: '₹', country_code: 'IN' }])
 
-token = Token.create(chain_id: 80001, address: Eth::Address.new(Faker::Blockchain::Ethereum.address).checksummed,
-                     decimals: 6, name: 'USDT', symbol: 'USDT', coingecko_id: 'tether')
+Bank.create([{ name: "PIX", fiat_currency: currencies[0] }],
+            [{ name: "PayID", fiat_currency: currencies[1] }],
+            [{ name: "UPI", fiat_currency: currencies[2] }])
 
-seller = User.create(address: '0xB98206A86e61bc59E9632D06679a5515eBf02e81')
-List.create!(chain_id: 80001, seller: seller, 
-             token: token ,
-             fiat_currency: currency,
-             total_available_amount: "1000000000",
-             limit_min: 100,
-             limit_max: 500,
-             margin: 1.05)
+Token.create([{ chain_id: 80001, address: "0x0000000000000000000000000000000000000000",
+                decimals: 18, name: 'Matic MUMBAI', symbol: 'MATIC', coingecko_id: 'matic-network' },
+              { chain_id: 80001, address: "0x04B2A6E51272c82932ecaB31A5Ab5aC32AE168C3",
+                decimals: 18, name: 'GFARMDAI', symbol: 'GFARMDAI', coingecko_id: 'dai' }])
