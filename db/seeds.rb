@@ -7,13 +7,13 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 
-currencies = FiatCurrency.create([{ name: 'Brazilian Real', code: 'BRL', symbol: 'R$', country_code: 'BR' }],
-                                 [{ name: 'Australian Dollar', code: 'AUD', symbol: 'A$', country_code: 'AU' }],
-                                 [{ name: 'Indian Ruppee', code: 'INR', symbol: '₹', country_code: 'IN' }])
+currencies = FiatCurrency.create([{ name: 'Brazilian Real', code: 'BRL', symbol: 'R$', country_code: 'BR' },
+                                  { name: 'Australian Dollar', code: 'AUD', symbol: 'A$', country_code: 'AU' },
+                                  { name: 'Indian Ruppee', code: 'INR', symbol: '₹', country_code: 'IN' }])
 
-Bank.create([{ name: "PIX", fiat_currency: currencies[0] }],
-            [{ name: "PayID", fiat_currency: currencies[1] }],
-            [{ name: "UPI", fiat_currency: currencies[2] }])
+Bank.create([{ name: "PIX", fiat_currency: currencies[0] },
+             { name: "PayID", fiat_currency: currencies[1] },
+             { name: "UPI", fiat_currency: currencies[2] }])
 
 Token.create([{ chain_id: 80001, address: "0x0000000000000000000000000000000000000000",
                 decimals: 18, name: 'Matic MUMBAI', symbol: 'MATIC', coingecko_id: 'matic-network' },
