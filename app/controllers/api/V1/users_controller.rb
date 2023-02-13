@@ -3,7 +3,11 @@ module Api
     class UsersController < BaseController
       def show
         @user = User.where('lower(users.address) = ?', params[:id].downcase).first
-        render json: @user, serializer: UserSerializer, status: :ok
+        if @user
+          render json: @user, serializer: UserSerializer, status: :ok
+        else
+          render json: { message: 'User not found', errors: 'not_found' }, status: :ok
+        end
       end
 
       def update
