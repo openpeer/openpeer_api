@@ -6,4 +6,6 @@ class List < ApplicationRecord
   belongs_to :token
   belongs_to :fiat_currency
   belongs_to :payment_method
+
+  has_many :orders
 end
