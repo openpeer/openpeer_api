@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   validates :address, presence: true, uniqueness: { case_sensitive: false }
   validates :email, 'valid_email_2/email': true, allow_blank: true
+  validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
 
   has_many :lists, foreign_key: :seller_id
   has_many :buy_orders, foreign_key: :buyer_id, class_name: 'Order'

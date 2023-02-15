@@ -3,11 +3,13 @@ class UserSerializer < ActiveModel::Serializer
     :completion_rate
 
   attribute :email do
-    EmailAddress.munge(object.email) if object.email
+    if object.email
+      @instance_options.dig(:params, :show_email) ? object.email : EmailAddress.munge(object.email)
+    end
   end
 
   def trades
-    object.orders.where(status: :closed).count
+    @trades ||= object.orders.where(status: :closed).count
   end
 
   def completion_rate

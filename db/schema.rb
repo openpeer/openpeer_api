@@ -126,6 +126,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
     t.string "image"
     t.boolean "verified", default: false
     t.index "lower((address)::text)", name: "index_users_on_lower_address", unique: true
+    t.index ["name"], name: "index_users_on_name", unique: true
   end
 
   add_foreign_key "escrows", "orders"
