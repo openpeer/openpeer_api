@@ -17,8 +17,7 @@ module Api
       def create
         if JSON.parse(params[:list].to_json) == JSON.parse(params[:message])
           if (Eth::Signature.verify(params[:message], params[:data], params[:address]) rescue false)
-            @user = User.where('lower(address) = ?', params[:address].downcase).first ||
-                    User.create(address: Eth::Address.new(params[:address]).checksummed)
+            @user = User.find_or_create_by_address(params[:address])
             @list = List.new(list_params)
             @list.seller = @user
             @list.chain_id = params[:chain_id]

@@ -65,3 +65,4 @@ gem "valid_email2"
 gem 'jwt'
 gem 'bcrypt', '~> 3.1.7'
 gem 'aws-sdk-s3'
+gem 'knockapi'

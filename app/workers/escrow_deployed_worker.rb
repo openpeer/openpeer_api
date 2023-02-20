@@ -43,6 +43,7 @@ class EscrowDeployedWorker
     end
 
     EscrowEventsSetupWorker.perform_async(order.escrow.id)
+    NotificationWorker.perform_async(NotificationWorker::SELLER_ESCROWED, order.id)
     ActionCable.server.broadcast("OrdersChannel_#{order.uuid}",
       ActiveModelSerializers::SerializableResource.new(order, include: '**').to_json)
     return order.escrow
@@ -51,7 +52,6 @@ class EscrowDeployedWorker
   private
 
   def find_or_create_user(address)
-    User.where('lower(address) = ?', address.downcase).first ||
-      User.create(address: Eth::Address.new(address).checksummed)
+    User.find_or_create_by_address(address)
   end
 end

@@ -26,6 +26,11 @@ class User < ApplicationRecord
     obj.presigned_url(:get, expires_in: 3600)
   end
 
+  def self.find_or_create_by_address(address)
+    User.where('lower(address) = ?', address.downcase).first ||
+      User.create(address: Eth::Address.new(address).checksummed)
+  end
+
   before_create do
     self.address = Eth::Address.new(self.address).checksummed
   end

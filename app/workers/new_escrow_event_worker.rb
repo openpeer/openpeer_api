@@ -29,11 +29,13 @@ class NewEscrowEventWorker
     case tx['input']
     when MARK_AS_PAID
       order.update(status: :release)
+      NotificationWorker.perform_async(NotificationWorker::BUYER_PAID, order.id)
     when BUYER_CANCEL, SELLER_CANCEL
       order.update(status: :cancelled)
     when OPEN_DISPUTE
       order.update(status: :dispute)
     when RELEASE
+      NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
       order.update(status: :closed)
     end
 
