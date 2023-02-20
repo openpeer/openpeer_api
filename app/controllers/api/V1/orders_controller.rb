@@ -11,10 +11,10 @@ module Api
         if JSON.parse(params[:order].to_json) == JSON.parse(params[:message])
           if (Eth::Signature.verify(params[:message], params[:data], params[:address]) rescue false)
             @order = Order.new(order_params)
-            @buyer = User.where('lower(address) = ?', params[:address].downcase).first ||
-                     User.create(address: Eth::Address.new(params[:address]).checksummed)
+            @buyer = User.find_or_create_by_address(params[:address])
             @order.buyer = @buyer
             if @order.save
+              NotificationWorker.perform_async(NotificationWorker::NEW_ORDER, @order.id)
               render json: @order, serializer: OrderSerializer, status: :ok
             else
               render json: { message: 'Order not created', errors: @order.errors }, status: :ok

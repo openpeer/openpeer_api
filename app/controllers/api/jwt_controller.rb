@@ -11,8 +11,7 @@ module Api
         exp = token['exp']
         return if Time.now.to_i > exp
 
-        User.where('lower(address) = ?', address.downcase).first ||
-          User.create(address: Eth::Address.new(address).checksummed)
+        User.find_or_create_by_address(address)
       end
     end
 
