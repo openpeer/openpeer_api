@@ -30,15 +30,14 @@ class NewEscrowEventWorker
     when MARK_AS_PAID
       order.update(status: :release)
       NotificationWorker.perform_async(NotificationWorker::BUYER_PAID, order.id)
-    when BUYER_CANCEL
-      order.cancel(order.buyer)
-    when SELLER_CANCEL
-      order.cancel(order.list.seller)
+    when BUYER_CANCEL, SELLER_CANCEL
+      order.cancel(user)
     when OPEN_DISPUTE
       order.update(status: :dispute)
+      NotificationWorker.perform_async(NotificationWorker::DISPUTE_OPENED, order.id)
     when RELEASE
-      NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
       order.update(status: :closed)
+      NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
     end
 
     ActionCable.server.broadcast("OrdersChannel_#{order.uuid}",
