@@ -7,7 +7,9 @@ Rails.application.routes.draw do
       resources :currencies, only: [:index]
       resources :banks, only: [:index]
       resources :payment_methods, only: [:index]
-      resources :orders, only: [:index, :create, :show]
+      resources :orders, only: [:index, :create, :show] do
+        patch :cancel, on: :member
+      end
       resources :users, only: [:show]
       resources :user_profiles, only: [:show, :update]
     end

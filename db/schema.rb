@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_22_204418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -81,7 +81,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
     t.decimal "token_amount"
     t.decimal "price"
     t.string "uuid"
+    t.bigint "cancelled_by_id"
+    t.datetime "cancelled_at"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
+    t.index ["cancelled_by_id"], name: "index_orders_on_cancelled_by_id"
     t.index ["list_id"], name: "index_orders_on_list_id"
   end
 
@@ -130,4 +133,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
   end
 
   add_foreign_key "escrows", "orders"
+  add_foreign_key "orders", "users", column: "cancelled_by_id"
 end

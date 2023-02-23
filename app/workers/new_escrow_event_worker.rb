@@ -30,8 +30,10 @@ class NewEscrowEventWorker
     when MARK_AS_PAID
       order.update(status: :release)
       NotificationWorker.perform_async(NotificationWorker::BUYER_PAID, order.id)
-    when BUYER_CANCEL, SELLER_CANCEL
-      order.update(status: :cancelled)
+    when BUYER_CANCEL
+      order.cancel(order.buyer)
+    when SELLER_CANCEL
+      order.cancel(order.list.seller)
     when OPEN_DISPUTE
       order.update(status: :dispute)
     when RELEASE

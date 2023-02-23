@@ -1,9 +1,9 @@
 module Api
   module V1
-    class OrdersController < BaseController
+    class OrdersController < JwtController
       def index
-        @orders = Order.from_user(params[:address].downcase)
-                       .where(list: { chain_id: params[:chainId] })
+        @orders = Order.from_user(current_user.address)
+                       .where(list: { chain_id: params[:chain_id] })
         render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok
       end
 
@@ -11,8 +11,7 @@ module Api
         if JSON.parse(params[:order].to_json) == JSON.parse(params[:message])
           if (Eth::Signature.verify(params[:message], params[:data], params[:address]) rescue false)
             @order = Order.new(order_params)
-            @buyer = User.find_or_create_by_address(params[:address])
-            @order.buyer = @buyer
+            @order.buyer = current_user
             if @order.save
               NotificationWorker.perform_async(NotificationWorker::NEW_ORDER, @order.id)
               render json: @order, serializer: OrderSerializer, status: :ok
@@ -24,7 +23,17 @@ module Api
       end
 
       def show
-        @order = Order.find_by(uuid: params[:id])
+        @order = Order.from_user(current_user.address).find_by(uuid: params[:id])
+        render json: @order, serializer: OrderSerializer, include: "**", status: :ok
+      end
+
+      def cancel
+        @order = Order.from_user(current_user.address).find_by(uuid: params[:id])
+        @order.cancel(current_user)
+
+        ActionCable.server.broadcast("OrdersChannel_#{@order.uuid}",
+          ActiveModelSerializers::SerializableResource.new(@order, include: '**').to_json)
+
         render json: @order, serializer: OrderSerializer, include: "**", status: :ok
       end
 
