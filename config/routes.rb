@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :payment_methods, only: [:index]
       resources :orders, only: [:index, :create, :show] do
         patch :cancel, on: :member
+        resources :disputes, only: [:create]
       end
       resources :users, only: [:show]
       resources :user_profiles, only: [:show, :update]

@@ -4,4 +4,5 @@ class OrderSerializer < ActiveModel::Serializer
   belongs_to :buyer
   belongs_to :list
   has_one :escrow
+  has_one :dispute
 end

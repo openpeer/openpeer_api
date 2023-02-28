@@ -39,7 +39,7 @@ class NotificationWorker
         username: actor.name || small_wallet_address(actor.address),
         seller: seller.name || small_wallet_address(seller.address),
         buyer: buyer.name || small_wallet_address(buyer.address),
-        cancelled_by: cancelled_by.name || small_wallet_address(cancelled_by.address),
+        cancelled_by: order.cancelled_by,
         token_amount: order.token_amount.to_s,
         fiat_amount: order.fiat_amount.to_s,
         token: order.list.token.symbol,
