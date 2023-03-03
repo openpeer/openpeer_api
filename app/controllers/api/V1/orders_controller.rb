@@ -31,8 +31,7 @@ module Api
         @order = Order.from_user(current_user.address).find_by(uuid: params[:id])
         @order.cancel(current_user)
 
-        ActionCable.server.broadcast("OrdersChannel_#{@order.uuid}",
-          ActiveModelSerializers::SerializableResource.new(@order, include: '**').to_json)
+        @order.broadcast
 
         render json: @order, serializer: OrderSerializer, include: "**", status: :ok
       end

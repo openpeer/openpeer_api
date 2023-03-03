@@ -1,6 +1,5 @@
 class DisputeFile < ApplicationRecord
-  belongs_to :dispute
-  belongs_to :user
+  belongs_to :user_dispute
 
   def upload_url
     return unless filename

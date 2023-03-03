@@ -1,24 +1,13 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+How to update the contracts webhooks URL?
 
-Things you may want to cover:
+```bash
+rake "deployer_contract:update_webhook[https://eed6-2001-8a0-72b6-1d00-ecac-aac4-8d2b-b68d.eu.ngrok.io]"
+```
 
-* Ruby version
+How to update the escrows ABI?
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```bash
+rake "escrows_contract:update[../openpeer/app/abis/OpenPeerEscrow.json]"
+```

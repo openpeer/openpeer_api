@@ -19,6 +19,19 @@ class Order < ApplicationRecord
     NotificationWorker.perform_async(NotificationWorker::ORDER_CANCELLED, id)
   end
 
+  def broadcast
+    if buyer
+      ActionCable.server.broadcast("OrdersChannel_#{uuid}_#{buyer.address}",
+        ActiveModelSerializers::SerializableResource.new(self, scope: buyer, include: '**').to_json)
+    end
+
+    seller = list.seller
+    if seller
+      ActionCable.server.broadcast("OrdersChannel_#{uuid}_#{seller.address}",
+        ActiveModelSerializers::SerializableResource.new(self, scope: seller, include: '**').to_json)
+    end
+  end
+
   before_create do
     if !self.uuid
       self.uuid = Uuid.generate

@@ -44,8 +44,8 @@ class EscrowDeployedWorker
 
     EscrowEventsSetupWorker.perform_async(order.escrow.id)
     NotificationWorker.perform_async(NotificationWorker::SELLER_ESCROWED, order.id)
-    ActionCable.server.broadcast("OrdersChannel_#{order.uuid}",
-      ActiveModelSerializers::SerializableResource.new(order, include: '**').to_json)
+    order.broadcast
+
     return order.escrow
   end
 

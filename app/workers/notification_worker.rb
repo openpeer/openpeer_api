@@ -45,7 +45,7 @@ class NotificationWorker
         token: order.list.token.symbol,
         fiat: order.list.fiat_currency.code,
         price: order.price.to_s,
-        url: "#{ENV['FRONTEND_URL']}/#{order.dispute? ? 'dispute' : 'orders'}/#{order.uuid}",
+        url: "#{ENV['FRONTEND_URL']}/orders/#{order.uuid}",
         uuid: small_wallet_address(order.uuid, 6)
       }
     )

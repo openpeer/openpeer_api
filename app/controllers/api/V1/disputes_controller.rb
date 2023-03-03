@@ -7,16 +7,16 @@ module Api
         order = Order.from_user(current_user.address).find_by(uuid: params[:order_id])
         files = Array(params[:files]).take(MAX_FILES)
         if order.present? && files.present?
-          dispute = order.dispute
-          return render json: order, serializer: OrderSerializer, include: '**', status: :ok if dispute 
-
-          dispute_files = []
+          dispute = order.dispute || order.build_dispute
+          user_dispute = dispute.user_disputes.where(user: current_user).first || dispute.user_disputes.build(user: current_user)
+          user_dispute.comments = params[:comments]
 
           files.each do |file_url|
-            dispute_files << dispute.dispute_files.build(user: current_user, filename: file_url)
+            user_dispute.dispute_files.build(filename: file_url)
           end
 
-          if dispute.save
+          if user_dispute.save
+            order.broadcast
             render json: order, serializer: OrderSerializer, include: '**', status: :ok
           else
             render json: { success: false, errors: dispute.errors.full_messages }, status: :unprocessable_entity
