@@ -1,4 +1,18 @@
 FactoryBot.define do
+  factory :dispute_file do
+    dispute { nil }
+    user { nil }
+    filename { "MyString" }
+  end
+
+  factory :dispute do
+    order { nil }
+    seller_comment { "MyText" }
+    buyer_comment { "MyText" }
+    resolved { false }
+    winner { nil }
+  end
+
   factory :escrow do
     order
     tx { '0xb7e6c378f8f1a26650d1a3920c926268fb43b83fbdde44cba1fbc92b52d83442' }

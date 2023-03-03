@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_03_115649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
     t.datetime "updated_at", null: false
     t.bigint "fiat_currency_id"
     t.index ["fiat_currency_id"], name: "index_banks_on_fiat_currency_id"
+  end
+
+  create_table "dispute_files", force: :cascade do |t|
+    t.bigint "user_dispute_id", null: false
+    t.string "filename"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_dispute_id"], name: "index_dispute_files_on_user_dispute_id"
+  end
+
+  create_table "disputes", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.boolean "resolved", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "winner_id"
+    t.index ["order_id"], name: "index_disputes_on_order_id"
+    t.index ["winner_id"], name: "index_disputes_on_winner_id"
   end
 
   create_table "escrows", force: :cascade do |t|
@@ -81,7 +99,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
     t.decimal "token_amount"
     t.decimal "price"
     t.string "uuid"
+    t.bigint "cancelled_by_id"
+    t.datetime "cancelled_at"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
+    t.index ["cancelled_by_id"], name: "index_orders_on_cancelled_by_id"
     t.index ["list_id"], name: "index_orders_on_list_id"
   end
 
@@ -116,6 +137,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
     t.index "lower((address)::text), chain_id", name: "index_tokens_on_lower_address_chain_id", unique: true
   end
 
+  create_table "user_disputes", force: :cascade do |t|
+    t.bigint "dispute_id", null: false
+    t.bigint "user_id", null: false
+    t.text "comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dispute_id"], name: "index_user_disputes_on_dispute_id"
+    t.index ["user_id"], name: "index_user_disputes_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "address", null: false
     t.datetime "created_at", null: false
@@ -129,5 +160,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_132739) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "dispute_files", "user_disputes"
+  add_foreign_key "disputes", "orders"
+  add_foreign_key "disputes", "users", column: "winner_id"
   add_foreign_key "escrows", "orders"
+  add_foreign_key "orders", "users", column: "cancelled_by_id"
+  add_foreign_key "user_disputes", "disputes"
+  add_foreign_key "user_disputes", "users"
 end
