@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_03_115649) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_06_140555) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -70,7 +70,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_03_115649) do
     t.bigint "seller_id", null: false
     t.bigint "token_id", null: false
     t.bigint "fiat_currency_id", null: false
-    t.string "total_available_amount"
+    t.decimal "total_available_amount"
     t.decimal "limit_min"
     t.decimal "limit_max"
     t.integer "margin_type", default: 0, null: false

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       end
       resources :users, only: [:show]
       resources :user_profiles, only: [:show, :update]
+      resources :quick_buy, only: [:index]
     end
 
     get "/webhooks", to: "webhooks#index"
