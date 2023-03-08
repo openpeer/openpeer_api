@@ -49,7 +49,7 @@ module Api
 
       def payment_method_params
         params.require(:list)
-              .require(:payment_method).permit(:id, :account_name, :account_number, :bank_id)
+              .require(:payment_method).permit(:id, :bank_id, values: {})
       end
 
       private

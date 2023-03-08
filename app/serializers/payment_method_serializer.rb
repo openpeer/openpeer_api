@@ -1,5 +1,5 @@
 class PaymentMethodSerializer < ActiveModel::Serializer
-  attributes :id, :account_number, :account_name
+  attributes :id, :values
 
   belongs_to :user
   belongs_to :bank

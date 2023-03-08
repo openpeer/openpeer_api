@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_06_140555) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_07_162234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_140555) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "fiat_currency_id"
+    t.json "account_info_schema"
     t.index ["fiat_currency_id"], name: "index_banks_on_fiat_currency_id"
   end
 
@@ -115,12 +116,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_140555) do
 
   create_table "payment_methods", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "account_name"
-    t.string "account_number"
     t.bigint "bank_id"
-    t.text "details"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "values"
     t.index ["bank_id"], name: "index_payment_methods_on_bank_id"
     t.index ["user_id"], name: "index_payment_methods_on_user_id"
   end

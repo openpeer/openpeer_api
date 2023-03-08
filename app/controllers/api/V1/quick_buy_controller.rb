@@ -14,7 +14,7 @@ module Api
                      .where(total_amount_condition).where(total_fiat_condition)
                      .where(chain_id: params[:chain_id], token: { address: params[:token_address] },
                             fiat_currency: { code: params[:fiat_currency_code] })
-        puts @lists.to_sql
+
         @lists = @lists.sort_by(&:price)
         render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok
       end

@@ -7,13 +7,23 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 
-currencies = FiatCurrency.create([{ name: 'Brazilian Real', code: 'BRL', symbol: 'R$', country_code: 'BR' },
-                                  { name: 'Australian Dollar', code: 'AUD', symbol: 'A$', country_code: 'AU' },
-                                  { name: 'Indian Ruppee', code: 'INR', symbol: '₹', country_code: 'IN' }])
+currencies = FiatCurrency.create([
+  { name: 'Brazilian Real', code: 'BRL', symbol: 'R$', country_code: 'BR' },
+  { name: 'Australian Dollar', code: 'AUD', symbol: 'A$', country_code: 'AU' },
+  { name: 'Indian Ruppee', code: 'INR', symbol: '₹', country_code: 'IN' },
+  { name: 'US Dollar', code: 'USD', symbol: '$', country_code: 'US' },
+  { name: 'Singapore Dollar', code: 'SGD', symbol: '$', country_code: 'SG' },
+  { name: 'Hong Kong Dollar', code: 'HKD', symbol: '$', country_code: 'HK' },
+  { name: 'British Pound', code: 'GBP', symbol: '£', country_code: 'GB' }
+])
 
-Bank.create([{ name: "PIX", fiat_currency: currencies[0] },
-             { name: "PayID", fiat_currency: currencies[1] },
-             { name: "UPI", fiat_currency: currencies[2] }])
+Bank.create([
+  { name: "PIX", fiat_currency: currencies[0], account_info_schema: [{"label"=>"Pix Key", "id"=>"pix_key", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }] },
+  { name: "PayID", fiat_currency: currencies[1], account_info_schema: [{"label"=>"PayID Phone or Email", "id"=>"payid", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }] },
+  { name: "UPI", fiat_currency: currencies[2], account_info_schema: [{"label"=>"UPI ID", "id"=>"upi_id", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }] },
+  { name: 'Revolut', account_info_schema: [{"label"=>"Revtag", "id"=>"revtag", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }]},
+  { name: 'Bank Transfer', account_info_schema: [{"label"=>"Account Name", "id"=>"account_name", "required"=>true }, {"label"=>"Account Number", "id"=>"account_number", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=> false }]},
+])
 
 Token.create([{ chain_id: 80001, address: "0x0000000000000000000000000000000000000000",
                 decimals: 18, name: 'Matic MUMBAI', symbol: 'MATIC', coingecko_id: 'matic-network' },
