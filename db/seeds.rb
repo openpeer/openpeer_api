@@ -22,7 +22,9 @@ Bank.create([
   { name: "PayID", fiat_currency: currencies[1], account_info_schema: [{"label"=>"PayID Phone or Email", "id"=>"payid", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }] },
   { name: "UPI", fiat_currency: currencies[2], account_info_schema: [{"label"=>"UPI ID", "id"=>"upi_id", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }] },
   { name: 'Revolut', account_info_schema: [{"label"=>"Revtag", "id"=>"revtag", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=>false }]},
-  { name: 'Bank Transfer', account_info_schema: [{"label"=>"Account Name", "id"=>"account_name", "required"=>true }, {"label"=>"Account Number", "id"=>"account_number", "required"=>true }, { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=> false }]},
+  { name: 'Bank Transfer', account_info_schema: [{"label"=>"Account Name", "id"=>"account_name", "required"=>true }, {"label"=>"Account Number", "id"=>"account_number", "required"=>true },
+                                                 { "label"=>"Details", "id"=>"details", "type"=>"textarea", "required"=> false },
+                                                 {"type"=>"message", "label"=>"We recommend only using instant bank transfer methods to settle trades quickly and without disputes."}]}
 ])
 
 Token.create([{ chain_id: 80001, address: "0x0000000000000000000000000000000000000000",
