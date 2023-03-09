@@ -26,6 +26,10 @@ class NewEscrowEventWorker
 
     return unless escrow && user
     order = escrow.order
+    tx_hash = log['transactionHash']
+
+    return if order.transactions.where(tx_hash: tx_hash).any?
+
     dispute = order.dispute
     buyer_action = user.id == order.buyer_id
 
@@ -50,13 +54,20 @@ class NewEscrowEventWorker
     end
 
     if tx['input'].starts_with?(DISPUTE_RESOLVED)
-      # @TODO: Marcos notification and user who won the dispute
+      # @TODO: Marcos notification
+      encoded_address = tx['input'].sub(DISPUTE_RESOLVED, '')
+      address = Eth::Abi.decode(["address"], "0x#{encoded_address}")[0]
+      winner = User.where('lower(address) = ?', address.downcase).first
+
       Order.transaction do
         order.update(status: :closed)
-        order.dispute.update(resolved: true)
+        dispute ||= order.build_dispute
+        dispute.resolved = true
+        dispute.winner = winner
+        dispute.save
       end
     end
-
+    order.transactions.create(tx_hash: tx_hash)
     order.broadcast
   end
 end

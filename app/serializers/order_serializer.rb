@@ -1,5 +1,5 @@
 class OrderSerializer < ActiveModel::Serializer
-  attributes :id, :fiat_amount, :status, :tx_hash, :token_amount, :price, :uuid, :cancelled_at,
+  attributes :id, :fiat_amount, :status, :token_amount, :price, :uuid, :cancelled_at,
     :created_at
 
   belongs_to :buyer

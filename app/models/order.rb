@@ -6,6 +6,7 @@ class Order < ApplicationRecord
   belongs_to :cancelled_by, class_name: 'User', optional: true
   has_one :escrow
   has_one :dispute
+  has_many :transactions
 
   scope :from_user, ->(address) do
     joins(list: [:seller]).joins(:buyer)

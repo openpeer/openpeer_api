@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_07_162234) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_09_143947) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -94,7 +94,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_162234) do
     t.bigint "buyer_id", null: false
     t.decimal "fiat_amount", null: false
     t.integer "status", default: 0
-    t.string "tx_hash"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "token_amount"
@@ -136,6 +135,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_162234) do
     t.index "lower((address)::text), chain_id", name: "index_tokens_on_lower_address_chain_id", unique: true
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.string "tx_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_transactions_on_order_id"
+  end
+
   create_table "user_disputes", force: :cascade do |t|
     t.bigint "dispute_id", null: false
     t.bigint "user_id", null: false
@@ -164,6 +171,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_07_162234) do
   add_foreign_key "disputes", "users", column: "winner_id"
   add_foreign_key "escrows", "orders"
   add_foreign_key "orders", "users", column: "cancelled_by_id"
+  add_foreign_key "transactions", "orders"
   add_foreign_key "user_disputes", "disputes"
   add_foreign_key "user_disputes", "users"
 end
