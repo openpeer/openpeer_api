@@ -10,27 +10,27 @@ module Api
         @lists = @lists.sort_by(&:price)
         render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok
       end
-    end
 
-    private
+      private
 
-    def total_amount_condition
-      "total_available_amount >= #{params[:token_amount]}" if params[:token_amount].present?
-    end
+      def total_amount_condition
+        "total_available_amount >= #{params[:token_amount]}" if params[:token_amount].present?
+      end
 
-    def total_fiat_condition
-      return unless params[:fiat_amount].present?
+      def total_fiat_condition
+        return unless params[:fiat_amount].present?
 
-      token = Token.find_by(chain_id: params[:chain_id], address: params[:token_address])
-      amount = params[:fiat_amount].to_f
-      token_price = token.price_in_currency(params[:fiat_currency_code])
-      "total_available_amount >= #{amount} / (CASE WHEN margin_type = #{List.margin_types['fixed']}
-        THEN margin
-        ELSE (#{token_price} + (#{token_price} * margin / 100))
-        END
-      )
-      AND (limit_min >= #{amount} OR limit_min IS NULL)
-      AND (limit_max <= #{amount} OR limit_max IS NULL)".squish
+        token = Token.find_by(chain_id: params[:chain_id], address: params[:token_address])
+        amount = params[:fiat_amount].to_f
+        token_price = token.price_in_currency(params[:fiat_currency_code])
+        "total_available_amount >= #{amount} / (CASE WHEN margin_type = #{List.margin_types['fixed']}
+          THEN margin
+          ELSE (#{token_price} + (#{token_price} * margin / 100))
+          END
+        )
+        AND (limit_min >= #{amount} OR limit_min IS NULL)
+        AND (limit_max <= #{amount} OR limit_max IS NULL)".squish
+      end
     end
   end
 end
