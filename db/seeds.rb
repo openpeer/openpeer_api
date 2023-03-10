@@ -14,7 +14,8 @@ currencies = FiatCurrency.create([
   { name: 'US Dollar', code: 'USD', symbol: '$', country_code: 'US' },
   { name: 'Singapore Dollar', code: 'SGD', symbol: '$', country_code: 'SG' },
   { name: 'Hong Kong Dollar', code: 'HKD', symbol: '$', country_code: 'HK' },
-  { name: 'British Pound', code: 'GBP', symbol: '£', country_code: 'GB' }
+  { name: 'British Pound', code: 'GBP', symbol: '£', country_code: 'GB' },
+  { name: 'Euro', code: 'EUR', symbol: '€', country_code: 'EU' }
 ])
 
 Bank.create([
