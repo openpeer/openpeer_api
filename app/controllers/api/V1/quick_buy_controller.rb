@@ -18,7 +18,7 @@ module Api
       "total_available_amount >= #{params[:token_amount]}" if params[:token_amount].present?
     end
 
-    def total_fiat_condition(params)
+    def total_fiat_condition
       return unless params[:fiat_amount].present?
 
       token = Token.find_by(chain_id: params[:chain_id], address: params[:token_address])
