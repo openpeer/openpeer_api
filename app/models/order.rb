@@ -40,6 +40,23 @@ class Order < ApplicationRecord
       while(Order.where(uuid: uuid).any?)
         self.uuid = Uuid.generate
       end
+      self.trade_id = generate_trade_id
     end
+  end
+
+  private
+
+  def generate_trade_id
+    seller = Eth::Util.bin_to_hex Eth::Util.zpad_hex(list.seller.address, 0)
+    buyer_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(buyer.address, 0)
+    token = Eth::Util.bin_to_hex Eth::Util.zpad_hex(list.token.address, 0)
+    addresses = [uuid, seller, buyer_address, token].join
+    data = "#{addresses}#{Eth::Abi.encode(['uint256'], [raw_token_amount]).unpack("H*")[0]}"
+    bytes = [data[2..-1]].pack("H*")
+    Eth::Util.prefix_hex(Eth::Util.keccak256(bytes).unpack("H*")[0])
+  end
+
+  def raw_token_amount
+    (token_amount * 10 ** list.token.decimals).to_i
   end
 end

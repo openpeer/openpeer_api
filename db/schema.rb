@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_10_120535) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_14_121716) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -101,6 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_10_120535) do
     t.string "uuid"
     t.bigint "cancelled_by_id"
     t.datetime "cancelled_at"
+    t.string "trade_id"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
     t.index ["cancelled_by_id"], name: "index_orders_on_cancelled_by_id"
     t.index ["list_id"], name: "index_orders_on_list_id"
