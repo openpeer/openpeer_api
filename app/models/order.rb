@@ -14,8 +14,12 @@ class Order < ApplicationRecord
   end
 
   def cancel(user)
-    return if escrow.present? || !created?
+    return if escrow.present? || !created? # TODO: Marcos cancel logic
 
+    cancel!(user)
+  end
+
+  def cancel!(user)
     update(status: :cancelled, cancelled_by: user, cancelled_at: Time.now)
     NotificationWorker.perform_async(NotificationWorker::ORDER_CANCELLED, id)
   end

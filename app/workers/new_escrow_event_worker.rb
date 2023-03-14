@@ -39,7 +39,7 @@ class NewEscrowEventWorker
       NotificationWorker.perform_async(NotificationWorker::BUYER_PAID, order.id)
     when BUYER_CANCEL, SELLER_CANCEL
       Order.transaction do
-        order.cancel(user)
+        order.cancel!(user)
         dispute.update(resolved: true, winner: buyer_action ? order.list.seller : order.buyer) if dispute
       end
     when OPEN_DISPUTE
