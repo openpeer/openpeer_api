@@ -9,7 +9,7 @@ module Biconomy
     end
 
     def execute
-      %w(release buyerCancel sellerCancel markAsPaid openDispute resolveDispute).each do |method|
+      %w(release buyerCancel sellerCancel markAsPaid).each do |method|
         RestClient.post(url, payload(method), headers)
       end
     end

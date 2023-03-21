@@ -34,7 +34,7 @@ class EscrowDeployedWorker
       order.create_escrow(tx: log['transactionHash'], address: address)
     end
 
-    EscrowEventsSetupWorker.perform_async(order.escrow.id)
+    EscrowEventsSetupWorker.new.perform(order.escrow.id)
     NotificationWorker.perform_async(NotificationWorker::SELLER_ESCROWED, order.id)
     order.broadcast
 

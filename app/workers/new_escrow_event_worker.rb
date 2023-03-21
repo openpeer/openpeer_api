@@ -22,18 +22,28 @@ class NewEscrowEventWorker
     return unless log && tx
 
     escrow = Escrow.includes(:order).where('lower(address) = ?', log['address'].downcase).first
-    user = User.where('lower(address) = ?', tx['fromAddress'].downcase).first
+    relayed = tx['toAddress'].downcase != escrow.address.downcase
+    return unless escrow
 
-    return unless escrow && user
     order = escrow.order
     tx_hash = log['transactionHash']
 
     return if order.transactions.where(tx_hash: tx_hash).any?
 
+    if relayed
+      input = topic_hashes[log['topic0']]
+      user = find_user_based_by_input(input, order)
+    else
+      user = User.where('lower(address) = ?', tx['fromAddress'].downcase).first
+      input = tx['input']
+    end
+
+    return unless input && user
+
     dispute = order.dispute
     buyer_action = user.id == order.buyer_id
 
-    case tx['input']
+    case input
     when MARK_AS_PAID
       order.update(status: :release)
       NotificationWorker.perform_async(NotificationWorker::BUYER_PAID, order.id)
@@ -53,9 +63,9 @@ class NewEscrowEventWorker
       NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
     end
 
-    if tx['input'].starts_with?(DISPUTE_RESOLVED)
+    if input.starts_with?(DISPUTE_RESOLVED)
       # @TODO: Marcos notification
-      encoded_address = tx['input'].sub(DISPUTE_RESOLVED, '')
+      encoded_address = input.sub(DISPUTE_RESOLVED, '')
       address = Eth::Abi.decode(["address"], "0x#{encoded_address}")[0]
       winner = User.where('lower(address) = ?', address.downcase).first
 
@@ -69,5 +79,46 @@ class NewEscrowEventWorker
     end
     order.transactions.create(tx_hash: tx_hash)
     order.broadcast
+  end
+
+  private
+
+  def abi
+    @abi ||= JSON.parse(File.read(Rails.root.join('config', 'abis', 'OpenPeerEscrow.json')))
+  end
+
+  def events
+    @events ||= abi.filter { |i| i['type'] == 'event' }
+  end
+
+  def topic_hashes
+    @topic_hashes ||= begin
+      mark_as_paid = events.find { |i| i['name'] == 'SellerCancelDisabled' }
+      buyer_cancel = events.find { |i| i['name'] == 'CancelledByBuyer' }
+      open_dispute = events.find { |i| i['name'] == 'DisputeOpened' }
+      release = events.find { |i| i['name'] == 'Released' }
+      seller_cancel = events.find { |i| i['name'] == 'CancelledBySeller' }
+      dispute_resolved = events.find { |i| i['name'] == 'DisputeResolved' }
+
+      hashes = {}
+      hashes[Eth::Abi::Event.compute_topic(mark_as_paid)] = MARK_AS_PAID
+      hashes[Eth::Abi::Event.compute_topic(buyer_cancel)] = BUYER_CANCEL
+      hashes[Eth::Abi::Event.compute_topic(open_dispute)] = OPEN_DISPUTE
+      hashes[Eth::Abi::Event.compute_topic(release)] = RELEASE
+      hashes[Eth::Abi::Event.compute_topic(seller_cancel)] = SELLER_CANCEL
+      hashes[Eth::Abi::Event.compute_topic(dispute_resolved)] = DISPUTE_RESOLVED
+      hashes
+    end
+  end
+
+  def find_user_based_by_input(input, order)
+    return unless input
+
+    case input
+    when MARK_AS_PAID, BUYER_CANCEL
+      order.buyer
+    when SELLER_CANCEL, RELEASE
+      order.list.seller
+    end
   end
 end
