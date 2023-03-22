@@ -14,7 +14,7 @@ class Order < ApplicationRecord
   end
 
   def cancel(user)
-    return if escrow.present? || !created? # TODO: Marcos cancel logic
+    return if escrow.present? || !created?
 
     cancel!(user)
   end

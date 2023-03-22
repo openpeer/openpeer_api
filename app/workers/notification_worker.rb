@@ -9,6 +9,7 @@ class NotificationWorker
   SELLER_RELEASED = 'seller-released'
   ORDER_CANCELLED = 'order-cancelled'
   DISPUTE_OPENED = 'dispute-opened'
+  DISPUTE_RESOLVED = 'dispute-resolved'
 
   def perform(type, order_id)
     order = Order.includes(:list, :buyer, :cancelled_by).find(order_id)
@@ -26,12 +27,13 @@ class NotificationWorker
 
     recipients = [{ id: actor.address, name: actor.name, email: actor.email }]
 
-    if order.dispute?
+    if order.dispute? || type == DISPUTE_RESOLVED
       recipients = [{ id: seller.address, name: seller.name, email: seller.email },
                     { id: buyer.address, name: buyer.name, email: buyer.email }]
     end
 
     cancelled_by = order.cancelled_by
+    winner = order.dispute&.winner
     Knock::Workflows.trigger(
       key: type,
       actor: { id: actor.address, name: actor.name, email: actor.email },
@@ -47,7 +49,8 @@ class NotificationWorker
         fiat: order.list.fiat_currency.code,
         price: order.price.to_s,
         url: "#{ENV['FRONTEND_URL']}/orders/#{order.uuid}",
-        uuid: small_wallet_address(order.uuid, 6)
+        uuid: small_wallet_address(order.uuid, 6),
+        winner: winner ? (winner.name.presence || small_wallet_address(winner.address)) : nil,
       }
     )
   end

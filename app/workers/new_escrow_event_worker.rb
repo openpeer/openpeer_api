@@ -64,7 +64,6 @@ class NewEscrowEventWorker
     end
 
     if input.starts_with?(DISPUTE_RESOLVED)
-      # @TODO: Marcos notification
       encoded_address = input.sub(DISPUTE_RESOLVED, '')
       address = Eth::Abi.decode(["address"], "0x#{encoded_address}")[0]
       winner = User.where('lower(address) = ?', address.downcase).first
@@ -76,7 +75,9 @@ class NewEscrowEventWorker
         dispute.winner = winner
         dispute.save
       end
+      NotificationWorker.perform_async(NotificationWorker::DISPUTE_RESOLVED, order.id)
     end
+
     order.transactions.create(tx_hash: tx_hash)
     order.broadcast
   end
