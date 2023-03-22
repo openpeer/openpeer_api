@@ -31,15 +31,16 @@ class NotificationWorker
                     { id: buyer.address, name: buyer.name, email: buyer.email }]
     end
 
+    cancelled_by = order.cancelled_by
     Knock::Workflows.trigger(
       key: type,
       actor: { id: actor.address, name: actor.name, email: actor.email },
       recipients: recipients,
       data: {
-        username: actor.name || small_wallet_address(actor.address),
-        seller: seller.name || small_wallet_address(seller.address),
-        buyer: buyer.name || small_wallet_address(buyer.address),
-        cancelled_by: order.cancelled_by,
+        username: actor.name.presence || small_wallet_address(actor.address),
+        seller: seller.name.presence || small_wallet_address(seller.address),
+        buyer: buyer.name.presence || small_wallet_address(buyer.address),
+        cancelled_by: cancelled_by ? (cancelled_by.name.presence || small_wallet_address(cancelled_by.address)) : nil,
         token_amount: order.token_amount.to_s,
         fiat_amount: order.fiat_amount.to_s,
         token: order.list.token.symbol,

@@ -4,29 +4,12 @@ class EscrowEventsSetupWorker
 
   def perform(escrow_id)
     @escrow = Escrow.find(escrow_id)
+    id = @escrow.id
+    address = @escrow.address
+    chain_id = @escrow.order.list.chain_id
 
-    RestClient.post(url, payload, headers)
-  end
-
-  private
-
-  def url
-    "https://api.moralis-streams.com/streams/evm/#{stream_id}/address"
-  end
-
-  def stream_id
-    ENV['ESCROW_EVENTS_STREAM_ID']
-  end
-
-  def payload
-    {'address' => escrow.address }.to_json
-  end
-
-  def headers
-    {
-      'accept' => 'application/json',
-      'X-API-Key' => ENV['MORALIS_API_KEY'],
-      'content-type' => 'application/json'
-    }
+    Moralis::SetupEscrow.new(address).execute
+    Biconomy::SetupContract.new(id, address, chain_id).execute
+    Biconomy::SetupMethods.new(id, address, chain_id).execute
   end
 end
