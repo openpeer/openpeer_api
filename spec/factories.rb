@@ -1,4 +1,8 @@
 FactoryBot.define do
+  factory :admin_user do
+    
+  end
+
   factory :transaction do
     order { nil }
     tx_hash { "0xb7e6c378f8f1a26650d1a3920c926268fb43b83fbdde44cba1fbc92b52d83442" }

@@ -66,3 +66,12 @@ gem 'jwt'
 gem 'bcrypt', '~> 3.1.7'
 gem 'aws-sdk-s3'
 gem 'knockapi'
+gem "activeadmin", "~> 2.13"
+
+gem "devise", "~> 4.9"
+
+gem "sprockets-rails", "~> 3.4"
+
+gem "active_admin_theme", "~> 1.1"
+
+gem "sass-rails", "~> 6.0"

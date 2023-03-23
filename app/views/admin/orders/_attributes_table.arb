@@ -1,0 +1,33 @@
+attributes_table_for order do
+  row ("UUID") { |order| link_to(order.uuid, admin_order_path(order)) }
+  row ("Seller") do |order|
+    link_to(order.list.seller.address, admin_user_path(order.list.seller), target: "_blank")
+  end
+  row ("Buyer") do |order|
+    link_to(order.buyer.address, admin_user_path(order.buyer), target: "_blank")
+  end
+  row ('Token') do |order|
+    link_to("#{order.token_amount} #{order.list.token.symbol}", admin_token_path(order.list.token))
+  end
+  row ('Fiat') do |order|
+    link_to("#{order.list.fiat_currency.symbol} #{order.fiat_amount}", admin_fiat_currency_path(order.list.fiat_currency))
+  end
+  row ("Price") do |order|
+    "#{order.list.fiat_currency.symbol} #{order.price} per #{order.list.token.symbol}"
+  end
+  row ("Payment Method") do |order|
+    attributes_table_for order.list.payment_method do
+      row :bank
+      order.list.payment_method.values.each do |key, value|
+        row (key) { value }
+      end
+    end
+  end
+  row ("Escrow") do |order|
+    attributes_table_for order.escrow do
+      row ("address") {|escrow| link_to(escrow.address, escrow.link, target: '_blank')  }
+      row ("tx") {|escrow| link_to(escrow.tx, escrow.tx_link, target: '_blank')  }
+    end
+  end
+  row ("Status") { |order| status_tag order.status }
+end
