@@ -14,4 +14,8 @@ class Token < ApplicationRecord
       JSON.parse(response.body)[self.coingecko_id][code]
     end
   end
+
+  def icon
+    "https://cryptologos.cc/logos/thumbs/#{coinmarketcap_id || coingecko_id}.png"
+  end
 end

@@ -1,5 +1,5 @@
 module Api
-  class WebhooksController < ApplicationController
+  class WebhooksController < ActionController::API
     before_action :verify_signature
 
     def index

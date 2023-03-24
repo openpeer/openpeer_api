@@ -39,3 +39,4 @@ Token.create([{ chain_id: 80001, address: "0x00000000000000000000000000000000000
               { address: "0x0000000000000000000000000000000000000000", decimals: 18, symbol: "MATIC",
                  name: "MATIC", chain_id: 137, coingecko_id: "matic-network" }
               ])
+AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
