@@ -75,3 +75,5 @@ gem "sprockets-rails", "~> 3.4"
 gem "active_admin_theme", "~> 1.1"
 
 gem "sass-rails", "~> 6.0"
+
+gem "cancancan", "~> 3.5"

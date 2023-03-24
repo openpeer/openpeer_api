@@ -107,6 +107,7 @@ GEM
     bullet (7.0.4)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    cancancan (3.5.0)
     case_transform (0.2)
       activesupport
     concurrent-ruby (1.1.10)
@@ -364,6 +365,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   bullet
+  cancancan (~> 3.5)
   debug
   devise (~> 4.9)
   dotenv-rails
