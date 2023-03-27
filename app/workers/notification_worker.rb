@@ -15,6 +15,7 @@ class NotificationWorker
     order = Order.includes(:list, :buyer, :cancelled_by).find(order_id)
     seller = order.list.seller
     buyer = order.buyer
+    winner = order.dispute&.winner
 
     actor = case type
             when NEW_ORDER, BUYER_PAID
@@ -23,9 +24,12 @@ class NotificationWorker
               buyer
             when ORDER_CANCELLED
               order.cancelled_by.id == seller.id ? buyer : seller
+            when DISPUTE_RESOLVED
+              winner
             end
 
-    recipients = [{ id: actor.address, name: actor.name, email: actor.email }]
+    actor_profile = { id: actor&.address, name: actor&.name, email: actor&.email }
+    recipients = [actor_profile]
 
     if order.dispute? || type == DISPUTE_RESOLVED
       recipients = [{ id: seller.address, name: seller.name, email: seller.email },
@@ -33,13 +37,12 @@ class NotificationWorker
     end
 
     cancelled_by = order.cancelled_by
-    winner = order.dispute&.winner
     Knock::Workflows.trigger(
       key: type,
-      actor: { id: actor.address, name: actor.name, email: actor.email },
+      actor: actor_profile,
       recipients: recipients,
       data: {
-        username: actor.name.presence || small_wallet_address(actor.address),
+        username: actor&.name.presence || small_wallet_address(actor&.address || ''),
         seller: seller.name.presence || small_wallet_address(seller.address),
         buyer: buyer.name.presence || small_wallet_address(buyer.address),
         cancelled_by: cancelled_by ? (cancelled_by.name.presence || small_wallet_address(cancelled_by.address)) : nil,

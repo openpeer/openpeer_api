@@ -7,6 +7,23 @@ ActiveAdmin.register Dispute do
 
   includes(:order, :winner, user_disputes: [:user, :dispute_files])
 
+  member_action :resolve, method: :get, if: proc{ current_admin_user.admin? } do
+    @dispute = resource
+    if @dispute.resolved?
+      flash[:error] = 'Error: This dispute is resolved.'
+      return admin_dispute_path(resource)
+    end
+    @list = resource.order.list
+    @escrow = resource.order.escrow.address
+    buyer = resource.order.buyer
+    seller = resource.order.list.seller
+    @options = [["Buyer: #{buyer.address}", buyer.address], ["Seller: #{seller.address}", seller.address]]
+  end
+
+  action_item :view, only: :show,  if: proc{ current_admin_user.admin? } do
+    link_to 'Resolve Dispute', resolve_admin_dispute_path(dispute) unless dispute.resolved?
+  end
+
   index do
     column :id
     column ("Order") { |dispute| link_to(dispute.order.uuid, admin_order_path(dispute.order)) }

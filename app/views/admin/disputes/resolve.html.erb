@@ -1,0 +1,7 @@
+<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+
+<h1>Chain ID: <%= @list.chain_id %></h1>
+
+<%= semantic_form_for @dispute, url: resolve_admin_dispute_path(@dispute), method: :put do |f| %>
+  <%= f.input :winner_id, label: "Select the winner", as: :select, collection: @options, input_html: { id: "winner_id", onchange: "resolve_dispute('#{@escrow}')"} %>
+<% end %>
