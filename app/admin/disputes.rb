@@ -16,7 +16,7 @@ ActiveAdmin.register Dispute do
     @list = resource.order.list
     @escrow = resource.order.escrow.address
     buyer = resource.order.buyer
-    seller = resource.order.list.seller
+    seller = resource.order.seller
     @options = [["Buyer: #{buyer.address}", buyer.address], ["Seller: #{seller.address}", seller.address]]
   end
 

@@ -2,15 +2,17 @@ class Order < ApplicationRecord
   enum status: [:created, :escrowed, :release, :cancelled, :dispute, :closed]
 
   belongs_to :list
+  belongs_to :seller, class_name: 'User'
   belongs_to :buyer, class_name: 'User'
   belongs_to :cancelled_by, class_name: 'User', optional: true
+  belongs_to :payment_method
   has_one :escrow
   has_one :dispute
   has_many :transactions
 
   scope :from_user, ->(address) do
-    joins(list: [:seller]).joins(:buyer)
-      .where('lower(users.address) = ? OR lower(buyers_orders.address) = ?', address.downcase, address.downcase)
+    joins(:buyer, :seller)
+      .where('lower(users.address) = ? OR lower(sellers_orders.address) = ?', address.downcase, address.downcase)
   end
 
   def cancel(user)
@@ -30,7 +32,6 @@ class Order < ApplicationRecord
         ActiveModelSerializers::SerializableResource.new(self, scope: buyer, include: '**').to_json)
     end
 
-    seller = list.seller
     if seller
       ActionCable.server.broadcast("OrdersChannel_#{uuid}_#{seller.address}",
         ActiveModelSerializers::SerializableResource.new(self, scope: seller, include: '**').to_json)
@@ -51,10 +52,10 @@ class Order < ApplicationRecord
   private
 
   def generate_trade_id
-    seller = Eth::Util.bin_to_hex Eth::Util.zpad_hex(list.seller.address, 0)
+    seller_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(seller.address, 0)
     buyer_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(buyer.address, 0)
     token = Eth::Util.bin_to_hex Eth::Util.zpad_hex(list.token.address, 0)
-    addresses = [uuid, seller, buyer_address, token].join
+    addresses = [uuid, seller_address, buyer_address, token].join
     data = "#{addresses}#{Eth::Abi.encode(['uint256'], [raw_token_amount]).unpack("H*")[0]}"
     bytes = [data[2..-1]].pack("H*")
     Eth::Util.prefix_hex(Eth::Util.keccak256(bytes).unpack("H*")[0])

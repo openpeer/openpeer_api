@@ -1,7 +1,7 @@
 attributes_table_for order do
   row ("UUID") { |order| link_to(order.uuid, admin_order_path(order)) }
   row ("Seller") do |order|
-    link_to(order.list.seller.address, admin_user_path(order.list.seller), target: "_blank")
+    link_to(order.seller.address, admin_user_path(order.seller), target: "_blank")
   end
   row ("Buyer") do |order|
     link_to(order.buyer.address, admin_user_path(order.buyer), target: "_blank")
@@ -16,9 +16,9 @@ attributes_table_for order do
     "#{order.list.fiat_currency.symbol} #{order.price} per #{order.list.token.symbol}"
   end
   row ("Payment Method") do |order|
-    attributes_table_for order.list.payment_method do
+    attributes_table_for order.payment_method do
       row :bank
-      order.list.payment_method.values.each do |key, value|
+      order.payment_method.values.each do |key, value|
         row (key) { value }
       end
     end
