@@ -7,7 +7,8 @@ module Api
         chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
         seller = params[:seller]
 
-        @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, bank: [:fiat_currency]]])
+        @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, bank: [:fiat_currency]],
+                                bank: [:fiat_currency]])
                      .where(status_condition).where(chain_id_condition)
         @lists = @lists.joins(:seller)
                        .where('lower(users.address) = ?', seller.downcase) if seller
@@ -44,7 +45,7 @@ module Api
       def list_params
         params.require(:list)
               .permit(:margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
-                      :token_id, :fiat_currency_id)
+                      :token_id, :fiat_currency_id, :type, :bank_id)
       end
 
       def payment_method_params
@@ -55,6 +56,8 @@ module Api
       private
 
       def create_or_update_payment_method
+        return if list_params[:type] == 'BuyList'
+
         if payment_method_params[:id]
           @payment_method = PaymentMethod.find(payment_method_params[:id])
           if (@payment_method.user == @user)

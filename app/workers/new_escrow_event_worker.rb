@@ -50,7 +50,7 @@ class NewEscrowEventWorker
     when BUYER_CANCEL, SELLER_CANCEL
       Order.transaction do
         order.cancel!(user)
-        dispute.update(resolved: true, winner: buyer_action ? order.list.seller : order.buyer) if dispute
+        dispute.update(resolved: true, winner: buyer_action ? order.seller : order.buyer) if dispute
       end
     when OPEN_DISPUTE
       order.update(status: :dispute)
@@ -119,7 +119,7 @@ class NewEscrowEventWorker
     when MARK_AS_PAID, BUYER_CANCEL
       order.buyer
     when SELLER_CANCEL, RELEASE
-      order.list.seller
+      order.seller
     end
   end
 end

@@ -13,7 +13,7 @@ class NotificationWorker
 
   def perform(type, order_id)
     order = Order.includes(:list, :buyer, :cancelled_by).find(order_id)
-    seller = order.list.seller
+    seller = order.seller
     buyer = order.buyer
     winner = order.dispute&.winner
 
