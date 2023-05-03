@@ -1,19 +1,5 @@
 # OpenPeer API
 
-<<<<<<< HEAD
-Ruby on Rails API repository for the [OpenPeer app](https://app.openpeer.xyz).
-[Frontend repository](https://github.com/Minke-Labs/openpeer/tree/main/app)
-
-How to run this app?
-
-```bash
-bundle install
-rake db:create db:migrate db:seed
-rails s -p 5000
-```
-
-How to update the contracts webhooks URL?
-=======
 This repository contains the Ruby on Rails API for the OpenPeer app, a self-custody platform for peer-to-peer trading of crypto assets.
 
 The frontend repository for the app can be found [here](https://github.com/Minke-Labs/openpeer/tree/main/app).
@@ -29,7 +15,6 @@ To run the app locally, follow these steps:
 ## Updating Webhooks URL
 
 To update the contracts webhooks URL, run the following command:
->>>>>>> a02eb06 (Improve README)
 
 ```bash
 rake "deployer_contract:update_webhook[https://eed6-2001-8a0-72b6-1d00-ecac-aac4-8d2b-b68d.eu.ngrok.io]"
