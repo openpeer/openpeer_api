@@ -1,5 +1,16 @@
 # README
 
+Ruby on Rails API repository for the [OpenPeer app](https://app.openpeer.xyz).
+[Frontend repository](https://github.com/Minke-Labs/openpeer/tree/main/app)
+
+How to run this app?
+
+```bash
+bundle install
+rake db:create db:migrate db:seed
+rails s -p 5000
+```
+
 How to update the contracts webhooks URL?
 
 ```bash
