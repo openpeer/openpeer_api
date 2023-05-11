@@ -10,23 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_17_101848) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_11_112912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "active_admin_comments", force: :cascade do |t|
-    t.string "namespace"
-    t.text "body"
-    t.string "resource_type"
-    t.bigint "resource_id"
-    t.string "author_type"
-    t.bigint "author_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
-    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
-    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
-  end
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -91,6 +77,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_17_101848) do
     t.datetime "updated_at", null: false
     t.string "symbol"
     t.string "country_code"
+    t.integer "position"
   end
 
   create_table "lists", force: :cascade do |t|
@@ -170,6 +157,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_17_101848) do
     t.datetime "updated_at", null: false
     t.string "coinmarketcap_id"
     t.boolean "gasless", default: false
+    t.integer "position"
     t.index "lower((address)::text), chain_id", name: "index_tokens_on_lower_address_chain_id", unique: true
   end
 
