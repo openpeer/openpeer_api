@@ -1,6 +1,6 @@
 module Api
   module V1
-    class TokensController < BaseController
+    class TokensController < ActionController::API
       def index
         chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
         @tokens = Rails.cache.fetch(cache_key, expires_in: nil) do

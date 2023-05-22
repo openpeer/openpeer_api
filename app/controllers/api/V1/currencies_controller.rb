@@ -1,6 +1,6 @@
 module Api
   module V1
-    class CurrenciesController < BaseController
+    class CurrenciesController < ActionController::API
       def index
         @currencies = Rails.cache.fetch(cache_key, expires_in: nil) do
           FiatCurrency.order(:position)
