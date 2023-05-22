@@ -3,7 +3,7 @@ module Api
     class CurrenciesController < BaseController
       def index
         @currencies = Rails.cache.fetch(cache_key, expires_in: nil) do
-          FiatCurrency.order(:position)
+          FiatCurrency.order(:position, :code)
         end
         render json: @currencies, each_serializer: FiatCurrencySerializer, status: :ok
       end
