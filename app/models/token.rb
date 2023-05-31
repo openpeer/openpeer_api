@@ -14,11 +14,21 @@ class Token < ApplicationRecord
         "x-cg-pro-api-key" => ENV['COINGECKO_API_KEY']
       }
       response = RestClient.get(url, headers = headers)
-      JSON.parse(response.body)[self.coingecko_id][code]
+      price = JSON.parse(response.body)[self.coingecko_id][code]
+      price ||= coinbase_price_in_currency(code)
+      price
     end
   end
 
   def icon
     "https://cryptologos.cc/logos/thumbs/#{coinmarketcap_id || coingecko_id}.png"
+  end
+
+  private
+
+  def coinbase_price_in_currency(code)
+    url = "https://api.coinbase.com/v2/prices/#{self.symbol}-#{code}/spot"
+    response = RestClient.get(url)
+    JSON.parse(response.body).dig('data').fetch('amount', '0').to_f
   end
 end
