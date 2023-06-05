@@ -24,7 +24,7 @@ module Biconomy
       {
         'apiType' => 'native',
         'methodType' => 'write',
-        'name' => "#{method} Escrow #{id}",
+        'name' => "#{method} Seller Contract #{id}",
         'contractAddress' => address,
         'method' => method
       }.to_json

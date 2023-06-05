@@ -21,15 +21,7 @@ class NewEscrowEventWorker
 
     return unless log && tx
 
-    escrow = Escrow.includes(:order).where('lower(address) = ?', log['address'].downcase).first
-    relayed = tx['toAddress'].downcase != escrow.address.downcase
-    return unless escrow
-
-    order = escrow.order
-    tx_hash = log['transactionHash']
-
-    return if order.transactions.where(tx_hash: tx_hash).any?
-
+    relayed = tx['toAddress'].downcase != contract.address.downcase
     if relayed
       input = topic_hashes[log['topic0']]
       user = find_user_based_by_input(input, order)
@@ -39,6 +31,22 @@ class NewEscrowEventWorker
     end
 
     return unless input && user
+
+    contract = user.contracts.where(chain_id: chain_id)
+                             .where('lower(address) = ?', log['address'].downcase).first
+    return unless contract
+
+    data = log.fetch('data')
+    event_inputs = ['bytes32', 'bool', 'uint32', 'uint256', 'bool']
+    trade_id, = Eth::Abi.decode(event_inputs, data)
+    order_id = Uuid.convert_string_bytes_32(trade_id)
+
+    order = contract.order
+    tx_hash = log['transactionHash']
+
+    return if order.transactions.where(tx_hash: tx_hash).any?
+
+
 
     dispute = order.dispute
     buyer_action = user.id == order.buyer_id

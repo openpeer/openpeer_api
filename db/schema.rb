@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_11_112912) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_02_181458) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "author_type"
+    t.bigint "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
+  end
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -41,6 +55,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_11_112912) do
     t.bigint "fiat_currency_id"
     t.json "account_info_schema"
     t.index ["fiat_currency_id"], name: "index_banks_on_fiat_currency_id"
+  end
+
+  create_table "contracts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "chain_id"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_contracts_on_user_id"
   end
 
   create_table "dispute_files", force: :cascade do |t|
@@ -192,6 +215,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_11_112912) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "contracts", "users"
   add_foreign_key "dispute_files", "user_disputes"
   add_foreign_key "disputes", "orders"
   add_foreign_key "disputes", "users", column: "winner_id"

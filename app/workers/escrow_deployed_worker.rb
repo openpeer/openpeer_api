@@ -13,31 +13,14 @@ class EscrowDeployedWorker
     return unless log
 
     data = log.fetch('data')
-    event_inputs = ['bytes32', 'bool', 'address']
-    trade_id, exists, address = Eth::Abi.decode(event_inputs, data)
+    event_inputs = ['address', 'address']
+    seller, address = Eth::Abi.decode(event_inputs, data)
 
-    tx = json.fetch('txs', [])[0]
-    return unless tx
+    return unless seller && address
 
-    trade_id = Uuid.convert_string_bytes_32(trade_id) rescue nil
-    return unless trade_id
+    seller = User.find_or_create_by_address(seller)
+    contract = seller.contracts.create(address: address, chain_id: chain_id)
 
-    order = Order.includes(:list)
-                 .find_by(trade_id: trade_id, status: :created,
-                         lists: { chain_id: chain_id })
-    return unless order
-
-    return if order.escrow.present?
-
-    Order.transaction do
-      order.update(status: :escrowed)
-      order.create_escrow(tx: log['transactionHash'], address: address)
-    end
-
-    EscrowEventsSetupWorker.new.perform(order.escrow.id)
-    NotificationWorker.perform_async(NotificationWorker::SELLER_ESCROWED, order.id)
-    order.broadcast
-
-    return order.escrow
+    EscrowEventsSetupWorker.new.perform(contract.id)
   end
 end
