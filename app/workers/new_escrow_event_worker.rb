@@ -1,12 +1,14 @@
 class NewEscrowEventWorker
   include Sidekiq::Worker
 
-  MARK_AS_PAID     = '0xf86890b0'
-  BUYER_CANCEL     = '0xe9d13b57'
-  OPEN_DISPUTE     = '0x4fd6137c'
-  RELEASE          = '0x86d1a69f'
-  SELLER_CANCEL    = '0xd55a17c0'
-  DISPUTE_RESOLVED = '0xd8461182'
+  MARK_AS_PAID      = '0xf86890b0'
+  BUYER_CANCEL      = '0xe9d13b57'
+  OPEN_DISPUTE      = '0x4fd6137c'
+  RELEASE           = '0x86d1a69f'
+  SELLER_CANCEL     = '0xd55a17c0'
+  DISPUTE_RESOLVED  = '0xd8461182'
+  CREATE_ERC20      = '0x9851a25e'
+  CREATE_NATIVE     = '0x9f5e5628'
 
   def perform(json)
     json = JSON.parse(json)
@@ -21,37 +23,41 @@ class NewEscrowEventWorker
 
     return unless log && tx
 
+    contract = Contract.where(chain_id: chain_id)
+                       .where('lower(address) = ?', log['address'].downcase).first
+    return unless contract
+
+    trade_id = log.fetch('topic1')
+    return unless trade_id
+
+    order = Order.includes(:list)
+                 .find_by(trade_id: trade_id, lists: { chain_id: chain_id })
+    return unless order
+
     relayed = tx['toAddress'].downcase != contract.address.downcase
+    input = topic_hashes[log['topic0']]
     if relayed
-      input = topic_hashes[log['topic0']]
       user = find_user_based_by_input(input, order)
     else
       user = User.where('lower(address) = ?', tx['fromAddress'].downcase).first
-      input = tx['input']
     end
 
     return unless input && user
 
-    contract = user.contracts.where(chain_id: chain_id)
-                             .where('lower(address) = ?', log['address'].downcase).first
-    return unless contract
-
-    data = log.fetch('data')
-    event_inputs = ['bytes32', 'bool', 'uint32', 'uint256', 'bool']
-    trade_id, = Eth::Abi.decode(event_inputs, data)
-    order_id = Uuid.convert_string_bytes_32(trade_id)
-
-    order = contract.order
     tx_hash = log['transactionHash']
 
     return if order.transactions.where(tx_hash: tx_hash).any?
-
-
-
     dispute = order.dispute
     buyer_action = user.id == order.buyer_id
 
     case input
+    when CREATE_ERC20, CREATE_NATIVE
+      Order.transaction do
+        order.update(status: :escrowed)
+        order.create_escrow(tx: log['transactionHash'], address: contract.address)
+      end
+
+      NotificationWorker.perform_async(NotificationWorker::SELLER_ESCROWED, order.id)
     when MARK_AS_PAID
       order.update(status: :release)
       NotificationWorker.perform_async(NotificationWorker::BUYER_PAID, order.id)
@@ -63,17 +69,8 @@ class NewEscrowEventWorker
     when OPEN_DISPUTE
       order.update(status: :dispute)
       NotificationWorker.perform_async(NotificationWorker::DISPUTE_OPENED, order.id)
-    when RELEASE
-      Order.transaction do
-        order.update(status: :closed)
-        dispute.update(resolved: true, winner: order.buyer) if dispute
-      end
-      NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
-    end
-
-    if input.starts_with?(DISPUTE_RESOLVED)
-      encoded_address = input.sub(DISPUTE_RESOLVED, '')
-      address = Eth::Abi.decode(["address"], "0x#{encoded_address}")[0]
+    when DISPUTE_RESOLVED
+      address = Eth::Abi.decode(["address"], log.fetch('topic2'))[0]
       winner = User.where('lower(address) = ?', address.downcase).first
 
       Order.transaction do
@@ -84,6 +81,12 @@ class NewEscrowEventWorker
         dispute.save
       end
       NotificationWorker.perform_async(NotificationWorker::DISPUTE_RESOLVED, order.id)
+    when RELEASE
+      Order.transaction do
+        order.update(status: :closed)
+        dispute.update(resolved: true, winner: order.buyer) if dispute
+      end
+      NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
     end
 
     order.transactions.create(tx_hash: tx_hash)
@@ -108,6 +111,7 @@ class NewEscrowEventWorker
       release = events.find { |i| i['name'] == 'Released' }
       seller_cancel = events.find { |i| i['name'] == 'CancelledBySeller' }
       dispute_resolved = events.find { |i| i['name'] == 'DisputeResolved' }
+      escrow_created = events.find { |i| i['name'] == 'EscrowCreated' }
 
       hashes = {}
       hashes[Eth::Abi::Event.compute_topic(mark_as_paid)] = MARK_AS_PAID
@@ -116,6 +120,7 @@ class NewEscrowEventWorker
       hashes[Eth::Abi::Event.compute_topic(release)] = RELEASE
       hashes[Eth::Abi::Event.compute_topic(seller_cancel)] = SELLER_CANCEL
       hashes[Eth::Abi::Event.compute_topic(dispute_resolved)] = DISPUTE_RESOLVED
+      hashes[Eth::Abi::Event.compute_topic(escrow_created)] = CREATE_ERC20
       hashes
     end
   end
@@ -126,7 +131,7 @@ class NewEscrowEventWorker
     case input
     when MARK_AS_PAID, BUYER_CANCEL
       order.buyer
-    when SELLER_CANCEL, RELEASE
+    when SELLER_CANCEL, RELEASE, CREATE_ERC20, CREATE_NATIVE
       order.seller
     end
   end
