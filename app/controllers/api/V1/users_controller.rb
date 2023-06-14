@@ -9,7 +9,7 @@ module Api
         end
 
         if @user
-          render json: @user, serializer: UserSerializer, status: :ok
+          render json: @user, serializer: UserSerializer, status: :ok, root: 'data'
         else
           render json: { message: 'User not found', errors: 'not_found' }, status: :ok
         end

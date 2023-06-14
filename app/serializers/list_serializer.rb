@@ -10,6 +10,7 @@ class ListSerializer < ActiveModel::Serializer
 
   def price
     return 0 if @instance_options.fetch(:serializer_context_class, nil) == OrderSerializer
+
     object.price
   end
 end

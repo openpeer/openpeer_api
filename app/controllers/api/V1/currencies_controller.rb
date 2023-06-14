@@ -5,7 +5,7 @@ module Api
         @currencies = Rails.cache.fetch(cache_key, expires_in: nil) do
           FiatCurrency.order(:position, :code)
         end
-        render json: @currencies, each_serializer: FiatCurrencySerializer, status: :ok
+        render json: @currencies, each_serializer: FiatCurrencySerializer, status: :ok, root: 'data'
       end
 
       private

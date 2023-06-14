@@ -374,6 +374,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   jwt
+  kaminari
   knockapi
   pg (~> 1.1)
   puma (~> 5.0)

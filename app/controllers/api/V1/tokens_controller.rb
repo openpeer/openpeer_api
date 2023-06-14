@@ -6,7 +6,7 @@ module Api
         @tokens = Rails.cache.fetch(cache_key, expires_in: nil) do
           Token.where(chain_id_condition).order(:position, :symbol)
         end
-        render json: @tokens, each_serializer: TokenSerializer, status: :ok
+        render json: @tokens, each_serializer: TokenSerializer, status: :ok, root: 'data'
       end
 
       private

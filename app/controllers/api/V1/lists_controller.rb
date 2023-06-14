@@ -5,14 +5,19 @@ module Api
         status = List.statuses[params[:status]]
         status_condition = { status: status } if status
         chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
+        type_condition = { type: params[:type] } if params[:type]
         seller = params[:seller]
 
         @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, bank: [:fiat_currency]],
                                 bank: [:fiat_currency]])
-                     .where(status_condition).where(chain_id_condition)
+                     .where(status_condition).where(chain_id_condition).where(type_condition)
+                     .page(params[:page]).per(params[:per_page])
+                     .order(created_at: :desc)
+
         @lists = @lists.joins(:seller)
                        .where('lower(users.address) = ?', seller.downcase) if seller
-        render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok
+        render json: @lists, each_serializer: ListSerializer, include: "**", meta: pagination_dict(@lists),
+               status: :ok, root: 'data'
       end
 
       def create
@@ -26,7 +31,7 @@ module Api
             List.transaction do
               @list.payment_method = create_or_update_payment_method
               if @list.save
-                render json: @list, status: :ok
+                render json: @list, status: :ok, root: 'data'
               else
                 render json: { message: 'List not created', errors: @list.errors }, status: :ok
               end
@@ -37,7 +42,7 @@ module Api
 
       def show
         @list = List.find(params[:id])
-        render json: @list, serializer: ListSerializer, include: "**", status: :ok
+        render json: @list, serializer: ListSerializer, include: "**", status: :ok, root: 'data'
       end
 
       protected
@@ -69,6 +74,14 @@ module Api
           @payment_method.save
         end
         @payment_method
+      end
+
+      def pagination_dict(collection)
+        {
+          current_page: collection.current_page,
+          total_pages: collection.total_pages,
+          total_count: collection.total_count
+        }
       end
     end
   end

@@ -8,7 +8,7 @@ module Api
                             type: params[:type], fiat_currency: { code: params[:fiat_currency_code] })
 
         @lists = @lists.sort_by(&:price)
-        render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok
+        render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok, root: 'data'
       end
 
       private

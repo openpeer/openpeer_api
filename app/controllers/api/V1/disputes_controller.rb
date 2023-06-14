@@ -17,7 +17,7 @@ module Api
 
           if user_dispute.save
             order.broadcast
-            render json: order, serializer: OrderSerializer, include: '**', status: :ok
+            render json: order, serializer: OrderSerializer, include: '**', status: :ok, root: 'data'
           else
             render json: { success: false, errors: dispute.errors.full_messages }, status: :unprocessable_entity
           end

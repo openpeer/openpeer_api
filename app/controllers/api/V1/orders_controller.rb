@@ -4,7 +4,7 @@ module Api
       def index
         @orders = Order.joins(:list).from_user(current_user.address)
                        .where(list: { chain_id: params[:chain_id] })
-        render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok
+        render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok, root: 'data'
       end
 
       def create
@@ -25,7 +25,7 @@ module Api
               @order.payment_method = create_or_update_payment_method if @order.list.buy_list?
               if @order.save
                 NotificationWorker.perform_async(NotificationWorker::NEW_ORDER, @order.id)
-                render json: @order, serializer: OrderSerializer, status: :ok
+                render json: @order, serializer: OrderSerializer, status: :ok, root: 'data'
               else
                 render json: { message: 'Order not created', errors: @order.errors }, status: :ok
               end
@@ -36,7 +36,7 @@ module Api
 
       def show
         @order = Order.from_user(current_user.address).find_by(uuid: params[:id])
-        render json: @order, serializer: OrderSerializer, include: "**", status: :ok
+        render json: @order, serializer: OrderSerializer, include: "**", status: :ok, root: 'data'
       end
 
       def cancel
@@ -45,7 +45,7 @@ module Api
 
         @order.broadcast
 
-        render json: @order, serializer: OrderSerializer, include: "**", status: :ok
+        render json: @order, serializer: OrderSerializer, include: "**", status: :ok, root: 'data'
       end
 
       protected
