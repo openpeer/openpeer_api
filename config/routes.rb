@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  mount ActionCable.server => "/cable"
+  mount ActionCable.server => '/cable'
   namespace 'api' do
     namespace 'v1' do
       resources :lists, only: [:index, :create, :show]
@@ -17,10 +17,11 @@ Rails.application.routes.draw do
       resources :users, only: [:show]
       resources :user_profiles, only: [:show, :update]
       resources :quick_buy, only: [:index]
+      get '/airdrop/:address/:round', to: 'airdrops#index'
     end
 
-    get "/webhooks", to: "webhooks#index"
-    post "/webhooks", to: "webhooks#create"
-    post "/webhooks/escrows", to: "webhooks#escrows"
+    get '/webhooks', to: 'webhooks#index'
+    post '/webhooks', to: 'webhooks#create'
+    post '/webhooks/escrows', to: 'webhooks#escrows'
   end
 end
