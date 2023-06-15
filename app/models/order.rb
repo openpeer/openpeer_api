@@ -29,12 +29,12 @@ class Order < ApplicationRecord
   def broadcast
     if buyer
       ActionCable.server.broadcast("OrdersChannel_#{uuid}_#{buyer.address}",
-        ActiveModelSerializers::SerializableResource.new(self, scope: buyer, include: '**').to_json)
+        ActiveModelSerializers::SerializableResource.new(self, scope: buyer, include: '**', root: 'data').to_json)
     end
 
     if seller
       ActionCable.server.broadcast("OrdersChannel_#{uuid}_#{seller.address}",
-        ActiveModelSerializers::SerializableResource.new(self, scope: seller, include: '**').to_json)
+        ActiveModelSerializers::SerializableResource.new(self, scope: seller, include: '**', root: 'data').to_json)
     end
   end
 
