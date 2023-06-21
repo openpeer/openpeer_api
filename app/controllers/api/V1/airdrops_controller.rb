@@ -5,8 +5,7 @@ module Api
         @user = User.find_or_create_by_address(airdrop_params[:address]) rescue nil
         return render json: { message: 'Invalid address' }, status: :not_found unless @user
 
-        # round = [1, airdrop_params[:round].to_i].max @TODO: uncomment this line when we have more than 1 round
-        round = airdrop_params[:round].to_i
+        round = [1, airdrop_params[:round].to_i].max
 
         @user_volume = user_volume_query(@user, round)
         @total_volume = total_volume_query(round)

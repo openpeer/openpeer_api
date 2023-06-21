@@ -2,15 +2,12 @@ module Api
   module V1
     class ListsController < BaseController
       def index
-        status = List.statuses[params[:status]]
-        status_condition = { status: status } if status
-        chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
-        type_condition = { type: params[:type] } if params[:type]
-        seller = params[:seller]
-
-        @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, bank: [:fiat_currency]],
-                                bank: [:fiat_currency]])
-                     .where(status_condition).where(chain_id_condition).where(type_condition)
+        @lists = List.joins(:seller, :token, :fiat_currency)
+                     .left_joins(payment_method: [:user, bank: [:fiat_currency]],
+                                bank: [:fiat_currency])
+                     .where(status_condition).where(chain_id_condition).where(type_condition).where(token_condition)
+                     .where(currency_condition).where(payment_method_condition).where(amount_condition)
+                     .where(fiat_amount_condition)
                      .page(params[:page]).per(params[:per_page])
                      .order(created_at: :desc)
 
@@ -82,6 +79,48 @@ module Api
           total_pages: collection.total_pages,
           total_count: collection.total_count
         }
+      end
+
+      def status_condition
+        status = List.statuses[params[:status]]
+        { status: status } if status
+      end
+
+      def chain_id_condition
+        { chain_id: params[:chain_id] } if params[:chain_id]
+      end
+
+      def type_condition
+        { type: params[:type] } if params[:type]
+      end
+
+      def amount_condition
+        ['lists.total_available_amount >= ?', params[:amount].to_f] if params[:amount].to_f > 0
+      end
+
+      def currency_condition
+        { fiat_currency_id: params[:currency] } if params[:currency]
+      end
+
+      def token_condition
+        { token_id: params[:token] } if params[:token]
+      end
+
+      def payment_method_condition
+        if params[:payment_method]
+          ['lists.bank_id = ? OR payment_methods.bank_id = ?', params[:payment_method], params[:payment_method]]
+        end
+      end
+
+      def fiat_amount_condition
+        if params[:fiat_amount].to_f > 0
+          ['(lists.limit_min <= ? OR limit_min IS NULL) AND (lists.limit_max >= ? OR limit_max IS NULL)',
+            params[:fiat_amount].to_f, params[:fiat_amount].to_f]
+        end
+      end
+
+      def seller
+        params[:seller]
       end
     end
   end
