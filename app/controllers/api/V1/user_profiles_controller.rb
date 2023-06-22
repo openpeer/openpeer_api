@@ -5,7 +5,7 @@ module Api
         if current_user
           render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
         else
-          render json: { message: 'User not found', errors: 'not_found' }, status: :ok
+          render json: { data: { message: 'User not found', errors: 'not_found' }}, status: :ok
         end
       end
 
@@ -14,7 +14,7 @@ module Api
           UpdateUserKnock.perform_async(current_user.id)
           render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
         else
-          render json: { message: 'User not updated', errors: current_user.errors }, status: :ok
+          render json: { data: { message: 'User not updated', errors: current_user.errors }}, status: :ok
         end
       end
 

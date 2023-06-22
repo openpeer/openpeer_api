@@ -17,61 +17,12 @@ module Api
                status: :ok, root: 'data'
       end
 
-      def create
-        if JSON.parse(params[:list].to_json) == JSON.parse(params[:message])
-          if (Eth::Signature.verify(params[:message], params[:data], params[:address]) rescue false)
-            @user = User.find_or_create_by_address(params[:address])
-            @list = List.new(list_params)
-            @list.seller = @user
-            @list.chain_id = params[:chain_id]
-
-            List.transaction do
-              @list.payment_method = create_or_update_payment_method
-              if @list.save
-                render json: @list, status: :ok, root: 'data'
-              else
-                render json: { message: 'List not created', errors: @list.errors }, status: :ok
-              end
-            end
-          end
-        end
-      end
-
       def show
         @list = List.find(params[:id])
         render json: @list, serializer: ListSerializer, include: "**", status: :ok, root: 'data'
       end
 
-      protected
-
-      def list_params
-        params.require(:list)
-              .permit(:margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
-                      :token_id, :fiat_currency_id, :type, :bank_id)
-      end
-
-      def payment_method_params
-        params.require(:list)
-              .require(:payment_method).permit(:id, :bank_id, values: {})
-      end
-
       private
-
-      def create_or_update_payment_method
-        return if list_params[:type] == 'BuyList'
-
-        if payment_method_params[:id]
-          @payment_method = PaymentMethod.find(payment_method_params[:id])
-          if (@payment_method.user == @user)
-            @payment_method.update(payment_method_params)
-          end
-        else
-          @payment_method = PaymentMethod.new(payment_method_params)
-          @payment_method.user = @user
-          @payment_method.save
-        end
-        @payment_method
-      end
 
       def pagination_dict(collection)
         {

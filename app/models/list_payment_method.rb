@@ -1,0 +1,2 @@
+class ListPaymentMethod < PaymentMethod
+end

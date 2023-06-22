@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
   namespace 'api' do
     namespace 'v1' do
-      resources :lists, only: [:index, :create, :show]
+      resources :lists, only: [:index, :show]
       resources :tokens, only: [:index]
       resources :currencies, only: [:index]
       resources :banks, only: [:index]
@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       resources :users, only: [:show]
       resources :user_profiles, only: [:show, :update]
       resources :quick_buy, only: [:index]
+      resources :list_management, only: [:create, :update, :destroy]
       get '/airdrop/:address/:round', to: 'airdrops#index'
     end
 

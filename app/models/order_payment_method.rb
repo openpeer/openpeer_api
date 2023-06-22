@@ -1,0 +1,2 @@
+class OrderPaymentMethod < PaymentMethod
+end

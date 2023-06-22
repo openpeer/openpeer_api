@@ -19,10 +19,10 @@ module Api
             order.broadcast
             render json: order, serializer: OrderSerializer, include: '**', status: :ok, root: 'data'
           else
-            render json: { success: false, errors: dispute.errors.full_messages }, status: :unprocessable_entity
+            render json: { data: { success: false, errors: dispute.errors.full_messages }}, status: :unprocessable_entity
           end
         else
-          render json: { success: false, error: 'Invalid order or files' }, status: :unprocessable_entity
+          render json:  { data: { success: false, error: 'Invalid order or files' }}, status: :unprocessable_entity
         end
       end
     end

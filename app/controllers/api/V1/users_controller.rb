@@ -11,7 +11,7 @@ module Api
         if @user
           render json: @user, serializer: UserSerializer, status: :ok, root: 'data'
         else
-          render json: { message: 'User not found', errors: 'not_found' }, status: :ok
+          render json: { data: { message: 'User not found', errors: 'not_found' } }, status: :ok
         end
       end
     end
