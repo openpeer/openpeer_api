@@ -27,7 +27,7 @@ module Api
                 NotificationWorker.perform_async(NotificationWorker::NEW_ORDER, @order.id)
                 render json: @order, serializer: OrderSerializer, status: :ok, root: 'data'
               else
-                render json: { message: 'Order not created', errors: @order.errors }, status: :ok
+                render json: { data: { message: 'Order not created', errors: @order.errors }}, status: :ok
               end
             end
           end
