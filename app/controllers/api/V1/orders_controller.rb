@@ -18,11 +18,16 @@ module Api
             else
               @order.seller = @order.list.seller
               @order.buyer = current_user
-              @order.payment_method = @order.list.payment_method
             end
 
             Order.transaction do
-              @order.payment_method = create_or_update_payment_method if @order.list.buy_list?
+              if @order.list.buy_list?
+                @order.payment_method = create_or_update_payment_method
+              else
+                order_payment_method = @order.list.payment_method.dup
+                order_payment_method = order_payment_method.becomes!(OrderPaymentMethod)
+                @order.payment_method = order_payment_method
+              end
               if @order.save
                 NotificationWorker.perform_async(NotificationWorker::NEW_ORDER, @order.id)
                 render json: @order, serializer: OrderSerializer, status: :ok, root: 'data'
@@ -62,12 +67,12 @@ module Api
 
       def create_or_update_payment_method
         if payment_method_params[:id]
-          @payment_method = PaymentMethod.find(payment_method_params[:id])
+          @payment_method = OrderPaymentMethod.find(payment_method_params[:id])
           if (@payment_method.user == current_user)
             @payment_method.update(payment_method_params)
           end
         else
-          @payment_method = PaymentMethod.new(payment_method_params)
+          @payment_method = OrderPaymentMethod.new(payment_method_params)
           @payment_method.user = current_user
           @payment_method.bank_id = @order.list.bank_id
           @payment_method.save

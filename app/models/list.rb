@@ -8,7 +8,7 @@ class List < ApplicationRecord
   belongs_to :seller, class_name: 'User'
   belongs_to :token
   belongs_to :fiat_currency
-  belongs_to :payment_method, optional: true # used for sell lists where the user knows the payment method
+  belongs_to :payment_method, optional: true, class_name: 'ListPaymentMethod' # used for sell lists where the user knows the payment method
   belongs_to :bank, optional: true # used for buy lists where the user only knows what service they want to use
 
   has_many :orders

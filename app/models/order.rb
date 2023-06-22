@@ -5,7 +5,7 @@ class Order < ApplicationRecord
   belongs_to :seller, class_name: 'User'
   belongs_to :buyer, class_name: 'User'
   belongs_to :cancelled_by, class_name: 'User', optional: true
-  belongs_to :payment_method
+  belongs_to :payment_method, class_name: 'OrderPaymentMethod'
   has_one :escrow
   has_one :dispute
   has_many :transactions

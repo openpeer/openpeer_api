@@ -67,12 +67,12 @@ module Api
         return if list_params[:type] == 'BuyList'
 
         if payment_method_params[:id]
-          @payment_method = PaymentMethod.find(payment_method_params[:id])
+          @payment_method = ListPaymentMethod.find(payment_method_params[:id])
           if (@payment_method.user == @user)
             @payment_method.update(payment_method_params)
           end
         else
-          @payment_method = PaymentMethod.new(payment_method_params)
+          @payment_method = ListPaymentMethod.new(payment_method_params)
           @payment_method.user = @user
           @payment_method.save
         end
