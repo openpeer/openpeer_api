@@ -1,5 +1,4 @@
 class List < ApplicationRecord
-  default_scope { where.not(status: :closed) }
   enum status: [:created, :active, :closed]
   enum margin_type: [:fixed, :percentage]
   SELL_LIST_TYPE = 'SellList'
