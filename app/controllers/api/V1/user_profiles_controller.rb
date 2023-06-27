@@ -18,6 +18,11 @@ module Api
         end
       end
 
+      def verify
+        QuadrataVerificationStatus.perform_async(current_user.address, params[:chain_id])
+        render json: {}, status: :ok
+      end
+
       protected
 
       def user_params

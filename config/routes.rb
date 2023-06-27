@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       resources :quick_buy, only: [:index]
       resources :list_management, only: [:create, :update, :destroy]
       get '/airdrop/:address/:round', to: 'airdrops#index'
+      post '/user_profiles/verify/:chain_id', to: 'user_profiles#verify'
     end
 
     get '/webhooks', to: 'webhooks#index'
