@@ -68,12 +68,12 @@ module Api
 
         if payment_method_params[:id]
           @payment_method = ListPaymentMethod.find(payment_method_params[:id])
-          if (@payment_method.user == @user)
+          if (@payment_method.user == current_user)
             @payment_method.update(payment_method_params)
           end
         else
           @payment_method = ListPaymentMethod.new(payment_method_params)
-          @payment_method.user = @user
+          @payment_method.user = current_user
           @payment_method.save
         end
         @payment_method
