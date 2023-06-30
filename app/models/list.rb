@@ -12,6 +12,9 @@ class List < ApplicationRecord
 
   has_many :orders
 
+  validate :ensure_bank_or_payment_method_present
+  validates :chain_id, presence: true
+
   def price
     if fixed?
       margin
@@ -23,5 +26,13 @@ class List < ApplicationRecord
 
   [SELL_LIST_TYPE, BUY_LIST_TYPE].each do |type|
     define_method("#{type.underscore}?") { self.type == type }
+  end
+
+  protected
+
+  def ensure_bank_or_payment_method_present
+    unless bank_id.present? || payment_method_id.present?
+      errors.add(:base, "Either bank or payment method must be present")
+    end
   end
 end
