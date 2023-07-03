@@ -19,6 +19,9 @@ class EscrowDeployedWorker
     return unless seller && address
 
     seller = User.find_or_create_by_address(seller)
+
+    return if seller.contracts.find_by(address: address, chain_id: chain_id)
+
     contract = seller.contracts.create(address: address, chain_id: chain_id)
 
     EscrowEventsSetupWorker.new.perform(contract.id)
