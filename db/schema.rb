@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_22_155219) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_03_135521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -182,6 +182,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_22_155219) do
     t.string "coinmarketcap_id"
     t.boolean "gasless", default: false
     t.integer "position"
+    t.decimal "minimum_amount"
     t.index "lower((address)::text), chain_id", name: "index_tokens_on_lower_address_chain_id", unique: true
   end
 
