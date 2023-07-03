@@ -24,6 +24,6 @@ class EscrowDeployedWorker
 
     contract = seller.contracts.create(address: address, chain_id: chain_id)
 
-    EscrowEventsSetupWorker.new.perform(contract.id)
+    EscrowEventsSetupWorker.new.perform(contract.id, chain_id)
   end
 end
