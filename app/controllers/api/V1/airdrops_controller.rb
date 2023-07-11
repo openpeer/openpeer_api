@@ -42,6 +42,7 @@ module Api
             sell_volume += (order.token_amount * order.list.token.price_in_currency('USD'))
           end
         end
+        { buy_volume: buy_volume, sell_volume: sell_volume }
       end
 
       def total_volume_query(round)
