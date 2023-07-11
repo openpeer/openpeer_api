@@ -29,20 +29,34 @@ module Api
       end
 
       def user_volume_query(user, round)
-        user.orders.joins(list: :token).left_joins(:dispute).closed
-                   .where(lists: { tokens: { symbol: ['USDC', 'USDT'] }})
-                   .where(disputes: { id: nil })
-                   .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
-                   .group("CASE WHEN orders.buyer_id = #{user.id} THEN 'buy_volume' ELSE 'sell_volume' END")
-                   .sum(:token_amount)
+        orders = user.orders.joins(list: :token).left_joins(:dispute).closed
+                            .where(lists: { tokens: { symbol: tokens }})
+                            .where(disputes: { id: nil })
+                            .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
+        buy_volume = 0
+        sell_volume = 0
+        orders.inject(0) do |sum, order|
+          if order.buyer_id == user.id
+            buy_volume += (order.token_amount * order.list.token.price_in_currency('USD'))
+          else
+            sell_volume += (order.token_amount * order.list.token.price_in_currency('USD'))
+          end
+        end
       end
 
       def total_volume_query(round)
-        Order.joins(list: :token).left_joins(:dispute).closed
-             .where(lists: { tokens: { symbol: ['USDC', 'USDT'] }})
-             .where(disputes: { id: nil })
-             .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
-             .sum(:token_amount)
+        orders = Order.joins(list: :token).left_joins(:dispute).closed
+                      .where(lists: { tokens: { symbol: tokens }})
+                      .where(disputes: { id: nil })
+                      .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
+
+        orders.inject(0) do |sum, order|
+          sum + (order.token_amount * order.list.token.price_in_currency('USD'))
+        end
+      end
+
+      def tokens
+        ['USDC', 'USDT', 'MATIC', 'ETH']
       end
     end
   end
