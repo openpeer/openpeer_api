@@ -1,4 +1,4 @@
-async function resolve_dispute(address) {
+async function resolve_dispute(address, orderId, buyer, token, amount) {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
@@ -9,13 +9,39 @@ async function resolve_dispute(address) {
     {
       inputs: [
         {
+          internalType: 'bytes32',
+          name: '_orderID',
+          type: 'bytes32'
+        },
+        {
+          internalType: 'address payable',
+          name: '_buyer',
+          type: 'address'
+        },
+        {
+          internalType: 'address',
+          name: '_token',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: '_amount',
+          type: 'uint256'
+        },
+        {
           internalType: 'address payable',
           name: '_winner',
           type: 'address'
         }
       ],
       name: 'resolveDispute',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool'
+        }
+      ],
       stateMutability: 'nonpayable',
       type: 'function'
     }
@@ -24,8 +50,9 @@ async function resolve_dispute(address) {
   const contract = new ethers.Contract(address, abi, signer);
 
   try {
-    await contract.resolveDispute(winnerAddress);
+    console.log({ address, orderId, buyer, token, amount });
+    await contract.resolveDispute(orderId, buyer, token, amount, winnerAddress);
   } catch (error) {
-    alert(error.data.message);
+    alert(error);
   }
 }

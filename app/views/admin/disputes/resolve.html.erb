@@ -1,7 +1,11 @@
 <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
 
-<h1>Chain ID: <%= @list.chain_id %></h1>
+<h1>Chain ID: <%= @list.chain_id %></h1><br/>
+<h1>Order ID: <%= @order.uuid %></h1><br/>
+<h1>Buyer: <%= @buyer.address %></h1><br/>
+<h1>Token: <%= @list.token.address %></h1><br/>
+<h1>Amount: <%= @order.token_amount %> <%= @list.token.name %></h1><br/>
 
 <%= semantic_form_for @dispute, url: resolve_admin_dispute_path(@dispute), method: :put do |f| %>
-  <%= f.input :winner_id, label: "Select the winner", as: :select, collection: @options, input_html: { id: "winner_id", onchange: "resolve_dispute('#{@escrow}')"} %>
+  <%= f.input :winner_id, label: "Select the winner", as: :select, collection: @options, input_html: { id: "winner_id", onchange: "resolve_dispute('#{@escrow}', '#{@order.uuid}', '#{@buyer.address}', '#{@list.token.address}', '#{(@order.token_amount * 10 ** @list.token.decimals).to_i}')"} %>
 <% end %>

@@ -13,11 +13,12 @@ ActiveAdmin.register Dispute do
       flash[:error] = 'Error: This dispute is resolved.'
       return admin_dispute_path(resource)
     end
-    @list = resource.order.list
-    @escrow = resource.order.escrow.address
-    buyer = resource.order.buyer
-    seller = resource.order.seller
-    @options = [["Buyer: #{buyer.address}", buyer.address], ["Seller: #{seller.address}", seller.address]]
+    @order = resource.order
+    @list = @order.list
+    @escrow = @order.escrow.address
+    @buyer = @order.buyer
+    seller = @order.seller
+    @options = [["Buyer: #{@buyer.address}", @buyer.address], ["Seller: #{seller.address}", seller.address]]
   end
 
   action_item :view, only: :show,  if: proc{ current_admin_user.admin? } do
