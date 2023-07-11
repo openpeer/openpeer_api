@@ -30,7 +30,6 @@ module Api
 
       def user_volume_query(user, round)
         orders = user.orders.joins(list: :token).left_joins(:dispute).closed
-                            .where(lists: { tokens: { symbol: tokens }})
                             .where(disputes: { id: nil })
                             .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
         buy_volume = 0
@@ -47,17 +46,12 @@ module Api
 
       def total_volume_query(round)
         orders = Order.joins(list: :token).left_joins(:dispute).closed
-                      .where(lists: { tokens: { symbol: tokens }})
                       .where(disputes: { id: nil })
                       .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
 
         orders.inject(0) do |sum, order|
           sum + (order.token_amount * order.list.token.price_in_currency('USD'))
         end
-      end
-
-      def tokens
-        ['USDC', 'USDT', 'MATIC', 'ETH']
       end
     end
   end
