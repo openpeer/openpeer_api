@@ -1,10 +1,11 @@
 ActiveAdmin.register Bank do
-  permit_params :name, :account_info_schema, fiat_currency_ids: []
+  permit_params :name, :account_info_schema, :image, fiat_currency_ids: []
   json_editor
 
   form do |f|
     f.inputs do
       f.input :name
+      f.input :image, as: :file
       f.input :account_info_schema, as: :json
       f.input :fiat_currencies, :as => :check_boxes
     end
@@ -16,7 +17,7 @@ ActiveAdmin.register Bank do
     column :name
     column :account_info_schema
     column :fiat_currencies do |bank|
-      bank.fiat_currencies.pluck(:code).join(', ')
+      bank.fiat_currencies.order(:code).pluck(:code).join(', ')
     end
     column :created_at
     column :updated_at
@@ -27,9 +28,12 @@ ActiveAdmin.register Bank do
       row :id
       row :name
       row :account_info_schema
+      row :image do |bank|
+        link_to bank.image.filename.to_s, bank.image.url, target: :blank if bank.image.attached?
+      end
       row :created_at
       row :updated_at
-      table_for bank.fiat_currencies do
+      table_for bank.fiat_currencies.order(:name) do
         column "Fiat Currencies" do |fiat_currency|
           link_to fiat_currency.name, [ :admin, fiat_currency ]
         end
