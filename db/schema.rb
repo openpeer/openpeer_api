@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_03_135521) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_12_111346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -55,6 +55,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_03_135521) do
     t.bigint "fiat_currency_id"
     t.json "account_info_schema"
     t.index ["fiat_currency_id"], name: "index_banks_on_fiat_currency_id"
+  end
+
+  create_table "banks_fiat_currencies", id: false, force: :cascade do |t|
+    t.bigint "bank_id", null: false
+    t.bigint "fiat_currency_id", null: false
+    t.index ["bank_id", "fiat_currency_id"], name: "index_banks_fiat_currencies_on_bank_id_and_fiat_currency_id", unique: true
+    t.index ["bank_id"], name: "index_banks_fiat_currencies_on_bank_id"
+    t.index ["fiat_currency_id"], name: "index_banks_fiat_currencies_on_fiat_currency_id"
   end
 
   create_table "contracts", force: :cascade do |t|
@@ -217,6 +225,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_03_135521) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "banks_fiat_currencies", "banks"
+  add_foreign_key "banks_fiat_currencies", "fiat_currencies"
   add_foreign_key "contracts", "users"
   add_foreign_key "dispute_files", "user_disputes"
   add_foreign_key "disputes", "orders"

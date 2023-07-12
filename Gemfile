@@ -79,3 +79,5 @@ gem "sass-rails", "~> 6.0"
 gem "cancancan", "~> 3.5"
 
 gem 'kaminari'
+
+gem 'activeadmin_json_editor', '~> 0.0.7'

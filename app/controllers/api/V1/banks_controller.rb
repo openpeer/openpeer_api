@@ -7,6 +7,7 @@ module Api
             Bank.includes([:fiat_currency])
           else
             Bank.includes([:fiat_currency]).where(fiat_currency_id: [params[:currency_id], nil])
+            # Bank.left_joins(:fiat_currencies).where(fiat_currencies: { id: [4, nil] })
           end
         end
         render json: @banks, each_serializer: BankSerializer, status: :ok, root: 'data'
