@@ -4,10 +4,9 @@ module Api
       def index
         @banks = Rails.cache.fetch(cache_key, expires_in: nil) do
           if params[:currency_id].to_i == -1
-            Bank.includes([:fiat_currency])
+            Bank.all
           else
-            Bank.includes([:fiat_currency]).where(fiat_currency_id: [params[:currency_id], nil])
-            # Bank.left_joins(:fiat_currencies).where(fiat_currencies: { id: [4, nil] })
+            Bank.left_joins(:fiat_currencies).where(fiat_currencies: { id: [4, nil] })
           end
         end
         render json: @banks, each_serializer: BankSerializer, status: :ok, root: 'data'
