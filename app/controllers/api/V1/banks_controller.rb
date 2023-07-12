@@ -6,7 +6,7 @@ module Api
           if params[:currency_id].to_i == -1
             Bank.all
           else
-            Bank.left_joins(:fiat_currencies).where(fiat_currencies: { id: [4, nil] })
+            Bank.left_joins(:fiat_currencies).where(fiat_currencies: { id: [params[:currency_id].to_i, nil] })
           end
         end
         render json: @banks, each_serializer: BankSerializer, status: :ok, root: 'data'
