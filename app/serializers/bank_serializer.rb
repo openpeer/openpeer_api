@@ -5,4 +5,8 @@ class BankSerializer < ActiveModel::Serializer
     # object.image.url if object.image.attached?
     "/payment_channel/#{object.name.downcase}.svg"
   end
+
+  attribute :image do
+    object.image.url if object.image.attached?
+  end
 end

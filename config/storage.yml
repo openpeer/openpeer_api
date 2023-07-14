@@ -13,7 +13,7 @@ amazon:
   secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
   region: <%= ENV["AWS_REGION"] %>
   bucket: <%= ENV["AWS_BANKS_IMAGES_BUCKET"] %>
-  public: true
+  # public: true
 # Remember not to checkin your GCS keyfile to a repository
 # google:
 #   service: GCS
