@@ -30,4 +30,17 @@ attributes_table_for order do
     end
   end
   row ("Status") { |order| status_tag order.status }
+  if order.cancellation_reasons.present?
+    row ("Cancellation Reasons") do |order|
+      table_for order.cancellation_reasons do
+        order.cancellation_reasons.find_each do |reason|
+          attributes_table_for reason do
+            row ("reason") do
+              CancellationReason::DEFAULT_REASONS.fetch(reason.reason.underscore.to_sym, "Other - #{reason.reason}")
+            end
+          end
+        end
+      end
+    end
+  end
 end

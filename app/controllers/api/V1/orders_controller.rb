@@ -46,7 +46,23 @@ module Api
 
       def cancel
         @order = Order.from_user(current_user.address).find_by(uuid: params[:id])
-        @order.cancel(current_user)
+
+        Order.transaction do
+          @order.cancel(current_user) if @order.can_cancel? && @order.simple_cancel?
+          if params[:cancellation]
+            reasons = []
+            params[:cancellation].each do |key, value|
+              if key == "other" && params[:other_reason]
+                reasons << params[:other_reason]
+              elsif value
+                reasons << key
+              end
+            end
+            if reasons.any?
+              CancellationReason.create(reasons.map { |reason| { order: @order, reason: reason } })
+            end
+          end
+        end
 
         @order.broadcast
 

@@ -2,8 +2,15 @@ module Api
   class BaseController < ActionController::API
     include ActionController::HttpAuthentication::Basic::ControllerMethods
     include ActionController::HttpAuthentication::Token::ControllerMethods
+    include ActiveStorage::SetCurrent
 
     before_action :authenticate_api_token
+
+    before_action do
+      return unless Rails.env.development?
+
+      ActiveStorage::Current.url_options = { protocol: request.protocol, host: request.host, port: request.port }
+    end
 
     private
 

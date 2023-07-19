@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_12_125342) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_19_103247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -91,6 +91,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_12_125342) do
     t.index ["bank_id", "fiat_currency_id"], name: "index_banks_fiat_currencies_on_bank_id_and_fiat_currency_id", unique: true
     t.index ["bank_id"], name: "index_banks_fiat_currencies_on_bank_id"
     t.index ["fiat_currency_id"], name: "index_banks_fiat_currencies_on_fiat_currency_id"
+  end
+
+  create_table "cancellation_reasons", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.text "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_cancellation_reasons_on_order_id"
   end
 
   create_table "contracts", force: :cascade do |t|
@@ -257,6 +265,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_12_125342) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "banks_fiat_currencies", "banks"
   add_foreign_key "banks_fiat_currencies", "fiat_currencies"
+  add_foreign_key "cancellation_reasons", "orders"
   add_foreign_key "contracts", "users"
   add_foreign_key "dispute_files", "user_disputes"
   add_foreign_key "disputes", "orders"

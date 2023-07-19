@@ -9,6 +9,7 @@ class Order < ApplicationRecord
   has_one :escrow
   has_one :dispute
   has_many :transactions
+  has_many :cancellation_reasons, dependent: :destroy
 
   scope :from_user, ->(address) do
     joins(:buyer, :seller)
@@ -47,6 +48,14 @@ class Order < ApplicationRecord
       end
       self.trade_id = generate_trade_id
     end
+  end
+
+  def can_cancel?
+    !cancelled? && !closed?
+  end
+
+  def simple_cancel?
+    !escrow && created? # no need to cancel in the blockchain
   end
 
   private

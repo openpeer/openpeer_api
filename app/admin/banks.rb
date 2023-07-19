@@ -2,6 +2,10 @@ ActiveAdmin.register Bank do
   permit_params :name, :account_info_schema, :image, fiat_currency_ids: []
   json_editor
 
+  before_action do
+    ActiveStorage::Current.url_options = { protocol: request.protocol, host: request.host, port: request.port }
+  end
+
   form do |f|
     f.inputs do
       f.input :name
