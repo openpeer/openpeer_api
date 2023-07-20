@@ -2,8 +2,9 @@ module Api
   module V1
     class OrdersController < JwtController
       def index
+        chain_id_condition = { list: { chain_id: params[:chain_id] } } if params[:chain_id]
         @orders = Order.joins(:list).from_user(current_user.address)
-                       .where(list: { chain_id: params[:chain_id] })
+                       .where(chain_id_condition)
         render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok, root: 'data'
       end
 
