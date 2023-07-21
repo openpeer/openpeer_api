@@ -29,8 +29,12 @@ module Api
                 order_payment_method = order_payment_method.becomes!(OrderPaymentMethod)
                 @order.payment_method = order_payment_method
               end
+              @order.deposit_time_limit = @order.list.deposit_time_limit
               if @order.save
                 NotificationWorker.perform_async(NotificationWorker::NEW_ORDER, @order.id)
+                if @order.deposit_time_limit.to_i > 0
+                  AutomaticCancellationWorker.perform_in(@order.deposit_time_limit.minutes, @order.id)
+                end
                 render json: @order, serializer: OrderSerializer, status: :ok, root: 'data'
               else
                 render json: { data: { message: 'Order not created', errors: @order.errors }}, status: :ok

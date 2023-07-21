@@ -1,6 +1,6 @@
 class ListSerializer < ActiveModel::Serializer
   attributes :id, :automatic_approval, :chain_id, :limit_min, :limit_max, :margin_type,
-             :margin, :status, :terms, :total_available_amount, :price, :type
+             :margin, :status, :terms, :total_available_amount, :price, :type, :deposit_time_limit
 
   belongs_to :seller
   belongs_to :token

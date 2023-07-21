@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_19_103247) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_21_122000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -165,6 +165,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_103247) do
     t.bigint "payment_method_id"
     t.string "type"
     t.bigint "bank_id"
+    t.integer "deposit_time_limit"
     t.index ["bank_id"], name: "index_lists_on_bank_id"
     t.index ["chain_id", "seller_id"], name: "index_lists_on_chain_id_and_seller_id"
     t.index ["fiat_currency_id"], name: "index_lists_on_fiat_currency_id"
@@ -189,6 +190,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_103247) do
     t.string "trade_id"
     t.bigint "seller_id", null: false
     t.bigint "payment_method_id", null: false
+    t.integer "deposit_time_limit"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
     t.index ["cancelled_by_id"], name: "index_orders_on_cancelled_by_id"
     t.index ["list_id"], name: "index_orders_on_list_id"
