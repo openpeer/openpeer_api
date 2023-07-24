@@ -7,9 +7,9 @@ module Api
     before_action :authenticate_api_token
 
     before_action do
-      return unless Rails.env.development?
-
-      ActiveStorage::Current.url_options = { protocol: request.protocol, host: request.host, port: request.port }
+      if Rails.env.development?
+        ActiveStorage::Current.url_options = { protocol: request.protocol, host: request.host, port: request.port }
+      end
     end
 
     private
