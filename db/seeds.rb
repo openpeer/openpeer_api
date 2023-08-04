@@ -33,7 +33,7 @@ Token.create([{ chain_id: 80001, address: "0x00000000000000000000000000000000000
               { chain_id: 80001, address: "0x04B2A6E51272c82932ecaB31A5Ab5aC32AE168C3",
                 decimals: 18, name: 'GFARMDAI', symbol: 'GFARMDAI', coingecko_id: 'dai' },
               { address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", decimals: 6,
-                   symbol: "USDT", name: "USDT", chain_id: 137, coingecko_id: "tether" },
+                   symbol: "USDT", name: "USDT", chain_id: 137, coingecko_id: "tether", coinmarketcap_id: "multi-collateral-dai" },
               { address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
                  decimals: 6, symbol: "USDC", name: "USDC", chain_id: 137, coingecko_id: "usd-coin" },
               { address: "0x0000000000000000000000000000000000000000", decimals: 18, symbol: "MATIC",

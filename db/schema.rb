@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_21_122000) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_04_112525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -80,9 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_21_122000) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "fiat_currency_id"
     t.json "account_info_schema"
-    t.index ["fiat_currency_id"], name: "index_banks_on_fiat_currency_id"
   end
 
   create_table "banks_fiat_currencies", id: false, force: :cascade do |t|
