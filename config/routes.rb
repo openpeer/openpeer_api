@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :list_management, only: [:create, :update, :destroy]
       get '/airdrop/:address/:round', to: 'airdrops#index'
       post '/user_profiles/verify/:chain_id', to: 'user_profiles#verify'
+      resources :layer3, only: [:index]
     end
 
     get '/webhooks', to: 'webhooks#index'
