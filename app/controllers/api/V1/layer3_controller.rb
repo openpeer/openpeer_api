@@ -1,23 +1,34 @@
 module Api
   module V1
     class Layer3Controller < ApplicationController
-      def index
-        @user = User.find_or_create_by_address(params[:address]) rescue nil
+      before_action :find_user
 
-        return render json: { message: 'Invalid address' }, status: :not_found unless @user
+      def account
+        fetch_status(@user.email.present? && @user.name.present?)
+      end
 
-        if user_completed_tasks?
+      def ad
+        fetch_status(@user.lists.any?)
+      end
+
+      def ordered
+        fetch_status(@user.orders.any?)
+      end
+
+      private
+
+      def fetch_status(success)
+        if success
           render json: { status: 'success' }, status: :ok
         else
           render json: { status: 'failed' }, status: :ok
         end
       end
 
-      private
+      def find_user
+        @user = User.find_or_create_by_address(params[:address]) rescue nil
 
-      def user_completed_tasks?
-        @user.email.present? && @user.name.present? &&
-          @user.lists.any? && @user.orders.any?
+        return render json: { message: 'Invalid address' }, status: :not_found unless @user
       end
     end
   end
