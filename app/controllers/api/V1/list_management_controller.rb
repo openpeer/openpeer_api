@@ -48,7 +48,7 @@ module Api
       def list_params
         params.require(:list)
               .permit(:margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
-                      :token_id, :fiat_currency_id, :type, :bank_id, :deposit_time_limit)
+                      :token_id, :fiat_currency_id, :type, :bank_id, :deposit_time_limit, :payment_time_limit)
       end
 
       def payment_method_params
@@ -59,7 +59,7 @@ module Api
       def list_update_params
         params.require(:list)
               .permit(:id, :margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms, :bank_id,
-                      :deposit_time_limit)
+                      :deposit_time_limit, :payment_time_limit)
       end
 
       private

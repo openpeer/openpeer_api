@@ -57,6 +57,11 @@ class NewEscrowEventWorker
         order.create_escrow(tx: log['transactionHash'], address: contract.address)
       end
 
+      if order.payment_time_limit.to_i > 0
+        AutomaticCancellationWorker.perform_in(order.payment_time_limit.minutes,
+          order.id, AutomaticCancellationWorker::PAYMENT)
+      end
+
       NotificationWorker.perform_async(NotificationWorker::SELLER_ESCROWED, order.id)
     when MARK_AS_PAID
       order.update(status: :release)
