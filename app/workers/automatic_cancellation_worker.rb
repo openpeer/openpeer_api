@@ -16,11 +16,11 @@ class AutomaticCancellationWorker
     end
 
     if type == PAYMENT
-      limit = order.payment_time_limit.to_i
-      return unless limit > 0 && Time.zone.now >= order.escrow.created_at + limit.minutes &&
-        order.can_cancel? && order.simple_cancel?
+      # limit = order.payment_time_limit.to_i
+      # return unless limit > 0 && Time.zone.now >= order.escrow.created_at + limit.minutes &&
+      #   order.can_cancel? && order.simple_cancel?
 
-      order.cancel(order.buyer)
+      # order.cancel(order.buyer)
     end
     order.broadcast
   end
