@@ -1,5 +1,5 @@
 ActiveAdmin.register Bank do
-  permit_params :name, :account_info_schema, :image, fiat_currency_ids: []
+  permit_params :name, :account_info_schema, :image, :color, fiat_currency_ids: []
   json_editor
 
   before_action do
@@ -9,6 +9,7 @@ ActiveAdmin.register Bank do
   form do |f|
     f.inputs do
       f.input :name
+      f.input :color
       f.input :image, as: :file
       f.input :account_info_schema, as: :json
       f.input :fiat_currencies, :as => :check_boxes
@@ -19,6 +20,7 @@ ActiveAdmin.register Bank do
   index do
     id_column
     column :name
+    column :color
     column :account_info_schema
     column :fiat_currencies do |bank|
       bank.fiat_currencies.order(:code).pluck(:code).join(', ')
@@ -31,6 +33,7 @@ ActiveAdmin.register Bank do
     attributes_table do
       row :id
       row :name
+      row :color
       row :account_info_schema
       row :image do |bank|
         link_to bank.image.filename.to_s, bank.image.url, target: :blank if bank.image.attached?

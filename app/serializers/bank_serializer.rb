@@ -1,5 +1,5 @@
 class BankSerializer < ActiveModel::Serializer
-  attributes :id, :name, :account_info_schema
+  attributes :id, :name, :account_info_schema, :color
 
   attribute :icon do
     if object.image.attached?
