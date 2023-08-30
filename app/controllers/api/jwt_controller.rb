@@ -7,7 +7,7 @@ module Api
     def authenticate
       authenticate_or_request_with_http_token do |jwt_token, _options|
         token = JsonWebToken.decode(jwt_token)
-        address = token['sub']
+        address = token['verified_credentials'].first['address']
         exp = token['exp']
         return if Time.now.to_i > exp
 

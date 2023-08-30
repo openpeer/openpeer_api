@@ -7,7 +7,8 @@ class JsonWebToken
   end
 
   def self.decode(token)
-    decoded = JWT.decode(token, SECRET_KEY)[0]
+    public_key = OpenSSL::PKey::RSA.new(SECRET_KEY)
+    decoded = JWT.decode(token, public_key, true, { algorithm: 'RS256' })[0]
     HashWithIndifferentAccess.new decoded
   end
 end
