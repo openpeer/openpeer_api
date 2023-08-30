@@ -10,7 +10,7 @@ module ApplicationCable
 
     def find_verified_user
       token = JsonWebToken.decode(request.params[:token])
-      address = token['sub']
+      address = token['verified_credentials'].first['address']
       exp = token['exp']
 
       if (current_user = User.find_or_create_by_address(address)) && exp > Time.now.to_i
