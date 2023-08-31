@@ -4,7 +4,8 @@ module Api
       def index
         @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, :bank]])
                      .where(total_amount_condition).where(total_fiat_condition)
-                     .where(chain_id: params[:chain_id], token: { address: params[:token_address] },
+                     .where(chain_id_condition)
+                     .where(token: { symbol: params[:token_symbol] },
                             type: params[:type], fiat_currency: { code: params[:fiat_currency_code] })
 
         @lists = @lists.sort_by(&:price)
@@ -20,7 +21,9 @@ module Api
       def total_fiat_condition
         return unless params[:fiat_amount].present?
 
-        token = Token.find_by(chain_id: params[:chain_id], address: params[:token_address])
+        token = Token.where(chain_id_condition).where(symbol: params[:token_symbol]).first
+        return nil unless token
+
         amount = params[:fiat_amount].to_f
         token_price = token.price_in_currency(params[:fiat_currency_code])
         <<~SQL.squish
@@ -32,6 +35,10 @@ module Api
           AND (limit_min <= #{amount} OR limit_min IS NULL)
           AND (limit_max >= #{amount} OR limit_max IS NULL)
         SQL
+      end
+
+      def chain_id_condition
+        { chain_id: params[:chain_id] } if params[:chain_id].present?
       end
     end
   end
