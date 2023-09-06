@@ -90,9 +90,13 @@ module Api
 
       def create_or_update_payment_method
         if payment_method_params[:id]
-          @payment_method = OrderPaymentMethod.find(payment_method_params[:id])
+          @payment_method = ListPaymentMethod.find(payment_method_params[:id])
           if (@payment_method.user == current_user)
             @payment_method.update(payment_method_params)
+            order_payment_method = @payment_method.dup
+            order_payment_method = order_payment_method.becomes!(OrderPaymentMethod)
+            order_payment_method.save
+            @payment_method = order_payment_method
           end
         else
           @payment_method = OrderPaymentMethod.new(payment_method_params)
