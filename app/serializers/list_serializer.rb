@@ -1,7 +1,7 @@
 class ListSerializer < ActiveModel::Serializer
   attributes :id, :automatic_approval, :chain_id, :limit_min, :limit_max, :margin_type,
              :margin, :status, :terms, :total_available_amount, :price, :type, :deposit_time_limit,
-             :payment_time_limit, :token_spot_price
+             :payment_time_limit
 
   belongs_to :seller
   belongs_to :token
@@ -15,7 +15,7 @@ class ListSerializer < ActiveModel::Serializer
     object.price
   end
 
-  def token_spot_price
-    object.token.price_in_currency(object.fiat_currency.code)
-  end
+  # def token_spot_price
+  #   object.token.price_in_currency(object.fiat_currency.code)
+  # end
 end
