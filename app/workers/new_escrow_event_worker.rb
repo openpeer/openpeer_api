@@ -31,7 +31,7 @@ class NewEscrowEventWorker
     return unless trade_id
 
     order = Order.includes(:list)
-                 .find_by(trade_id: trade_id, lists: { chain_id: chain_id })
+                 .find_by(trade_id: trade_id, chain_id: chain_id)
     return unless order
 
     relayed = tx['toAddress'].downcase != contract.address.downcase

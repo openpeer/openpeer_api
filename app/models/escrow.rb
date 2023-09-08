@@ -2,11 +2,11 @@ class Escrow < ApplicationRecord
   belongs_to :order
 
   def link
-    "#{explorers[order.list.chain_id]}/address/#{address}"
+    "#{explorers[order.chain_id]}/address/#{address}"
   end
 
   def tx_link
-    "#{explorers[order.list.chain_id]}/tx/#{tx}"
+    "#{explorers[order.chain_id]}/tx/#{tx}"
   end
 
   private

@@ -2,8 +2,8 @@ module Api
   module V1
     class OrdersController < JwtController
       def index
-        chain_id_condition = { list: { chain_id: params[:chain_id] } } if params[:chain_id]
-        @orders = Order.joins(:list).from_user(current_user.address)
+        chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
+        @orders = Order.includes(:list).from_user(current_user.address)
                        .where(chain_id_condition)
         render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok, root: 'data'
       end
@@ -29,6 +29,7 @@ module Api
                 order_payment_method = order_payment_method.becomes!(OrderPaymentMethod)
                 @order.payment_method = order_payment_method
               end
+              @order.chain_id = @order.list.chain_id
               @order.deposit_time_limit = @order.list.deposit_time_limit
               @order.payment_time_limit = @order.list.payment_time_limit
               if @order.save
