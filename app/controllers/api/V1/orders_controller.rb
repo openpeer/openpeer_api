@@ -13,6 +13,10 @@ module Api
           if (Eth::Signature.verify(params[:message], params[:data], params[:address]) rescue false)
             @order = Order.new(order_params)
 
+            if @order.list.accept_only_verified? && !current_user.verified?
+              return render json: { data: { message: 'Order not created' }}, status: :ok
+            end
+
             if @order.list.buy_list?
               @order.seller = current_user
               @order.buyer = @order.list.seller
