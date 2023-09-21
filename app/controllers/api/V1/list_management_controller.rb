@@ -1,6 +1,12 @@
 module Api
   module V1
     class ListManagementController < JwtController
+      def index
+        @lists = current_user.lists.includes([:seller, :token, :fiat_currency, payment_method: [:user, :bank]])
+                                   .where.not(status: :closed)
+        render json: @lists, each_serializer: ListSerializer, include: "**", status: :ok, root: 'data'
+      end
+
       def create
         if JSON.parse(params[:list].to_json) == JSON.parse(params[:message])
           if (Eth::Signature.verify(params[:message], params[:data], params[:address]) rescue false)
@@ -60,7 +66,7 @@ module Api
       def list_update_params
         params.require(:list)
               .permit(:id, :margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms, :bank_id,
-                      :deposit_time_limit, :payment_time_limit, :accept_only_verified)
+                      :deposit_time_limit, :payment_time_limit, :accept_only_verified, :status)
       end
 
       private

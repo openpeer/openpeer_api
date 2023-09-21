@@ -4,7 +4,7 @@ module Api
       def index
         @lists = List.joins(:seller, :token, :fiat_currency)
                      .left_joins(payment_method: :user)
-                     .where.not(status: :closed)
+                     .where(status: :active)
                      .where(status_condition).where(chain_id_condition).where(type_condition).where(token_condition)
                      .where(currency_condition).where(payment_method_condition).where(amount_condition)
                      .where(fiat_amount_condition)
