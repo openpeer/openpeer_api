@@ -13,8 +13,11 @@ ActiveAdmin.register Order do
   includes :list
 
   index do
-    column :uuid
+    column :uuid do |order|
+      link_to(order.uuid.first(6) + '...' + order.uuid.last(6), admin_order_path(order))
+    end
     column ('List') { |order| link_to(order.list.id, admin_list_path(order.list), target: '_blank') }
+    column :seller
     column :buyer
     column :token_amount do |order|
       link_to("#{order.token_amount} #{order.list.token.symbol}", admin_token_path(order.list.token))
