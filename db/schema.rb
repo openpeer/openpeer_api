@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_21_122958) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_17_092358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,6 +106,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_122958) do
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "version"
+    t.index ["user_id", "chain_id", "address", "version"], name: "index_contracts_on_user_id_and_chain_id_and_address_and_version", unique: true
     t.index ["user_id"], name: "index_contracts_on_user_id"
   end
 
@@ -167,6 +169,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_122958) do
     t.integer "deposit_time_limit"
     t.integer "payment_time_limit"
     t.boolean "accept_only_verified", default: false
+    t.integer "escrow_type", default: 0
     t.index ["bank_id"], name: "index_lists_on_bank_id"
     t.index ["chain_id", "seller_id"], name: "index_lists_on_chain_id_and_seller_id"
     t.index ["fiat_currency_id"], name: "index_lists_on_fiat_currency_id"
@@ -217,6 +220,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_122958) do
     t.string "type", null: false
     t.index ["bank_id"], name: "index_payment_methods_on_bank_id"
     t.index ["user_id"], name: "index_payment_methods_on_user_id"
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "value", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_settings_on_name", unique: true
   end
 
   create_table "tokens", force: :cascade do |t|

@@ -1,7 +1,7 @@
 class ListSerializer < ActiveModel::Serializer
   attributes :id, :automatic_approval, :chain_id, :limit_min, :limit_max, :margin_type,
              :margin, :status, :terms, :total_available_amount, :price, :type, :deposit_time_limit,
-             :payment_time_limit, :accept_only_verified
+             :payment_time_limit, :accept_only_verified, :escrow_type, :contract
 
   belongs_to :seller
   belongs_to :token
@@ -22,4 +22,13 @@ class ListSerializer < ActiveModel::Serializer
   # def token_spot_price
   #   object.token.price_in_currency(object.fiat_currency.code)
   # end
+
+  def contract
+    return unless object.escrow_type == 'instant'
+
+    contract = object.seller.contracts.where(chain_id: object.chain_id).order(version: :desc, created_at: :desc).first
+    return unless contract
+
+    contract.address
+  end
 end

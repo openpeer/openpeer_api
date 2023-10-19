@@ -1,6 +1,8 @@
 class List < ApplicationRecord
   enum status: [:created, :active, :closed], _default: :active
   enum margin_type: [:fixed, :percentage]
+  enum escrow_type: [:manual, :instant], _default: :manual
+
   SELL_LIST_TYPE = 'SellList'
   BUY_LIST_TYPE = 'BuyList'
 

@@ -55,7 +55,7 @@ module Api
         params.require(:list)
               .permit(:margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
                       :token_id, :fiat_currency_id, :type, :bank_id, :deposit_time_limit, :payment_time_limit,
-                      :accept_only_verified)
+                      :accept_only_verified, :escrow_type)
       end
 
       def payment_method_params
