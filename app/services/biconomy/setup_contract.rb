@@ -25,7 +25,7 @@ module Biconomy
 
     def payload
       {
-        'contractName' => "Seller Contract v2 #{id}",
+        'contractName' => "Seller Contract v#{version} #{id}",
         'contractAddress' => address,
         'abi' => abi,
         'contractType' => 'SC',
