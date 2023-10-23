@@ -1,14 +1,14 @@
 class NewEscrowEventWorker
   include Sidekiq::Worker
 
-  MARK_AS_PAID      = '0xf86890b0'
-  BUYER_CANCEL      = '0xe9d13b57'
-  OPEN_DISPUTE      = '0x4fd6137c'
-  RELEASE           = '0x86d1a69f'
-  SELLER_CANCEL     = '0xd55a17c0'
-  DISPUTE_RESOLVED  = '0xd8461182'
-  CREATE_ERC20      = '0x9851a25e'
-  CREATE_NATIVE     = '0x9f5e5628'
+  MARK_AS_PAID     = '0xf86890b0'
+  BUYER_CANCEL     = '0xe9d13b57'
+  OPEN_DISPUTE     = '0x4fd6137c'
+  RELEASE          = '0x86d1a69f'
+  SELLER_CANCEL    = '0xd55a17c0'
+  DISPUTE_RESOLVED = '0xd8461182'
+  CREATE_ERC20     = '0x9851a25e'
+  CREATE_NATIVE    = '0x9f5e5628'
 
   def perform(json)
     json = JSON.parse(json)
@@ -23,10 +23,6 @@ class NewEscrowEventWorker
 
     return unless log && tx
 
-    contract = Contract.where(chain_id: chain_id)
-                       .where('lower(address) = ?', log['address'].downcase).first
-    return unless contract
-
     trade_id = log.fetch('topic1')
     return unless trade_id
 
@@ -34,8 +30,14 @@ class NewEscrowEventWorker
                  .find_by(trade_id: trade_id, chain_id: chain_id)
     return unless order
 
+    contract = Contract.where(chain_id: chain_id)
+                       .where('lower(address) = ?', log['address'].downcase).first ||
+               Contract.create(chain_id: chain_id, address: Eth::Address.new(log['address']).checksummed,
+                               user_id: order.seller_id, version: Setting['contract_version'])
+    return unless contract
+
     relayed = tx['toAddress'].downcase != contract.address.downcase
-    input = topic_hashes[log['topic0']]
+    input = topic_hashes(contract.version)[log['topic0']]
     if relayed
       user = find_user_based_by_input(input, order)
     else
@@ -75,7 +77,7 @@ class NewEscrowEventWorker
       order.update(status: :dispute)
       NotificationWorker.perform_async(NotificationWorker::DISPUTE_OPENED, order.id)
     when DISPUTE_RESOLVED
-      address = Eth::Abi.decode(["address"], log.fetch('topic2'))[0]
+      address = Eth::Abi.decode(['address'], log.fetch('topic2'))[0]
       winner = User.where('lower(address) = ?', address.downcase).first
 
       Order.transaction do
@@ -100,23 +102,23 @@ class NewEscrowEventWorker
 
   private
 
-  def abi
-    @abi ||= JSON.parse(File.read(Rails.root.join('config', 'abis', 'OpenPeerEscrow.json')))
+  def abi(version)
+    @abi ||= JSON.parse(File.read(Rails.root.join('config', 'abis', version, 'OpenPeerEscrow.json')))
   end
 
-  def events
-    @events ||= abi.filter { |i| i['type'] == 'event' }
+  def events(version)
+    @events ||= abi(version).filter { |i| i['type'] == 'event' }
   end
 
-  def topic_hashes
+  def topic_hashes(version)
     @topic_hashes ||= begin
-      mark_as_paid = events.find { |i| i['name'] == 'SellerCancelDisabled' }
-      buyer_cancel = events.find { |i| i['name'] == 'CancelledByBuyer' }
-      open_dispute = events.find { |i| i['name'] == 'DisputeOpened' }
-      release = events.find { |i| i['name'] == 'Released' }
-      seller_cancel = events.find { |i| i['name'] == 'CancelledBySeller' }
-      dispute_resolved = events.find { |i| i['name'] == 'DisputeResolved' }
-      escrow_created = events.find { |i| i['name'] == 'EscrowCreated' }
+      mark_as_paid = events(version).find { |i| i['name'] == 'SellerCancelDisabled' }
+      buyer_cancel = events(version).find { |i| i['name'] == 'CancelledByBuyer' }
+      open_dispute = events(version).find { |i| i['name'] == 'DisputeOpened' }
+      release = events(version).find { |i| i['name'] == 'Released' }
+      seller_cancel = events(version).find { |i| i['name'] == 'CancelledBySeller' }
+      dispute_resolved = events(version).find { |i| i['name'] == 'DisputeResolved' }
+      escrow_created = events(version).find { |i| i['name'] == 'EscrowCreated' }
 
       hashes = {}
       hashes[Eth::Abi::Event.compute_topic(mark_as_paid)] = MARK_AS_PAID

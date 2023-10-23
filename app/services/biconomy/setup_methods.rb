@@ -1,15 +1,16 @@
 module Biconomy
   class SetupMethods
-    attr_accessor :id, :address, :chain_id
+    attr_accessor :id, :address, :chain_id, :version
 
-    def initialize(id, address, chain_id)
+    def initialize(id, address, chain_id, version)
       @id = id
       @address = address
       @chain_id = chain_id
+      @version = version
     end
 
     def execute
-      %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow).each do |method|
+      methods[version].each do |method|
         RestClient.post(url, payload(method), headers)
       end
     end
@@ -24,7 +25,7 @@ module Biconomy
       {
         'apiType' => 'native',
         'methodType' => 'write',
-        'name' => "#{method} Seller Contract #{id}",
+        'name' => "#{method} Seller Contract v#{version} #{id}",
         'contractAddress' => address,
         'method' => method
       }.to_json
@@ -40,6 +41,13 @@ module Biconomy
         'authToken' =>  ENV['BICONOMY_AUTH_TOKEN'],
         'apiKey' =>  api_key,
         'content-type' => 'application/json'
+      }
+    end
+
+    def methods
+      {
+        '1' => %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow),
+        '2' => %w(release buyerCancel sellerCancel markAsPaid createNativeEscrow createERC20Escrow deposit withdrawBalance)
       }
     end
   end

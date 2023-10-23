@@ -1,11 +1,12 @@
 module Biconomy
   class SetupContract
-    attr_accessor :id, :address, :chain_id
+    attr_accessor :id, :address, :chain_id, :version
 
-    def initialize(id, address, chain_id)
+    def initialize(id, address, chain_id, version)
       @id = id
       @address = address
       @chain_id = chain_id
+      @version = version
     end
 
     def execute
@@ -19,12 +20,12 @@ module Biconomy
     end
 
     def abi
-      File.read(Rails.root.join('config', 'abis', 'OpenPeerEscrow.json'))
+      File.read(Rails.root.join('config', 'abis', version, 'OpenPeerEscrow.json'))
     end
 
     def payload
       {
-        'contractName' => "Seller Contract #{id}",
+        'contractName' => "Seller Contract v#{version} #{id}",
         'contractAddress' => address,
         'abi' => abi,
         'contractType' => 'SC',

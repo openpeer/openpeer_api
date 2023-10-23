@@ -1,4 +1,10 @@
 FactoryBot.define do
+  factory :setting do
+    name { "MyString" }
+    value { "MyText" }
+    description { "MyText" }
+  end
+
   factory :contract do
     user { nil }
     chain_id { 1 }
