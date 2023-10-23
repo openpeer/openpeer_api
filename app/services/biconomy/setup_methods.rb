@@ -47,7 +47,7 @@ module Biconomy
     def methods
       {
         '1' => %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow),
-        '2' => %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow deposit withdrawBalance)
+        '2' => %w(release buyerCancel sellerCancel markAsPaid createNativeEscrow createERC20Escrow deposit withdrawBalance)
       }
     end
   end

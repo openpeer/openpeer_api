@@ -23,16 +23,18 @@ class NewEscrowEventWorker
 
     return unless log && tx
 
-    contract = Contract.where(chain_id: chain_id)
-                       .where('lower(address) = ?', log['address'].downcase).first
-    return unless contract
-
     trade_id = log.fetch('topic1')
     return unless trade_id
 
     order = Order.includes(:list)
                  .find_by(trade_id: trade_id, chain_id: chain_id)
     return unless order
+
+    contract = Contract.where(chain_id: chain_id)
+                       .where('lower(address) = ?', log['address'].downcase).first ||
+               Contract.create(chain_id: chain_id, address: Eth::Address.new(log['address']).checksummed,
+                               user_id: order.seller_id, version: Setting['contract_version'])
+    return unless contract
 
     relayed = tx['toAddress'].downcase != contract.address.downcase
     input = topic_hashes(contract.version)[log['topic0']]
