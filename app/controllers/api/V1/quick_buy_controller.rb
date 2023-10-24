@@ -2,7 +2,7 @@ module Api
   module V1
     class QuickBuyController < BaseController
       def index
-        @lists = List.includes([:seller, :token, :fiat_currency, payment_method: [:user, :bank]])
+        @lists = List.active.includes([:seller, :token, :fiat_currency, payment_method: [:user, :bank]])
                      .where(total_amount_condition).where(total_fiat_condition)
                      .where(chain_id_condition)
                      .where(token: { symbol: params[:token_symbol] },
