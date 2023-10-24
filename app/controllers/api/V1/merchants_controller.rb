@@ -3,7 +3,7 @@ module Api
     class MerchantsController < ApplicationController
       def index
         @merchants = User.where(merchant: true).pluck(:address)
-        render json: @merchants, status: :ok
+        render json: @merchants, status: :ok, root: 'data'
       end
     end
   end
