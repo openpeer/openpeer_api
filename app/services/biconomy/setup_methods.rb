@@ -1,6 +1,7 @@
 module Biconomy
   class SetupMethods
     attr_accessor :id, :address, :chain_id, :version
+    FULL_GASLESS_CHAIN_IDS = [137, 80001]
 
     def initialize(id, address, chain_id, version)
       @id = id
@@ -10,7 +11,7 @@ module Biconomy
     end
 
     def execute
-      methods[version].each do |method|
+      methods.each do |method|
         RestClient.post(url, payload(method), headers)
       end
     end
@@ -45,10 +46,13 @@ module Biconomy
     end
 
     def methods
-      {
-        '1' => %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow),
-        '2' => %w(release buyerCancel sellerCancel markAsPaid createNativeEscrow createERC20Escrow deposit withdrawBalance)
-      }
+      if !FULL_GASLESS_CHAIN_IDS.include?(chain_id)
+        %w(createNativeEscrow createERC20Escrow markAsPaid)
+      elsif version.to_s == '1'
+        %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow)
+      elsif version.to_s == '2'
+        %w(release buyerCancel sellerCancel markAsPaid createNativeEscrow createERC20Escrow deposit withdrawBalance)
+      end
     end
   end
 end
