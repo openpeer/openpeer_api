@@ -11,6 +11,8 @@ class List < ApplicationRecord
   belongs_to :fiat_currency
   belongs_to :payment_method, optional: true, class_name: 'ListPaymentMethod' # used for sell lists where the user knows the payment method
   belongs_to :bank, optional: true # used for buy lists where the user only knows what service they want to use
+  has_and_belongs_to_many :payment_methods
+  has_and_belongs_to_many :banks, join_table: :lists_banks
 
   has_many :orders
 
