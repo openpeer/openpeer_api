@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resources :quick_buy, only: [:index]
       resources :list_management, only: [:create, :update, :destroy, :index]
       resources :merchants, only: [:index]
+      resources :settings, only: [:index]
       get '/airdrop/:address/:round', to: 'airdrops#index'
       post '/user_profiles/verify/:chain_id', to: 'user_profiles#verify'
       get '/layer3/account', to: 'layer3#account'
