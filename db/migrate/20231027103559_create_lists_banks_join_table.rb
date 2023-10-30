@@ -6,14 +6,5 @@ class CreateListsBanksJoinTable < ActiveRecord::Migration[7.0]
     end
 
     add_index :lists_banks, [:list_id, :bank_id], unique: true
-
-    List.transaction do
-      List.find_each do |list|
-        return unless list.bank.present?
-
-        list.banks << list.bank
-        list.save
-      end
-    end
   end
 end

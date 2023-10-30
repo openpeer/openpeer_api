@@ -1,3 +1,3 @@
 class SellList < List
-  validates :payment_method, presence: true
+  validates :payment_methods, presence: true
 end

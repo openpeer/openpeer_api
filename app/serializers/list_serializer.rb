@@ -6,9 +6,8 @@ class ListSerializer < ActiveModel::Serializer
   belongs_to :seller
   belongs_to :token
   belongs_to :fiat_currency
-  belongs_to :payment_method, serializer: PaymentMethodSerializer
   belongs_to :bank, serializer: BankSerializer
-  has_many :payment_method, each_serializer: PaymentMethodSerializer
+  has_many :payment_methods, each_serializer: PaymentMethodSerializer
 
   def price
     return 0 if @instance_options.fetch(:serializer_context_class, nil) == OrderSerializer

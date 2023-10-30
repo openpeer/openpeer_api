@@ -2,15 +2,18 @@ module Api
   module V1
     class ListsController < BaseController
       def index
-        @lists = List.joins(:seller, :token, :fiat_currency)
+        @lists = List.distinct.joins(:seller, :token, :fiat_currency)
                      .includes(seller: :contracts)
-                     .left_joins(payment_method: :user)
+                     .left_joins(:payment_methods)
                      .where(status: :active)
                      .where(status_condition).where(chain_id_condition).where(type_condition).where(token_condition)
                      .where(currency_condition).where(payment_method_condition).where(amount_condition)
                      .where(fiat_amount_condition)
                      .page(params[:page]).per(params[:per_page])
                      .order(escrow_type: :desc, created_at: :desc)
+        puts "#" * 100
+        puts "REQUESTING #{@lists.to_sql}" 
+        puts "#" * 100
 
         @lists = @lists.joins(:seller)
                        .where('lower(users.address) = ?', seller.downcase) if seller

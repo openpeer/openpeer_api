@@ -6,14 +6,5 @@ class CreateListsPaymentMethodsJoinTable < ActiveRecord::Migration[7.0]
     end
 
     add_index :lists_payment_methods, [:list_id, :payment_method_id], unique: true
-    
-    List.transaction do
-      List.find_each do |list|
-        return unless list.payment_method.present?
-
-        list.payment_methods << list.payment_method
-        list.save
-      end
-    end
   end
 end
