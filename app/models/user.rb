@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :sell_orders, foreign_key: :seller_id, class_name: 'Order'
   has_many :user_disputes
   has_many :contracts
+  has_many :list_payment_methods
 
   def orders
     Order.left_joins(:list).where('orders.buyer_id = ? OR orders.seller_id = ?', id, id)
