@@ -37,8 +37,8 @@ class List < ApplicationRecord
   protected
 
   def ensure_bank_or_payment_methods_present
-    unless bank_id.present? || payment_methods.present?
-      errors.add(:base, "Either bank or payment methods must be present")
+    unless banks.present? || payment_methods.present?
+      errors.add(:base, "Either banks or payment methods must be present")
     end
   end
 end

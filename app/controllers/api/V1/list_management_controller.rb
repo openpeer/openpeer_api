@@ -14,7 +14,6 @@ module Api
         List.transaction do
           @list.payment_method_ids = create_or_update_payment_methods.map(&:id)
 
-          debugger
           if @list.save
             render json: @list, status: :ok, root: 'data'
           else
@@ -27,7 +26,7 @@ module Api
         @list = List.find_by(id: list_update_params[:id], seller_id: current_user.id)
 
         List.transaction do
-          @list.payment_methods = create_or_update_payment_methods
+          @list.payment_method_ids = create_or_update_payment_methods.map(&:id)
           if @list.update(list_update_params)
             render json: @list, status: :ok, root: 'data'
           else
@@ -47,8 +46,8 @@ module Api
       def list_params
         params.require(:list)
               .permit(:margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
-                      :token_id, :fiat_currency_id, :type, :bank_id, :deposit_time_limit, :payment_time_limit,
-                      :accept_only_verified, :escrow_type, :chain_id)
+                      :token_id, :fiat_currency_id, :type, :deposit_time_limit, :payment_time_limit,
+                      :accept_only_verified, :escrow_type, :chain_id, :bank_ids => [])
       end
 
       def payment_methods_params
@@ -57,8 +56,8 @@ module Api
 
       def list_update_params
         params.require(:list)
-              .permit(:id, :margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms, :bank_id,
-                      :deposit_time_limit, :payment_time_limit, :accept_only_verified, :status)
+              .permit(:id, :margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
+                      :deposit_time_limit, :payment_time_limit, :accept_only_verified, :status, :bank_ids => [])
       end
 
       private

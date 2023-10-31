@@ -4,7 +4,7 @@ module Api
       def index
         @lists = List.distinct.joins(:seller, :token, :fiat_currency)
                      .includes(seller: :contracts)
-                     .left_joins(:payment_methods)
+                     .left_joins(:payment_methods, :banks)
                      .where(status: :active)
                      .where(status_condition).where(chain_id_condition).where(type_condition).where(token_condition)
                      .where(currency_condition).where(payment_method_condition).where(amount_condition)
@@ -63,7 +63,7 @@ module Api
 
       def payment_method_condition
         if params[:payment_method]
-          ['lists.bank_id = ? OR payment_methods.bank_id = ?', params[:payment_method], params[:payment_method]]
+          ['banks.id = ? OR payment_methods.bank_id = ?', params[:payment_method], params[:payment_method]]
         end
       end
 
