@@ -11,9 +11,6 @@ module Api
                      .where(fiat_amount_condition)
                      .page(params[:page]).per(params[:per_page])
                      .order(escrow_type: :desc, created_at: :desc)
-        puts "#" * 100
-        puts "REQUESTING #{@lists.to_sql}" 
-        puts "#" * 100
 
         @lists = @lists.joins(:seller)
                        .where('lower(users.address) = ?', seller.downcase) if seller
