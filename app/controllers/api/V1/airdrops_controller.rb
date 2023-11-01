@@ -21,7 +21,7 @@ module Api
       def round_to_time_window(round)
         start_date = Date.new(2023, 6, 1) + (round - 1).months
         end_date = start_date.end_of_month
-        [start_date, end_date]
+        [start_date.beginning_of_day, end_date.end_of_day]
       end
 
       def airdrop_params
