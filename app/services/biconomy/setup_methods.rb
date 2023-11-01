@@ -47,7 +47,7 @@ module Biconomy
 
     def methods
       if !FULL_GASLESS_CHAIN_IDS.include?(chain_id)
-        %w(createNativeEscrow createERC20Escrow markAsPaid)
+        %w(createNativeEscrow createERC20Escrow markAsPaid buyerCancel)
       elsif version.to_s == '1'
         %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow)
       elsif version.to_s == '2'
