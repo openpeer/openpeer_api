@@ -78,7 +78,7 @@ module Api
       end
 
 
-      def copy_payment_method_params
+      def payment_method_params
         params.require(:order)
               .require(:payment_method).permit(:id, :bank_id, values: {})
       end
@@ -89,15 +89,20 @@ module Api
       end
 
       def create_or_update_payment_method
-        if copy_payment_method_params[:id]
-          @payment_method = ListPaymentMethod.find(copy_payment_method_params[:id])
+        if payment_method_params[:id]
+          @payment_method = ListPaymentMethod.find(payment_method_params[:id])
+          if @payment_method.user == current_user # buy lists can edit the payment methods
+            @payment_method.update(payment_method_params)
+          end
+
           order_payment_method = @payment_method.dup
           order_payment_method = order_payment_method.becomes!(OrderPaymentMethod)
           order_payment_method.save
           @payment_method = order_payment_method
-        elsif new_payment_method_params[:bank_id]
-          @payment_method = OrderPaymentMethod.new(new_payment_method_params)
+        else
+          @payment_method = OrderPaymentMethod.new(payment_method_params)
           @payment_method.user = current_user
+          @payment_method.bank_id = @order.list.bank_id
           @payment_method.save
         end
         @payment_method
