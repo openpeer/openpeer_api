@@ -3,7 +3,7 @@ module Api
     class PaymentMethodsController < JwtController
       def index
         @payment_methods = current_user.list_payment_methods
-                                       .includes(:user).left_joins(bank: :fiat_currencies)
+                                       .left_joins(bank: :fiat_currencies)
                                        .where(banks_fiat_currencies: { fiat_currency_id: [params[:currency_id], nil]})
         render json: @payment_methods, each_serializer: PaymentMethodSerializer, status: :ok, root: 'data'
       end

@@ -11,10 +11,12 @@ class List < ApplicationRecord
   belongs_to :fiat_currency
   belongs_to :payment_method, optional: true, class_name: 'ListPaymentMethod' # used for sell lists where the user knows the payment method
   belongs_to :bank, optional: true # used for buy lists where the user only knows what service they want to use
+  has_and_belongs_to_many :payment_methods
+  has_and_belongs_to_many :banks, join_table: :lists_banks
 
   has_many :orders
 
-  validate :ensure_bank_or_payment_method_present
+  validate :ensure_bank_or_payment_methods_present
   validates :chain_id, presence: true
   validates :payment_time_limit, numericality: { greater_than_or_equal_to: 15, less_than_or_equal_to: 1440 }
 
@@ -34,9 +36,9 @@ class List < ApplicationRecord
 
   protected
 
-  def ensure_bank_or_payment_method_present
-    unless bank_id.present? || payment_method_id.present?
-      errors.add(:base, "Either bank or payment method must be present")
+  def ensure_bank_or_payment_methods_present
+    unless banks.present? || payment_methods.present?
+      errors.add(:base, "Either banks or payment methods must be present")
     end
   end
 end

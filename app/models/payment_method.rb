@@ -14,14 +14,14 @@ class PaymentMethod < ApplicationRecord
     # Check if all required fields are present
     bank_schema.each do |field|
       if field['required'] && payment_method_values[field['id']].blank?
-        errors.add(field.to_sym, 'should be present')
+        errors.add(field['id'].to_sym, 'should be present')
       end
     end
 
     # Check if there are extra values in payment method that are not in bank schema
     payment_method_values.each_key do |field|
       unless bank_schema.find { |f| f['id'] == field }.present?
-        errors.add(field.to_sym, 'is not a valid field')
+        errors.add(field['id'].to_sym, 'is not a valid field')
       end
     end
   end
