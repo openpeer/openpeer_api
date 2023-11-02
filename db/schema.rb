@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_30_174413) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_02_174234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "author_type"
+    t.bigint "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -94,7 +108,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_174413) do
     t.datetime "updated_at", null: false
     t.string "version"
     t.index ["user_id", "chain_id", "address", "version"], name: "index_contracts_on_user_id_and_chain_id_and_address_and_version", unique: true
-    t.index ["user_id", "chain_id", "address"], name: "index_contracts_on_user_id_and_chain_id_and_address", unique: true
     t.index ["user_id"], name: "index_contracts_on_user_id"
   end
 
