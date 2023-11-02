@@ -2,7 +2,9 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id, :address, :created_at, :trades, :image_url, :name, :twitter, :verified,
     :completion_rate
 
-  has_many :contracts
+  has_many :contracts do
+    object.contracts.order(created_at: :desc)
+  end
 
   attribute :email do
     if object.email
