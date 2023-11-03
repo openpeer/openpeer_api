@@ -6,19 +6,23 @@ ActiveAdmin.register_page "Dashboard" do
     # Here is an example of a simple dashboard with columns and panels.
     #
     columns do
-      # column do
-      #   panel "Recent Lists" do
-      #     ul do
-      #       List.recent(5).map do |list|
-      #         li link_to(post.id, admin_post_path(post))
-      #       end
-      #     end
-      #   end
-      # end
+      column do
+        panel "Orders" do
+          Order.group(:status).count.each do |k,v|
+            para "#{k}: #{v}"
+          end
+        end
+      end
 
       column do
-        panel "Info" do
-          para "Welcome to OpenPeer Admin."
+        panel "Users Count" do
+          para User.count
+        end
+      end
+
+      column do
+        panel "Lists Count" do
+          para List.count
         end
       end
     end
