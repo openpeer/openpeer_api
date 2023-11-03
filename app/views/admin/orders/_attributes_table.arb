@@ -15,6 +15,7 @@ attributes_table_for order do
   row ("Price") do |order|
     "#{order.list.fiat_currency.symbol} #{order.price} per #{order.list.token.symbol}"
   end
+  row ("Escrow") { |order| status_tag order.list.escrow_type }
   row ("Payment Method") do |order|
     attributes_table_for order.payment_method do
       row :bank
@@ -29,15 +30,20 @@ attributes_table_for order do
       row ("tx") {|escrow| link_to(escrow.tx, escrow.tx_link, target: '_blank')  }
     end
   end
+  row ("Transactions") do |order|
+    order.transactions.find_each do |transaction|
+      attributes_table_for transaction do
+        row ("tx") {|transaction| link_to(transaction.tx_hash, transaction.tx_link, target: '_blank')  }
+      end
+    end
+  end
   row ("Status") { |order| status_tag order.status }
   if order.cancellation_reasons.present?
     row ("Cancellation Reasons") do |order|
-      table_for order.cancellation_reasons do
-        order.cancellation_reasons.find_each do |reason|
-          attributes_table_for reason do
-            row ("reason") do
-              CancellationReason::DEFAULT_REASONS.fetch(reason.reason.underscore.to_sym, "Other - #{reason.reason}")
-            end
+      order.cancellation_reasons.find_each do |reason|
+        attributes_table_for reason do
+          row ("reason") do
+            CancellationReason::DEFAULT_REASONS.fetch(reason.reason.underscore.to_sym, "Other - #{reason.reason}")
           end
         end
       end
