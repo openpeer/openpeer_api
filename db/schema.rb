@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_02_174234) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_03_134022) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,6 +146,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_02_174234) do
     t.string "symbol"
     t.string "country_code"
     t.integer "position"
+    t.boolean "allow_binance_rates", default: false
+    t.integer "default_price_source", default: 0
   end
 
   create_table "lists", force: :cascade do |t|
@@ -170,6 +172,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_02_174234) do
     t.integer "payment_time_limit"
     t.boolean "accept_only_verified", default: false
     t.integer "escrow_type", default: 0
+    t.integer "price_source", default: 0
     t.index ["bank_id"], name: "index_lists_on_bank_id"
     t.index ["chain_id", "seller_id"], name: "index_lists_on_chain_id_and_seller_id"
     t.index ["fiat_currency_id"], name: "index_lists_on_fiat_currency_id"
@@ -260,6 +263,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_02_174234) do
     t.boolean "gasless", default: false
     t.integer "position"
     t.decimal "minimum_amount"
+    t.boolean "allow_binance_rates", default: false
     t.index "lower((address)::text), chain_id", name: "index_tokens_on_lower_address_chain_id", unique: true
   end
 

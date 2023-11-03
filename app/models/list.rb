@@ -2,6 +2,7 @@ class List < ApplicationRecord
   enum status: [:created, :active, :closed], _default: :active
   enum margin_type: [:fixed, :percentage]
   enum escrow_type: [:manual, :instant], _default: :manual
+  enum price_source: [:coingecko, :binance_median, :binance_min, :binance_max], _default: :coingecko
 
   SELL_LIST_TYPE = 'SellList'
   BUY_LIST_TYPE = 'BuyList'
