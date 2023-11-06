@@ -17,6 +17,8 @@ class NotificationWorker
     buyer = order.buyer
     winner = order.dispute&.winner
 
+    return if type === NEW_ORDER && (order.list.instant? || order.list.buy_list?)
+
     actor = case type
             when NEW_ORDER, BUYER_PAID
               seller
