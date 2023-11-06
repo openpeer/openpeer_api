@@ -2,7 +2,7 @@ module Api
   module V1
     class PricesController < BaseController
       def show
-        @prices = Rails.cache.fetch(cache_key)
+        @prices = Rails.cache.fetch(cache_key) || []
         render json: @prices[price_source_index], status: :ok
       end
 
