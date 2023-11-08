@@ -9,7 +9,7 @@ ActiveAdmin.register_page "Dashboard" do
       column do
         panel "Orders" do
           Order.group(:status).count.each do |k,v|
-            para "#{k}: #{v}"
+            para link_to "#{k}: #{v}", admin_orders_path(scope: k)
           end
         end
       end
