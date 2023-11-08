@@ -34,6 +34,14 @@ class User < ApplicationRecord
     obj.presigned_url(:get, expires_in: 3600)
   end
 
+  def online
+    if timezone && available_from && available_to
+      now = Time.current.in_time_zone(timezone)
+      return false if (now.saturday? || now.sunday?) && weekend_offline
+      now.hour >= available_from && now.hour < available_to
+    end
+  end
+
   def self.find_or_create_by_address(address)
     User.where('lower(address) = ?', address.downcase).first ||
       User.create(address: Eth::Address.new(address).checksummed)
