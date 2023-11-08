@@ -26,7 +26,8 @@ module Api
       protected
 
       def user_params
-        params.require(:user_profile).permit(:image, :email, :name, :twitter)
+        params.require(:user_profile).permit(:image, :email, :name, :twitter, :timezone, :available_from,
+                                            :available_to, :weekend_offline)
       end
     end
   end

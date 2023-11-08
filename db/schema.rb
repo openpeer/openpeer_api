@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_03_134022) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_07_112646) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -295,6 +295,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_03_134022) do
     t.string "image"
     t.boolean "verified", default: false
     t.boolean "merchant", default: false
+    t.string "timezone"
+    t.integer "available_from"
+    t.integer "available_to"
+    t.boolean "weekend_offline", default: false
     t.index "lower((address)::text)", name: "index_users_on_lower_address", unique: true
     t.index ["merchant"], name: "index_users_on_merchant"
     t.index ["name"], name: "index_users_on_name", unique: true
