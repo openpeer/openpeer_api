@@ -1,7 +1,7 @@
 module Biconomy
   class SetupMethods
     attr_accessor :id, :address, :chain_id, :version
-    FULL_GASLESS_CHAIN_IDS = [137, 80001]
+    FULL_GASLESS_CHAIN_IDS = [137, 80001, 56, 10, 42161, 43114, 100]
 
     def initialize(id, address, chain_id, version)
       @id = id
