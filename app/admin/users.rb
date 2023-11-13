@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   menu priority: 3
   actions :index, :show, :edit, :update
-  permit_params :merchant, :name, :twitter
+  permit_params :merchant, :name, :twitter, :verified
 
   show do
     attributes_table do
