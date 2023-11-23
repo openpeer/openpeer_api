@@ -50,7 +50,7 @@ module Biconomy
         %w(createNativeEscrow createERC20Escrow markAsPaid buyerCancel)
       elsif version.to_s == '1'
         %w(release buyerCancel sellerCancel markAsPaid createERC20Escrow)
-      elsif version.to_s == '2' || version.to_s == '3'
+      else
         %w(release buyerCancel sellerCancel markAsPaid createNativeEscrow createERC20Escrow deposit withdrawBalance)
       end
     end
