@@ -12,7 +12,15 @@ class ListSerializer < ActiveModel::Serializer
   def price
     return 0 if @instance_options.fetch(:serializer_context_class, nil) == OrderSerializer
 
-    object.price
+    prices = Rails.cache.fetch(price_cache_key) || []
+    index = {
+      'binance_min' => 0,
+      'binance_median' => 1,
+      'binance_max' => 2,
+      'coingecko' => 4,
+    }.fetch(object.price_source, 4)
+
+    prices[index] || object.price
   end
 
   def accept_only_verified
@@ -30,5 +38,11 @@ class ListSerializer < ActiveModel::Serializer
     return unless contract
 
     contract.address
+  end
+
+  private
+
+  def price_cache_key
+    "prices/#{object.token.symbol.upcase}/#{object.fiat_currency.code.upcase}/#{object.sell_list? ? 'BUY' : 'SELL'}"
   end
 end
