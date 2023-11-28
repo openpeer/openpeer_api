@@ -56,6 +56,7 @@ class NotificationWorker
         url: "#{ENV['FRONTEND_URL']}/orders/#{order.uuid}",
         uuid: small_wallet_address(order.uuid, 6),
         winner: winner ? (winner.name.presence || small_wallet_address(winner.address)) : nil,
+        payment_method: order.payment_method&.bank.name
       }
     )
   end
