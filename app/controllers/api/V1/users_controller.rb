@@ -3,7 +3,7 @@ module Api
     class UsersController < BaseController
       def show
         begin
-          @user = User.find_or_create_by_address(params[:id].downcase)
+          @user = User.find_or_create_by_address(params[:id])
         rescue Eth::Address::CheckSumError
           @user = nil
         end

@@ -43,11 +43,12 @@ class User < ApplicationRecord
   end
 
   def self.find_or_create_by_address(address)
-    User.where('lower(address) = ?', address.downcase).first ||
-      User.create(address: Eth::Address.new(address).checksummed)
+    User.where('address ILIKE ?', address.downcase).first ||
+      (Tron::Address.valid?(address) ? User.create(address: address) :
+       User.create(address: Eth::Address.new(address).checksummed))
   end
 
   before_create do
-    self.address = Eth::Address.new(self.address).checksummed
+    self.address = Eth::Address.new(self.address).checksummed unless Tron::Address.valid?(address)
   end
 end

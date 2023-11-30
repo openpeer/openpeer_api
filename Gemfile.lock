@@ -104,6 +104,7 @@ GEM
       aws-sigv4 (~> 1.4)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
+    base58 (0.2.3)
     bcrypt (3.1.18)
     bootsnap (1.12.0)
       msgpack (~> 1.2)
@@ -380,6 +381,7 @@ DEPENDENCIES
   activeadmin (~> 2.13)
   activeadmin_json_editor (~> 0.0.7)
   aws-sdk-s3
+  base58
   bcrypt (~> 3.1.7)
   bootsnap
   bullet

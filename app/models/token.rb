@@ -3,7 +3,7 @@ class Token < ApplicationRecord
   validates :address, :chain_id, :decimals, :coingecko_id, presence: true
 
   before_create do
-    self.address = Eth::Address.new(self.address).checksummed
+    self.address = Eth::Address.new(self.address).checksummed unless Tron::Address.valid?(address)
   end
 
   def price_in_currency(code)
