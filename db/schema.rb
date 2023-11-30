@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_07_112646) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_30_124828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -216,6 +216,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_07_112646) do
     t.integer "deposit_time_limit"
     t.integer "payment_time_limit"
     t.integer "chain_id", null: false
+    t.decimal "points"
     t.index ["buyer_id"], name: "index_orders_on_buyer_id"
     t.index ["cancelled_by_id"], name: "index_orders_on_cancelled_by_id"
     t.index ["list_id"], name: "index_orders_on_list_id"
