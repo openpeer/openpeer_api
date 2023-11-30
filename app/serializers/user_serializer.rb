@@ -25,6 +25,6 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def points
-    orders.sum(:points)
+    object.orders.sum(:points)
   end
 end
