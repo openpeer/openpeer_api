@@ -33,7 +33,7 @@ attributes_table_for order do
   row ("Transactions") do |order|
     order.transactions.find_each do |transaction|
       attributes_table_for transaction do
-        row ("tx") {|transaction| link_to(transaction.tx_hash, transaction.tx_link, target: '_blank')  }
+        row ("tx") {|transaction| link_to("#{transaction.tx_hash} (#{transaction.created_at})", transaction.tx_link, target: '_blank')  }
       end
     end
   end
