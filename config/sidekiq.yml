@@ -4,5 +4,5 @@
       every: 30 minutes
       class: PriceDiscovery::CoordinatorWorker
     airdrop:
-      every: 1 hour
+      cron: '0 0 * * * *'
       class: Airdrop::CoordinatorWorker
