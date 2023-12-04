@@ -3,3 +3,6 @@
     price_discovery:
       every: 30 minutes
       class: PriceDiscovery::CoordinatorWorker
+    airdrop:
+      every: 1 hour
+      class: Airdrop::CoordinatorWorker
