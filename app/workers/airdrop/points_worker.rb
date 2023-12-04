@@ -9,13 +9,16 @@ module Airdrop
     def perform(contract_id, time = Time.now.utc.to_i)
       @contract = Contract.find(contract_id)
       
-      Token.where(chain_id: contract.chain_id).find_each do |token|
+      values = Token.where(chain_id: contract.chain_id).map do |token|
         token_contract = Eth::Contract.from_abi(abi: abi, address: token.address, name: token.name)
         balance = client.call(token_contract, 'balanceOf', contract.address)
         usd_value = (balance.to_f / 10 ** token.decimals) * token.price_in_currency('USD')
-        points = (POINTS_PER_USD * usd_value)
-        contract.update(points: (contract.points || 0) + points, locked_value: usd_value)
+        points = POINTS_PER_USD * usd_value
+        contract.update(points: (contract.points || 0) + points)
+        usd_value
       end
+
+      contract.update(locked_value: values.compact.sum)
     end
 
     private
