@@ -14,7 +14,7 @@ module Airdrop
         balance = client.call(token_contract, 'balanceOf', contract.address)
         usd_value = (balance.to_f / 10 ** token.decimals) * token.price_in_currency('USD')
         points = (POINTS_PER_USD * usd_value)
-        contract.update(points: (contract.points || 0) + points)
+        contract.update(points: (contract.points || 0) + points, locked_value: usd_value)
       end
     end
 
