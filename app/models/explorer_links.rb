@@ -1,10 +1,14 @@
 module ExplorerLinks
   def link
-    "#{explorers[order.chain_id]}/address/#{address}"
+    "#{explorer}/address/#{address}"
   end
 
-  def tx_link
-    "#{explorers[order.chain_id]}/tx/#{tx_hash}"
+  def network_name
+    names[chain_id]
+  end
+
+  def explorer
+    explorers[chain_id]
   end
  
   private
@@ -19,6 +23,19 @@ module ExplorerLinks
       43114 => 'https://cchain.explorer.avax.network',
       1 => 'https://etherscan.io',
       100 => 'https://gnosisscan.io'
+    }
+  end
+
+  def names
+    {
+      137 => 'Polygon',
+      80001 => 'Matic Mumbai',
+      56 => 'Binance Smart Chain',
+      10 => 'Optimism',
+      42161 => 'Arbitrum',
+      43114 => 'Avalanche',
+      1 => 'Ethereum',
+      100 => 'Gnosis'
     }
   end
 end

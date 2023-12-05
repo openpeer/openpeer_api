@@ -3,7 +3,11 @@ class Escrow < ApplicationRecord
 
   belongs_to :order
 
-  def tx_hash
-    tx
+  def link
+    "#{explorer}/tx/#{tx}"
+  end
+
+  def chain_id
+    order.chain_id
   end
 end
