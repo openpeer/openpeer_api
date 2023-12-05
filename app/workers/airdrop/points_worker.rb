@@ -12,10 +12,10 @@ module Airdrop
       
       values = Token.where(chain_id: contract.chain_id).map do |token|
         if token.address == ZERO_ADDRESS
+          balance = client.get_balance(contract.address)
+        else
           token_contract = Eth::Contract.from_abi(abi: abi, address: token.address, name: token.name)
           balance = client.call(token_contract, 'balanceOf', contract.address)
-        else
-          balance = client.get_balance(contract.address)
         end
         usd_value = (balance.to_f / 10 ** token.decimals) * token.price_in_currency('USD')
         points = POINTS_PER_USD * usd_value
