@@ -5,13 +5,18 @@ module Airdrop
     include Sidekiq::Worker
     attr_accessor :contract
     POINTS_PER_USD = 0.000832
+    ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
     def perform(contract_id, time = Time.now.utc.to_i)
       @contract = Contract.find(contract_id)
       
       values = Token.where(chain_id: contract.chain_id).map do |token|
-        token_contract = Eth::Contract.from_abi(abi: abi, address: token.address, name: token.name)
-        balance = client.call(token_contract, 'balanceOf', contract.address)
+        if token.address == ZERO_ADDRESS
+          token_contract = Eth::Contract.from_abi(abi: abi, address: token.address, name: token.name)
+          balance = client.call(token_contract, 'balanceOf', contract.address)
+        else
+          balance = client.get_balance(contract.address)
+        end
         usd_value = (balance.to_f / 10 ** token.decimals) * token.price_in_currency('USD')
         points = POINTS_PER_USD * usd_value
         contract.update(points: (contract.points || 0) + points)

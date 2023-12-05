@@ -13,13 +13,13 @@ module PriceDiscovery
 
       results = []
       if first_page
-        results << first_page.data.map {|ad| ad.dig('adv', 'price').to_f }
+        results << first_page.data.map { |ad| ad.dig('adv', 'price').to_f }
         total_pages = (first_page.total.to_f / PER_PAGE.to_f).ceil
         (2..total_pages).each do |page|
           @page = page
           page_result = search
           if page_result
-            results << page_result.data.map {|ad| ad.dig('adv', 'price').to_f }
+            results << page_result.data.map { |ad| ad.dig('adv', 'price').to_f }
           else
             break
           end

@@ -3,7 +3,7 @@ class Escrow < ApplicationRecord
 
   belongs_to :order
 
-  def link
+  def tx_link
     "#{explorer}/tx/#{tx}"
   end
 
