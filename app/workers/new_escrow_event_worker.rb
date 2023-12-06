@@ -1,5 +1,6 @@
 class NewEscrowEventWorker
   include Sidekiq::Worker
+  attr_accessor :order
 
   MARK_AS_PAID     = '0xf86890b0'
   BUYER_CANCEL     = '0xe9d13b57'
@@ -26,9 +27,9 @@ class NewEscrowEventWorker
     trade_id = log.fetch('topic1')
     return unless trade_id
 
-    order = Order.includes(:list)
-                 .find_by(trade_id: trade_id, chain_id: chain_id)
-    return unless order
+    @order = Order.includes(:list)
+                  .find_by(trade_id: trade_id, chain_id: chain_id)
+    return unless @order
 
     contract = Contract.where(chain_id: chain_id)
                        .where('lower(address) = ?', log['address'].downcase).first ||
@@ -83,12 +84,14 @@ class NewEscrowEventWorker
         dispute.save
       end
       NotificationWorker.perform_async(NotificationWorker::DISPUTE_RESOLVED, order.id)
+      ping_discord
     when RELEASE
       Order.transaction do
         order.update(status: :closed)
         dispute.update(resolved: true, winner: order.buyer) if dispute
       end
       NotificationWorker.perform_async(NotificationWorker::SELLER_RELEASED, order.id)
+      ping_discord
     end
 
     order.transactions.create(tx_hash: tx_hash)
@@ -136,5 +139,13 @@ class NewEscrowEventWorker
     when SELLER_CANCEL, RELEASE, CREATE_ERC20, CREATE_NATIVE
       order.seller
     end
+  end
+
+  def ping_discord
+    message = {
+      content: "New trade done!🎉 #{order.uuid}. [Details](https://admin.openpeer.xyz/admin/orders/#{order.id})"
+    }.to_json
+
+    RestClient.post(ENV['ORDERS_CHANNEL_WEBHOOK_URL'], message, { content_type: :json, accept: :json }) rescue nil
   end
 end
