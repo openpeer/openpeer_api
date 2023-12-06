@@ -1,3 +1,5 @@
+require 'digest'
+
 class Order < ApplicationRecord
   include ExplorerLinks
   enum status: [:created, :escrowed, :release, :cancelled, :dispute, :closed]
@@ -62,13 +64,19 @@ class Order < ApplicationRecord
   private
 
   def generate_trade_id
-    seller_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(seller.address, 0)
-    buyer_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(buyer.address, 0)
-    token = Eth::Util.bin_to_hex Eth::Util.zpad_hex(list.token.address, 0)
-    addresses = [uuid, seller_address, buyer_address, token].join
-    data = "#{addresses}#{Eth::Abi.encode(['uint256'], [raw_token_amount]).unpack("H*")[0]}"
-    bytes = [data[2..-1]].pack("H*")
-    Eth::Util.prefix_hex(Eth::Util.keccak256(bytes).unpack("H*")[0])
+    if list.tron?
+      addresses = [uuid, seller.address, buyer.address, list.token.address].join.downcase
+      data = "#{addresses}#{raw_token_amount}"
+      Eth::Util.prefix_hex(Digest::SHA256.hexdigest(data))
+    else
+      seller_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(seller.address, 0)
+      buyer_address = Eth::Util.bin_to_hex Eth::Util.zpad_hex(buyer.address, 0)
+      token = Eth::Util.bin_to_hex Eth::Util.zpad_hex(list.token.address, 0)
+      addresses = [uuid, seller_address, buyer_address, token].join
+      data = "#{addresses}#{Eth::Abi.encode(['uint256'], [raw_token_amount]).unpack("H*")[0]}"
+      bytes = [data[2..-1]].pack("H*")
+      Eth::Util.prefix_hex(Eth::Util.keccak256(bytes).unpack("H*")[0])
+    end
   end
 
   def raw_token_amount

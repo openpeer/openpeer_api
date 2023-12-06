@@ -1,4 +1,6 @@
 class List < ApplicationRecord
+  TRON_CHAIN_IDS = [999999999, 999999991, 999999992]
+
   enum status: [:created, :active, :closed], _default: :active
   enum margin_type: [:fixed, :percentage]
   enum escrow_type: [:manual, :instant], _default: :manual
@@ -33,6 +35,10 @@ class List < ApplicationRecord
 
   [SELL_LIST_TYPE, BUY_LIST_TYPE].each do |type|
     define_method("#{type.underscore}?") { self.type == type }
+  end
+
+  def tron?
+    TRON_CHAIN_IDS.include?(chain_id)
   end
 
   protected
