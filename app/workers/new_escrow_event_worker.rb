@@ -1,3 +1,5 @@
+require 'rest-client'
+
 class NewEscrowEventWorker
   include Sidekiq::Worker
   attr_accessor :order
@@ -143,7 +145,7 @@ class NewEscrowEventWorker
 
   def ping_discord
     message = {
-      content: "New trade done!🎉 #{order.uuid}. [Details](https://admin.openpeer.xyz/admin/orders/#{order.id})"
+      content: "New trade done!🎉 [#{order.uuid}](https://admin.openpeer.xyz/admin/orders/#{order.id})."
     }.to_json
 
     RestClient.post(ENV['ORDERS_CHANNEL_WEBHOOK_URL'], message, { content_type: :json, accept: :json }) rescue nil
