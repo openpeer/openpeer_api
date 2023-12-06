@@ -15,6 +15,10 @@ class User < ApplicationRecord
   has_many :contracts
   has_many :list_payment_methods
 
+  before_create do
+    self.address = Eth::Address.new(self.address).checksummed
+  end
+
   def orders
     Order.left_joins(:list).where('orders.buyer_id = ? OR orders.seller_id = ?', id, id)
   end

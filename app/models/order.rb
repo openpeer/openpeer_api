@@ -1,4 +1,5 @@
 class Order < ApplicationRecord
+  include ExplorerLinks
   enum status: [:created, :escrowed, :release, :cancelled, :dispute, :closed]
 
   belongs_to :list

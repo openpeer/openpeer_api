@@ -19,6 +19,9 @@ ActiveAdmin.register Order do
     column ('List') { |order| link_to(order.list.id, admin_list_path(order.list), target: '_blank') }
     column :seller
     column :buyer
+    column :network do |order|
+      order.network_name
+    end
     column :token_amount do |order|
       link_to("#{order.token_amount} #{order.list.token.symbol}", admin_token_path(order.list.token))
     end

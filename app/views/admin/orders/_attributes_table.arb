@@ -1,5 +1,6 @@
 attributes_table_for order do
   row ("UUID") { |order| link_to(order.uuid, admin_order_path(order)) }
+  row ("Network") { |order| link_to(order.network_name, order.explorer, target: '_blank') }
   row ("Seller") do |order|
     link_to(order.seller.address, admin_user_path(order.seller), target: "_blank")
   end
@@ -26,14 +27,15 @@ attributes_table_for order do
   end
   row ("Escrow") do |order|
     attributes_table_for order.escrow do
-      row ("address") {|escrow| link_to(escrow.address, escrow.link, target: '_blank')  }
-      row ("tx") {|escrow| link_to(escrow.tx, escrow.tx_link, target: '_blank')  }
+      row ("address") { |escrow| link_to(escrow.address, escrow.link, target: '_blank')  }
+      row ("tx") { |escrow| link_to(escrow.tx, escrow.tx_link, target: '_blank')  }
     end
   end
   row ("Transactions") do |order|
     order.transactions.find_each do |transaction|
       attributes_table_for transaction do
-        row ("tx") {|transaction| link_to(transaction.tx_hash, transaction.tx_link, target: '_blank')  }
+        row(:created_at)
+        row ("tx") { |transaction| link_to(transaction.tx_hash, transaction.link, target: '_blank') }
       end
     end
   end
