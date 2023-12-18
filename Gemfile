@@ -83,5 +83,3 @@ gem 'kaminari'
 gem 'activeadmin_json_editor', '~> 0.0.7'
 
 gem 'sidekiq-scheduler'
-
-gem 'base58'

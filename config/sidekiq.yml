@@ -6,3 +6,6 @@
     airdrop:
       cron: '0 0 * * * *'
       class: Airdrop::CoordinatorWorker
+    tron:
+      every: 30 seconds
+      class: Tron::EscrowDeploymentWorker

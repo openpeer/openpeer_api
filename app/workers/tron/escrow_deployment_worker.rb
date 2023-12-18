@@ -1,5 +1,8 @@
 require 'digest'
-require 'base58'
+require 'sidekiq-scheduler'
+
+BASE = 58
+ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 module Tron
   class EscrowDeploymentWorker
@@ -7,9 +10,9 @@ module Tron
     ADDRESS_PREFIX = '41';
 
     def perform
-      # timestamp = (Time.now.to_i - 30) * 1000
+      timestamp = (Time.now.to_i - 30) * 1000
       contracts.each do |chain_id, contract|
-        url = "#{contract.url}/v1/contracts/#{contract.address}/events?event_name=ContractCreated" # &min_block_timestamp=#{timestamp}"
+        url = "#{contract.url}/v1/contracts/#{contract.address}/events?event_name=ContractCreated&min_block_timestamp=#{timestamp}"
         response = RestClient.get(url, headers = headers)
         next unless response.code == 200
 
@@ -124,13 +127,71 @@ module Tron
     end
 
     def get_base58_check_address(address_bytes)
-      hash0 = Digest::SHA256.digest(address_bytes.pack('C*'))
-      hash1 = Digest::SHA256.digest(hash0)
+      hash0 = sha256(address_bytes)
+      hash1 = sha256(hash0)
 
-      check_sum = hash1.bytes[0, 4]
+      check_sum = hash1[0, 4]
       check_sum = address_bytes + check_sum
 
-      Base58.binary_to_base58(check_sum.pack('C*'))
+      encode58(check_sum)
+    end
+
+    def byte2hex_str(byte)
+      raise 'Input must be a number' unless byte.is_a?(Integer)
+      raise 'Input must be a byte' unless byte >= 0 && byte <= 255
+    
+      hex_byte_map = '0123456789ABCDEF'
+    
+      str = ''
+      str += hex_byte_map[byte >> 4]
+      str += hex_byte_map[byte & 0x0f]
+    
+      str
+    end
+    
+    def byte_array2hex_str(byte_array)
+      str = ''
+    
+      byte_array.each do |byte|
+        str += byte2hex_str(byte)
+      end
+    
+      str
+    end
+
+    def sha256(msg_bytes)
+      msg_hex = byte_array2hex_str(msg_bytes)
+      hash_hex = Digest::SHA256.hexdigest(msg_bytes.pack('c*'))
+      hex_str2byte_array(hash_hex)
+    end
+
+    def encode58(buffer)
+      return "" if buffer.empty?
+
+      digits = [0]
+
+      buffer.each do |byte|
+        carry = byte
+
+        digits.each_index do |j|
+          total = digits[j] * 256 + carry
+          carry, remainder = total.divmod(BASE)
+          digits[j] = remainder
+        end
+
+        while carry > 0
+          carry, remainder = carry.divmod(BASE)
+          digits << remainder
+        end
+      end
+
+      # Deal with leading zeros
+      buffer.each do |byte|
+        break if byte != 0
+        digits << 0
+      end
+
+      digits.reverse.map { |digit| ALPHABET[digit] }.join
     end
   end
 end
