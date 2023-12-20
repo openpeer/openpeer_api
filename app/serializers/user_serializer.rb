@@ -17,7 +17,7 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def completion_rate
-    orders_count = object.orders.count
+    orders_count = object.orders.joins(:escrow).count
     return unless orders_count > 0
 
     trades.to_f / orders_count.to_f
