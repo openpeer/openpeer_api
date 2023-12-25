@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   menu priority: 3
   actions :index, :show, :edit, :update
-  permit_params :merchant, :name, :twitter, :verified
+  permit_params :merchant, :name, :twitter, :verified, :imported_orders_count
 
   show do
     attributes_table do
@@ -12,6 +12,7 @@ ActiveAdmin.register User do
       row :verified
       row :merchant
       row :image
+      row :imported_orders_count
       row :created_at
       row :updated_at
       row ('Contracts') do |user|
