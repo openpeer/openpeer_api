@@ -2,10 +2,10 @@ attributes_table_for order do
   row ("UUID") { |order| link_to(order.uuid, admin_order_path(order)) }
   row ("Network") { |order| link_to(order.network_name, order.explorer, target: '_blank') }
   row ("Seller") do |order|
-    link_to(order.seller.address, admin_user_path(order.seller), target: "_blank")
+    link_to("#{order.seller.name} - #{order.seller.address}", admin_user_path(order.seller), target: "_blank")
   end
   row ("Buyer") do |order|
-    link_to(order.buyer.address, admin_user_path(order.buyer), target: "_blank")
+    link_to("#{order.buyer.name} - #{order.buyer.address}", admin_user_path(order.buyer), target: "_blank")
   end
   row ('Token') do |order|
     link_to("#{order.token_amount} #{order.list.token.symbol}", admin_token_path(order.list.token))
