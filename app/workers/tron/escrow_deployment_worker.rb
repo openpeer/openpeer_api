@@ -34,6 +34,7 @@ module Tron
       
           return if seller.contracts.find_by(address: address, chain_id: chain_id, version: version)
       
+          # @TODO: Empty chain ID
           contract = seller.contracts.create(address: address, chain_id: chain_id, version: version)
           # @TODO: Setup escrow events on TronSave
           # EscrowEventsSetupWorker.new.perform(contract.id, chain_id)

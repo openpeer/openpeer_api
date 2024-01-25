@@ -22,7 +22,9 @@ module ExplorerLinks
       42161 => 'https://arbiscan.io',
       43114 => 'https://cchain.explorer.avax.network',
       1 => 'https://etherscan.io',
-      100 => 'https://gnosisscan.io'
+      100 => 'https://gnosisscan.io',
+      999999992 => 'https://nile.tronscan.org/#/',
+      999999999 => 'https://tronscan.org/#'
     }
   end
 
@@ -35,7 +37,9 @@ module ExplorerLinks
       42161 => 'Arbitrum',
       43114 => 'Avalanche',
       1 => 'Ethereum',
-      100 => 'Gnosis'
+      100 => 'Gnosis',
+      999999992 => 'Tron Nile',
+      999999999 => 'Tron Mainnet'
     }
   end
 end
