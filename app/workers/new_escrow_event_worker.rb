@@ -72,7 +72,10 @@ class NewEscrowEventWorker
         dispute.update(resolved: true, winner: buyer_action ? order.seller : order.buyer) if dispute
       end
     when OPEN_DISPUTE
-      order.update(status: :dispute)
+      Order.transaction do
+        order.build_dispute.save
+        order.update(status: :dispute)
+      end
       NotificationWorker.perform_async(NotificationWorker::DISPUTE_OPENED, order.id)
     when DISPUTE_RESOLVED
       address = Eth::Abi.decode(['address'], log.fetch('topic2'))[0]
