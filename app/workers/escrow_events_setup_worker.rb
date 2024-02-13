@@ -2,7 +2,7 @@ class EscrowEventsSetupWorker
   include Sidekiq::Worker
   attr_accessor :contract
 
-  def perform(contract_id, chain_id)
+  def perform(contract_id)
     @contract = Contract.find(contract_id)
     id = @contract.id
     address = @contract.address
