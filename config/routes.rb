@@ -39,5 +39,8 @@ Rails.application.routes.draw do
     get '/webhooks', to: 'webhooks#index'
     post '/webhooks', to: 'webhooks#create'
     post '/webhooks/escrows', to: 'webhooks#escrows'
+    get '/blast/webhooks', to: 'blast_webhooks#index'
+    post '/blast/webhooks', to: 'blast_webhooks#create'
+    post '/blast/webhooks/escrows', to: 'blast_webhooks#escrows'
   end
 end
