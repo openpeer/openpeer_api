@@ -21,7 +21,7 @@ class Token < ApplicationRecord
   end
 
   def icon
-    "https://cryptologos.cc/logos/thumbs/#{coinmarketcap_id || coingecko_id}.png"
+    image_url || "https://cryptologos.cc/logos/thumbs/#{coinmarketcap_id || coingecko_id}.png"
   end
 
   private

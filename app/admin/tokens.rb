@@ -1,12 +1,13 @@
 ActiveAdmin.register Token do
   permit_params :address, :decimals, :symbol, :name, :position, :chain_id, :coingecko_id, :coinmarketcap_id, :gasless,
-                :minimum_amount, :allow_binance_rates
+                :minimum_amount, :allow_binance_rates, :image_url
   form do |f|
     f.inputs do
       f.input :address
       f.input :decimals
       f.input :symbol
       f.input :name
+      f.input :image_url
       f.input :position
       f.input :chain_id
       f.input :coingecko_id
