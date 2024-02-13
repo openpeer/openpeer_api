@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_20_120428) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_13_195219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -267,6 +267,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_20_120428) do
     t.integer "position"
     t.decimal "minimum_amount"
     t.boolean "allow_binance_rates", default: false
+    t.string "image_url"
     t.index "lower((address)::text), chain_id", name: "index_tokens_on_lower_address_chain_id", unique: true
   end
 
