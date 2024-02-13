@@ -39,8 +39,7 @@ module Blast
     end
 
     def base_url
-      # @TODO: change this to the correct url
-      'https://3469-2001-8a0-7296-db00-3869-8431-dce6-2eb6.ngrok-free.app/api/blast'
+      'https://api.openpeer.xyz/api/blast'
     end
 
     def webhook_url
