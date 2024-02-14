@@ -22,7 +22,8 @@ module ExplorerLinks
       42161 => 'https://arbiscan.io',
       43114 => 'https://cchain.explorer.avax.network',
       1 => 'https://etherscan.io',
-      100 => 'https://gnosisscan.io'
+      100 => 'https://gnosisscan.io',
+      168587773 => 'https://testnet.blastscan.io'
     }
   end
 
@@ -35,7 +36,8 @@ module ExplorerLinks
       42161 => 'Arbitrum',
       43114 => 'Avalanche',
       1 => 'Ethereum',
-      100 => 'Gnosis'
+      100 => 'Gnosis',
+      168587773 => 'Blast Testnet'
     }
   end
 end
