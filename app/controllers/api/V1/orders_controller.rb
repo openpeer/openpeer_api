@@ -3,7 +3,9 @@ module Api
     class OrdersController < JwtController
       def index
         chain_id_condition = { chain_id: params[:chain_id] } if params[:chain_id]
+        status_condition = { status: params[:status].values } if params[:status]
         @orders = Order.includes(:list).from_user(current_user.address)
+                       .where(status_condition)
                        .where(chain_id_condition)
         render json: @orders, each_serializer: OrderSerializer, include: '**', status: :ok, root: 'data'
       end
