@@ -104,7 +104,8 @@ module Api
         else
           @payment_method = OrderPaymentMethod.new(payment_method_params)
           @payment_method.user = current_user
-          @payment_method.bank_id = @order.list.bank_id
+
+          @payment_method.bank_id = @order.list.buy_list? ? params.dig(:order, :payment_method, :bank, :id) : @order.list.bank_id
           @payment_method.save
         end
         @payment_method
