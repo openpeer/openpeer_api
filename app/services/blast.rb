@@ -9,5 +9,5 @@ module Blast
     'event DisputeOpened(bytes32 indexed _orderHash, address indexed _sender)',
     'event DisputeResolved(bytes32 indexed _orderHash, address indexed _winner)'
   ]
-  CHAIN_ID = 168587773
+  CHAIN_ID = 81457
 end
