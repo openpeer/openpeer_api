@@ -37,4 +37,11 @@ ActiveAdmin.register User do
       end
     end
   end
+
+  form do |f|
+    f.semantic_errors # shows errors on :base
+    f.inputs
+    f.input :imported_orders_count
+    f.actions
+  end
 end
