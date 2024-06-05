@@ -11,7 +11,7 @@ module Api
 
       def update
         if current_user.update(user_params)
-          UpdateUserKnock.perform_async(current_user.id)
+          UpdateUserWorker.perform_async(current_user.id)
           render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
         else
           render json: { data: { message: 'User not updated', errors: current_user.errors }}, status: :ok
