@@ -19,8 +19,17 @@ class ListSerializer < ActiveModel::Serializer
       'binance_max' => 2,
       'coingecko' => 4,
     }.fetch(object.price_source, 4)
+    binance_price = prices[index]
 
-    prices[index] || object.price
+    if binance_price.to_f > 0
+      if object.fixed?
+        return object.margin
+      else
+        return binance_price + ((binance_price * object.margin) / 100)
+      end
+    end
+
+    object.price
   end
 
   def accept_only_verified
