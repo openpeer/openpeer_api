@@ -231,7 +231,7 @@ GEM
       net-protocol
       timeout
     netrc (0.11.0)
-    nio4r (2.5.8)
+    nio4r (2.5.9)
     nokogiri (1.13.6-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.13.6-x86_64-darwin)
@@ -372,6 +372,7 @@ PLATFORMS
   arm64-darwin-20
   x86_64-darwin-20
   x86_64-darwin-22
+  x86_64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
@@ -394,6 +395,7 @@ DEPENDENCIES
   jwt
   kaminari
   knockapi
+  nio4r (~> 2.5.9)
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.3)

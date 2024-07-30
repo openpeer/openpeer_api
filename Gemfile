@@ -83,3 +83,6 @@ gem 'kaminari'
 gem 'activeadmin_json_editor', '~> 0.0.7'
 
 gem 'sidekiq-scheduler'
+
+## added 7/30
+gem 'nio4r', '~> 2.5.9'
