@@ -30,6 +30,9 @@
 
 # Ignore .env
 .env
+.env.local
 
 # REDIS
 dump.rdb
+
+.vscode/

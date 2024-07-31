@@ -1,5 +1,9 @@
 require_relative "boot"
 
+## added 7/30 for use in dev with prod db
+# require 'dotenv/load'
+
+
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
