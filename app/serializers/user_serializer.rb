@@ -1,6 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :address, :created_at, :trades, :image_url, :name, :twitter, :verified,
-    :completion_rate, :timezone, :available_from, :available_to, :weekend_offline, :online
+    :completion_rate, :timezone, :available_from, :available_to, :weekend_offline, :online, :telegram_user_id, :telegram_username, :whatsapp_country_code, :whatsapp_number
 
   has_many :contracts do
     object.contracts.order(created_at: :desc)

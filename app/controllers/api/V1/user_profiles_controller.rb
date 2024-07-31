@@ -27,7 +27,7 @@ module Api
 
       def user_params
         params.require(:user_profile).permit(:image, :email, :name, :twitter, :timezone, :available_from,
-                                            :available_to, :weekend_offline)
+        :available_to, :weekend_offline, :telegram_user_id, :telegram_username, :whatsapp_country_code, :whatsapp_number)
       end
     end
   end

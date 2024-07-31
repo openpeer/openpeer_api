@@ -34,3 +34,5 @@
 
 # REDIS
 dump.rdb
+
+.vscode/
