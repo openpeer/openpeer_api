@@ -5,22 +5,17 @@ module Api
         @user = User.find_or_create_by_address(airdrop_params[:address]) rescue nil
         return render json: { message: 'Invalid address' }, status: :not_found unless @user
 
-        round = [1, airdrop_params[:round].to_i].max
-
-        @user_volume = user_volume_query(@user, round)
-        @total_volume = total_volume_query(round)
+        @user_volume = user_volume_query(@user)
+        @total_volume = total_volume_query
 
         render json: @user_volume.merge({ total: @total_volume }), status: :ok
       end
 
       private
 
-      # returns the time window for a given round. every month is a round starting in June 2023
-      # round 1 is June 1st 2023 to the last day of June, round 2 is July 1st 2023 to the last day of July, etc.
-
-      def round_to_time_window(round)
-        start_date = Date.new(2023, 6, 1) + (round - 1).months
-        end_date = start_date.end_of_month
+      def date_range
+        start_date = Date.new(2023, 6, 1)
+        end_date = Date.new(2024, 7, 1)
         [start_date.beginning_of_day, end_date.end_of_day]
       end
 
@@ -28,10 +23,10 @@ module Api
         params.permit(:address, :round)
       end
 
-      def user_volume_query(user, round)
+      def user_volume_query(user)
         orders = user.orders.joins(list: :token).left_joins(:dispute).closed
                             .where(disputes: { id: nil })
-                            .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
+                            .where('orders.created_at >= ? AND orders.created_at <= ?', *date_range)
         buy_volume = 0
         sell_volume = 0
         orders.inject(0) do |sum, order|
@@ -45,10 +40,10 @@ module Api
           liquidity_points: user.contracts.sum(:points) }
       end
 
-      def total_volume_query(round)
+      def total_volume_query
         orders = Order.joins(list: :token).left_joins(:dispute).closed
                       .where(disputes: { id: nil })
-                      .where('orders.created_at >= ? AND orders.created_at <= ?', *round_to_time_window(round))
+                      .where('orders.created_at >= ? AND orders.created_at <= ?', *date_range)
 
         orders.inject(0) do |sum, order|
           sum + (order.token_amount * order.list.token.price_in_currency('USD'))

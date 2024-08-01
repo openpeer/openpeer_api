@@ -3,6 +3,3 @@
     price_discovery:
       every: 30 minutes
       class: PriceDiscovery::CoordinatorWorker
-    airdrop:
-      cron: '0 0 * * * *'
-      class: Airdrop::CoordinatorWorker
