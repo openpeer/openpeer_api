@@ -57,3 +57,5 @@ notification_types.each do |type|
 end
 
 puts "All notifications tested!"
+
+// TODO: have the script clean up after itself.
