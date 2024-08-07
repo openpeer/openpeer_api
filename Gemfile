@@ -86,3 +86,6 @@ gem 'sidekiq-scheduler'
 
 ## added 7/30
 gem 'nio4r', '~> 2.5.9'
+
+## added 8/7
+gem 'telegram-bot-ruby'
