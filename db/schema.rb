@@ -10,23 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_13_195219) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_30_190525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "active_admin_comments", force: :cascade do |t|
-    t.string "namespace"
-    t.text "body"
-    t.string "resource_type"
-    t.bigint "resource_id"
-    t.string "author_type"
-    t.bigint "author_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
-    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
-    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
-  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -110,6 +96,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_195219) do
     t.decimal "points"
     t.decimal "locked_value"
     t.index ["user_id", "chain_id", "address", "version"], name: "index_contracts_on_user_id_and_chain_id_and_address_and_version", unique: true
+    t.index ["user_id", "chain_id", "address"], name: "index_contracts_on_user_id_and_chain_id_and_address", unique: true
     t.index ["user_id"], name: "index_contracts_on_user_id"
   end
 
@@ -304,9 +291,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_13_195219) do
     t.integer "available_to"
     t.boolean "weekend_offline", default: false
     t.integer "imported_orders_count", default: 0
+    t.bigint "telegram_user_id"
+    t.string "telegram_username"
+    t.string "whatsapp_country_code"
+    t.string "whatsapp_number"
     t.index "lower((address)::text)", name: "index_users_on_lower_address", unique: true
     t.index ["merchant"], name: "index_users_on_merchant"
     t.index ["name"], name: "index_users_on_name", unique: true
+    t.index ["telegram_user_id"], name: "index_users_on_telegram_user_id", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   menu priority: 3
   actions :index, :show, :edit, :update
-  permit_params :merchant, :name, :twitter, :verified, :imported_orders_count
+  permit_params :merchant, :name, :twitter, :verified, :imported_orders_count, :telegram_user_id, :telegram_username, :whatsapp_country_code, :whatsapp_number
 
   show do
     attributes_table do
@@ -9,6 +9,10 @@ ActiveAdmin.register User do
       row :name
       row :email
       row :twitter
+      row :telegram_user_id
+      row :telegram_username
+      row :whatsapp_country_code
+      row :whatsapp_number
       row :verified
       row :merchant
       row :image
