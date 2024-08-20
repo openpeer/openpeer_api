@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  before_validation :generate_unique_identifier, on: :create
   validates :address, presence: true, uniqueness: { case_sensitive: false }
   validates :email, 'valid_email_2/email': true, allow_blank: true
   validates :name, uniqueness: { case_sensitive: false }, allow_blank: true
@@ -59,5 +60,11 @@ class User < ApplicationRecord
 
   before_create do
     self.address = Eth::Address.new(self.address).checksummed
+  end
+
+  private
+
+  def generate_unique_identifier
+    self.unique_identifier ||= SecureRandom.uuid
   end
 end
