@@ -1,10 +1,16 @@
-# app/controllers/telegram_controller.rb
+# app/controllers/api/telegram_controller.rb
+require 'telegram/bot'
+
+module Api
 class TelegramController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def webhook
+    # Permit the parameters
+    permitted_params = params.require(:message).permit(:text, chat: [:id], from: [:username])
+
     # Parse the incoming update from Telegram
-    update = Telegram::Bot::Types::Update.new(params)
+    update = Telegram::Bot::Types::Update.new(permitted_params.to_h)
 
     # Check if the update contains a message
     if update.message
@@ -60,4 +66,5 @@ class TelegramController < ApplicationController
     message = "GM #{user_name}. You have just subscribed to receive OpenPeer trade notifications. Your unique chat ID is #{chat_id}. Please make sure I'm not muted!"
     send_message(chat_id, message)
   end
+end
 end
