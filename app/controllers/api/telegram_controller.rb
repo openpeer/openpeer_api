@@ -21,11 +21,11 @@ module Api
 
             if user
               chat_id = message[:chat][:id]
-              username = message[:from][:username][:telegram_username]
+              username = message[:from][:username]
               Rails.logger.info "Updating user with chat_id: #{chat_id}, username: #{username}"
 
               user.update(telegram_user_id: chat_id, telegram_username: username)
-              send_welcome_message(chat_id, user.name)
+          send_welcome_message(chat_id, user.name)
             else
               Rails.logger.warn "User not found with unique identifier: #{unique_identifier}"
               send_message(message[:chat][:telegram_user_id], "User not found. Please make sure you entered the correct unique identifier.")
@@ -48,7 +48,7 @@ module Api
 
     def send_message(chat_id, text)
       Telegram::Bot::Client.run(ENV['TELEGRAM_BOT_TOKEN']) do |bot|
-        bot.api.send_message(chat_id: chat_id, text: text)
+        bot.api.send_message(chat_id: chat_id.to_s, text: text)
       end
     rescue StandardError => e
       Rails.logger.error "Failed to send message: #{e.message}"
