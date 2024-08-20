@@ -8,7 +8,7 @@ module Api
     def webhook
       Rails.logger.info "Received webhook request with params: #{params.inspect}"
 
-      message = params[:message] || params[:telegram][:message]
+      message = params[:message]
       
       if message && message[:text]
         if message[:text].start_with?('/start')
@@ -20,8 +20,8 @@ module Api
             Rails.logger.info "User found: #{user.inspect}"
 
             if user
-              chat_id = message[:chat][:telegram_user_id]
-              username = message[:from][:telegram_username]
+              chat_id = message[:chat][:id]
+              username = message[:from][:username][:telegram_username]
               Rails.logger.info "Updating user with chat_id: #{chat_id}, username: #{username}"
 
               user.update(telegram_user_id: chat_id, telegram_username: username)
