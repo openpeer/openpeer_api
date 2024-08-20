@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_30_190525) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_20_153941) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -295,10 +295,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_30_190525) do
     t.string "telegram_username"
     t.string "whatsapp_country_code"
     t.string "whatsapp_number"
+    t.string "unique_identifier"
     t.index "lower((address)::text)", name: "index_users_on_lower_address", unique: true
     t.index ["merchant"], name: "index_users_on_merchant"
     t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["telegram_user_id"], name: "index_users_on_telegram_user_id", unique: true
+    t.index ["unique_identifier"], name: "index_users_on_unique_identifier", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
