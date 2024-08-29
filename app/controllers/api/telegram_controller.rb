@@ -24,8 +24,13 @@ module Api
               username = message[:from][:username]
               Rails.logger.info "Updating user with chat_id: #{chat_id}, username: #{username}"
 
-              user.update(telegram_user_id: chat_id, telegram_username: username)
-          send_welcome_message(chat_id, user.name)
+              if User.exists?(telegram_user_id: chat_id) && User.find_by(telegram_user_id: chat_id) != user
+                Rails.logger.warn "Telegram ID #{chat_id} is already associated with another account."
+                send_message(chat_id, "This Telegram ID is already associated with another account.")
+              else
+                user.update(telegram_user_id: chat_id, telegram_username: username)
+                send_welcome_message(chat_id, user.name)
+              end
             else
               Rails.logger.warn "User not found with unique identifier: #{unique_identifier}"
               send_message(message[:chat][:telegram_user_id], "User not found. Please make sure you entered the correct unique identifier.")
@@ -55,7 +60,7 @@ module Api
     end
 
     def send_welcome_message(chat_id, user_name)
-      message = "GM #{user_name}. You have just subscribed to receive OpenPeer trade notifications. Your unique chat ID is #{chat_id}. Please make sure I'm not muted!"
+      message = "GM #{user_name}. Welcome! You have just subscribed to receive OpenPeer trade notifications. Your unique chat ID is #{chat_id}. Please make sure I'm not muted!"
       send_message(chat_id, message)
     end
   end
