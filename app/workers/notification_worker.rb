@@ -12,6 +12,9 @@ class NotificationWorker
   DISPUTE_OPENED = 'dispute-opened'
   DISPUTE_RESOLVED = 'dispute-resolved'
 
+    # Remove the condition that skips the notification for instant escrow ads
+    # return if type === NEW_ORDER && (order.list.instant? || order.list.buy_list?)
+
   def perform(type, order_id)
     order = Order.includes(:list, :buyer, :cancelled_by).find(order_id)
     seller = order.seller
