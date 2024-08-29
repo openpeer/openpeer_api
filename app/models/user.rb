@@ -1,3 +1,4 @@
+# app/models/user.rb
 class User < ApplicationRecord
   before_validation :generate_unique_identifier, on: :create
   validates :address, presence: true, uniqueness: { case_sensitive: false }
