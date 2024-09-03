@@ -48,20 +48,20 @@ class NotificationWorker
     cancelled_by = order.cancelled_by
 
     data = {
-        username: actor&.name.presence || small_wallet_address(actor&.address || ''),
-        seller: seller.name.presence || small_wallet_address(seller.address),
-        buyer: buyer.name.presence || small_wallet_address(buyer.address),
-        cancelled_by: cancelled_by ? (cancelled_by.name.presence || small_wallet_address(cancelled_by.address)) : nil,
-        token_amount: order.token_amount.to_s,
-        fiat_amount: order.fiat_amount.to_s,
-        token: order.list.token.symbol,
-        fiat: order.list.fiat_currency.code,
-        price: order.price.to_s,
-        url: "#{ENV['FRONTEND_URL']}/orders/#{order.uuid}",
-        uuid: small_wallet_address(order.uuid, 6),
-        winner: winner ? (winner.name.presence || small_wallet_address(winner.address)) : nil,
-        payment_method: order.payment_method&.bank.name
-      }
+      username: actor&.name.presence || small_wallet_address(actor&.address || ''),
+      seller: seller.name.presence || small_wallet_address(seller.address),
+      buyer: buyer.name.presence || small_wallet_address(buyer.address),
+      cancelled_by: cancelled_by ? (cancelled_by.name.presence || small_wallet_address(cancelled_by.address)) : nil,
+      token_amount: order.token_amount ? ('%.2f' % order.token_amount) : 'N/A',
+      fiat_amount: order.fiat_amount ? ('%.2f' % order.fiat_amount) : 'N/A',
+      token: order.list.token&.symbol || 'N/A',
+      fiat: order.list.fiat_currency&.code || 'N/A',
+      price: order.price ? ('%.2f' % order.price) : 'N/A',
+      url: "#{ENV['FRONTEND_URL']}/orders/#{order.uuid}",
+      uuid: small_wallet_address(order.uuid, 6),
+      winner: winner ? (winner.name.presence || small_wallet_address(winner.address)) : nil,
+      payment_method: order.payment_method&.bank&.name || 'N/A'
+    }
 
     Knock::Workflows.trigger(
       key: type,
