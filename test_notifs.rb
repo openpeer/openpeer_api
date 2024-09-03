@@ -1,8 +1,9 @@
+require_relative 'config/environment'
+
 seller = User.find_by!(telegram_user_id: 468259635)
 buyer = User.find_by!(telegram_user_id: 468259635)
 
 token = Token.first
-
 fiat_currency = FiatCurrency.first
 
 payment_method = ListPaymentMethod.create!(
@@ -20,8 +21,9 @@ list = List.create!(
   banks: [Bank.first],
   margin: 0.01,
   margin_type: :fixed,
-  payment_method: payment_method
-  )
+  payment_method: payment_method,
+  escrow_type: :instant # Set the list as an instant escrow list
+)
 
 # Create the order
 order = Order.create!(
@@ -58,4 +60,4 @@ end
 
 puts "All notifications tested!"
 
-// TODO: have the script clean up after itself.
+# TODO: have the script clean up after itself.
