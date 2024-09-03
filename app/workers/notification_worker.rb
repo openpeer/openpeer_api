@@ -83,7 +83,7 @@ class NotificationWorker
   
       message = format_telegram_message(type, actor, data)
       begin
-        response = bot.api.send_message(chat_id: recipient[:telegram_user_id], text: message)
+        response = bot.api.send_message(chat_id: recipient[:telegram_user_id], text: message, parse_mode: 'Markdown')
         if response['ok']
           Rails.logger.info("Telegram notification sent successfully to user #{recipient[:telegram_user_id]} for order #{data[:uuid]}")
         else
@@ -102,24 +102,26 @@ class NotificationWorker
   end
 
   def format_telegram_message(type, actor, data)
-    case type
+    base_message = case type
     when NEW_ORDER
-      "New order ##{data[:order_number]} received from #{data[:buyer]} for #{'%.2f' % data[:token_amount]} #{data[:token]} (#{'%.2f' % data[:fiat_amount]} #{data[:fiat]}) #{data[:url]})"
+      "New order ##{data[:order_number]} received from #{data[:buyer]} for #{'%.2f' % data[:token_amount]} #{data[:token]} (#{'%.2f' % data[:fiat_amount]} #{data[:fiat]})"
     when SELLER_ESCROWED
-      "Seller #{data[:seller]} has escrowed #{'%.2f' % data[:token_amount]} #{data[:token]} for your order ##{data[:order_number]} #{data[:url]})"
+      "Seller #{data[:seller]} has escrowed #{'%.2f' % data[:token_amount]} #{data[:token]} for your order ##{data[:order_number]}"
     when BUYER_PAID
-      "Buyer #{data[:buyer]} has marked the payment as sent for #{'%.2f' % data[:fiat_amount]} #{data[:fiat]} for order ##{data[:order_number]} #{data[:url]})"
+      "Buyer #{data[:buyer]} has marked the payment as sent for #{'%.2f' % data[:fiat_amount]} #{data[:fiat]} for order ##{data[:order_number]}"
     when SELLER_RELEASED
-      "Seller #{data[:seller]} has released #{'%.2f' % data[:token_amount]} #{data[:token]} for your order ##{data[:order_number]} #{data[:url]})"
+      "Seller #{data[:seller]} has released #{'%.2f' % data[:token_amount]} #{data[:token]} for your order ##{data[:order_number]}"
     when ORDER_CANCELLED
-      "Order #{data[:uuid]} ##{data[:order_number]} has been cancelled by #{data[:cancelled_by]} #{data[:url]})"
+      "Order #{data[:uuid]} ##{data[:order_number]} has been cancelled by #{data[:cancelled_by]}"
     when DISPUTE_OPENED
-      "A dispute has been opened for order #{data[:uuid]} ##{data[:order_number]} #{data[:url]})"
+      "A dispute has been opened for order #{data[:uuid]} ##{data[:order_number]}"
     when DISPUTE_RESOLVED
-      "The dispute for order #{data[:uuid]} ##{data[:order_number]} has been resolved. Winner: #{data[:winner]} #{data[:url]})"
+      "The dispute for order #{data[:uuid]} ##{data[:order_number]} has been resolved. Winner: #{data[:winner]}"
     else
-      "Order #{data[:uuid]} ##{data[:order_number]} status update: #{type} #{data[:url]})"
+      "Order #{data[:uuid]} ##{data[:order_number]} status update: #{type}"
     end
+
+    "#{base_message}\n\n[View Order](#{data[:url]}) | Copy link: `#{data[:url]}`"
   end
 
   def self.test_notification(user_id)
