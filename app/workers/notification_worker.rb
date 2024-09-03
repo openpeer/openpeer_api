@@ -60,7 +60,9 @@ class NotificationWorker
       url: "#{ENV['FRONTEND_URL']}/orders/#{order.uuid}",
       uuid: small_wallet_address(order.uuid, 6),
       winner: winner ? (winner.name.presence || small_wallet_address(winner.address)) : nil,
-      payment_method: order.payment_method&.bank&.name || 'N/A'
+      payment_method: order.payment_method&.bank&.name || 'N/A',
+      order_number: order.id
+
     }
 
     Knock::Workflows.trigger(
@@ -102,21 +104,21 @@ class NotificationWorker
   def format_telegram_message(type, actor, data)
     case type
     when NEW_ORDER
-      "New order received from #{data[:buyer]} for #{'%.2f' % data[:token_amount]} #{data[:token]} (#{'%.2f' % data[:fiat_amount]} #{data[:fiat]})"
+      "New order ##{data[:order_number]} received from #{data[:buyer]} for #{'%.2f' % data[:token_amount]} #{data[:token]} (#{'%.2f' % data[:fiat_amount]} #{data[:fiat]}) #{data[:url]})"
     when SELLER_ESCROWED
-      "Seller #{data[:seller]} has escrowed #{'%.2f' % data[:token_amount]} #{data[:token]} for your order"
+      "Seller #{data[:seller]} has escrowed #{'%.2f' % data[:token_amount]} #{data[:token]} for your order ##{data[:order_number]} #{data[:url]})"
     when BUYER_PAID
-      "Buyer #{data[:buyer]} has marked the payment as sent for #{'%.2f' % data[:fiat_amount]} #{data[:fiat]}"
+      "Buyer #{data[:buyer]} has marked the payment as sent for #{'%.2f' % data[:fiat_amount]} #{data[:fiat]} for order ##{data[:order_number]} #{data[:url]})"
     when SELLER_RELEASED
-      "Seller #{data[:seller]} has released #{'%.2f' % data[:token_amount]} #{data[:token]} for your order"
+      "Seller #{data[:seller]} has released #{'%.2f' % data[:token_amount]} #{data[:token]} for your order ##{data[:order_number]} #{data[:url]})"
     when ORDER_CANCELLED
-      "Order #{data[:uuid]} has been cancelled by #{data[:cancelled_by]}"
+      "Order #{data[:uuid]} ##{data[:order_number]} has been cancelled by #{data[:cancelled_by]} #{data[:url]})"
     when DISPUTE_OPENED
-      "A dispute has been opened for order #{data[:uuid]}"
+      "A dispute has been opened for order #{data[:uuid]} ##{data[:order_number]} #{data[:url]})"
     when DISPUTE_RESOLVED
-      "The dispute for order #{data[:uuid]} has been resolved. Winner: #{data[:winner]}"
+      "The dispute for order #{data[:uuid]} ##{data[:order_number]} has been resolved. Winner: #{data[:winner]} #{data[:url]})"
     else
-      "Order #{data[:uuid]} status update: #{type}"
+      "Order #{data[:uuid]} ##{data[:order_number]} status update: #{type} #{data[:url]})"
     end
   end
 
