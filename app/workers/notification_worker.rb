@@ -102,13 +102,13 @@ class NotificationWorker
   def format_telegram_message(type, actor, data)
     case type
     when NEW_ORDER
-      "New order received from #{data[:buyer]} for #{data[:token_amount]} #{data[:token]} (#{data[:fiat_amount]} #{data[:fiat]})"
+      "New order received from #{data[:buyer]} for #{'%.2f' % data[:token_amount]} #{data[:token]} (#{'%.2f' % data[:fiat_amount]} #{data[:fiat]})"
     when SELLER_ESCROWED
-      "Seller #{data[:seller]} has escrowed #{data[:token_amount]} #{data[:token]} for your order"
+      "Seller #{data[:seller]} has escrowed #{'%.2f' % data[:token_amount]} #{data[:token]} for your order"
     when BUYER_PAID
-      "Buyer #{data[:buyer]} has marked the payment as sent for #{data[:fiat_amount]} #{data[:fiat]}"
+      "Buyer #{data[:buyer]} has marked the payment as sent for #{'%.2f' % data[:fiat_amount]} #{data[:fiat]}"
     when SELLER_RELEASED
-      "Seller #{data[:seller]} has released #{data[:token_amount]} #{data[:token]} for your order"
+      "Seller #{data[:seller]} has released #{'%.2f' % data[:token_amount]} #{data[:token]} for your order"
     when ORDER_CANCELLED
       "Order #{data[:uuid]} has been cancelled by #{data[:cancelled_by]}"
     when DISPUTE_OPENED
