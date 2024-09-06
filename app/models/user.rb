@@ -11,7 +11,7 @@ class User < ApplicationRecord
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 23 }, allow_blank: true
 
     validates :telegram_user_id, uniqueness: true, allow_nil: true
-    validates :telegram_username, uniqueness: true, allow_nil: true
+    validates :telegram_username, uniqueness: true, allow_nil: true, allow_blank: true
     validates :whatsapp_country_code, presence: true, if: -> { whatsapp_number.present? }
     validates :whatsapp_number, presence: true, if: -> { whatsapp_country_code.present? }
     
