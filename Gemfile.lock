@@ -297,7 +297,6 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rake (13.0.6)
-    random_name_generator (2.1.0)
     ransack (3.2.1)
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
@@ -432,7 +431,6 @@ DEPENDENCIES
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.3)
-  random_name_generator
   rest-client
   rspec-rails
   rspec-sidekiq
