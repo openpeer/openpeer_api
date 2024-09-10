@@ -1,4 +1,3 @@
-# app/controllers/api/V1/user_profiles_controller.rb
 module Api
   module V1
     class UserProfilesController < JwtController
@@ -15,11 +14,7 @@ module Api
           UpdateUserWorker.perform_async(current_user.id)
           render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
         else
-          if current_user.errors[:name].include?("has already been taken")
-            render json: { data: { message: 'Username already exists', errors: current_user.errors.full_messages }}, status: :unprocessable_entity
-          else
-            render json: { data: { message: 'User not updated', errors: current_user.errors.full_messages }}, status: :unprocessable_entity
-          end
+          render json: { data: { message: 'User not updated', errors: current_user.errors }}, status: :ok
         end
       end
 

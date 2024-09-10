@@ -89,6 +89,3 @@ gem 'nio4r', '~> 2.5.9'
 
 ## added 8/7
 gem 'telegram-bot-ruby'
-
-## 9/10/24
-gem 'random_name_generator'
