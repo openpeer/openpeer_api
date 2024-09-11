@@ -19,6 +19,8 @@ class User < ApplicationRecord
     self.address = Eth::Address.new(self.address).checksummed
   end
 
+  has_many :contracts
+
   def orders
     Order.left_joins(:list).where('orders.buyer_id = ? OR orders.seller_id = ?', id, id)
   end
