@@ -1,6 +1,7 @@
 # app/models/user.rb
 class User < ApplicationRecord
   before_validation :set_random_name, on: :create
+  before_validation :generate_unique_identifier, on: :create
 
   validates :address, presence: true, uniqueness: { case_sensitive: false }
   validates :email, 'valid_email_2/email': true, allow_blank: true
@@ -48,9 +49,9 @@ class User < ApplicationRecord
     end
   end
 
-  def self.find_or_create_by_address(address)
+  def self.find_or_create_by_address(address, email = nil)
     User.where('lower(address) = ?', address.downcase).first ||
-      User.create(address: Eth::Address.new(address).checksummed)
+      User.create(address: Eth::Address.new(address).checksummed, email: email)
   end
 
   private
@@ -93,5 +94,3 @@ class User < ApplicationRecord
     username
   end
 end
-
-# comment to prompt staging preview
