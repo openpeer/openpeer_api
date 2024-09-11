@@ -15,6 +15,7 @@ module Api
           UpdateUserWorker.perform_async(current_user.id)
           render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
         else
+          Rails.logger.error("User update failed: #{current_user.errors.full_messages.join(', ')}")
           if current_user.errors[:name].include?("has already been taken")
             render json: { data: { message: 'Username already exists', errors: current_user.errors.full_messages }}, status: :unprocessable_entity
           else
