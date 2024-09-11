@@ -1,7 +1,8 @@
 # app/models/user.rb
 class User < ApplicationRecord
   before_validation :set_random_name, on: :create
-
+  before_validation :generate_unique_identifier, on: :create
+  
   validates :address, presence: true, uniqueness: { case_sensitive: false }
   validates :email, 'valid_email_2/email': true, allow_blank: true
   validates :name, uniqueness: { case_sensitive: false }, allow_blank: true, length: { maximum: 15 }
