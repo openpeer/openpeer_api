@@ -42,7 +42,7 @@ class User < ApplicationRecord
   end
 
   def online
-    if timezone && available_from && available_to
+    if timezone.present? && available_from.present? && available_to.present?
       now = Time.current.in_time_zone(timezone)
       return false if (now.saturday? || now.sunday?) && weekend_offline
       now.hour >= available_from && now.hour < available_to
