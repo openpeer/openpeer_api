@@ -3,10 +3,16 @@ module Api
   module V1
     class UserProfilesController < JwtController
       def show
-        if current_user
-          render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
-        else
-          render json: { data: { message: 'User not found', errors: 'not_found' }}, status: :ok
+        begin
+          if current_user
+            render json: current_user, serializer: UserSerializer, params: { show_email: true }, status: :ok, root: 'data'
+          else
+            render json: { data: { message: 'User not found', errors: 'not_found' }}, status: :ok
+          end
+        rescue => e
+          Rails.logger.error("Error in UserProfilesController#show: #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
+          render json: { data: { message: 'An error occurred', errors: 'internal_server_error' }}, status: :internal_server_error
         end
       end
 
