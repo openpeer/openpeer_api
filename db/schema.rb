@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_20_153941) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_13_212957) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_153941) do
     t.index ["bank_id", "fiat_currency_id"], name: "index_banks_fiat_currencies_on_bank_id_and_fiat_currency_id", unique: true
     t.index ["bank_id"], name: "index_banks_fiat_currencies_on_bank_id"
     t.index ["fiat_currency_id"], name: "index_banks_fiat_currencies_on_fiat_currency_id"
+  end
+
+  create_table "blocked_relationships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "blocked_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_user_id"], name: "index_blocked_relationships_on_blocked_user_id"
+    t.index ["user_id", "blocked_user_id"], name: "index_blocked_relationships_on_user_id_and_blocked_user_id", unique: true
+    t.index ["user_id"], name: "index_blocked_relationships_on_user_id"
   end
 
   create_table "cancellation_reasons", force: :cascade do |t|
@@ -266,6 +276,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_153941) do
     t.index ["order_id"], name: "index_transactions_on_order_id"
   end
 
+  create_table "trusted_relationships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "trusted_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trusted_user_id"], name: "index_trusted_relationships_on_trusted_user_id"
+    t.index ["user_id", "trusted_user_id"], name: "index_trusted_relationships_on_user_id_and_trusted_user_id", unique: true
+    t.index ["user_id"], name: "index_trusted_relationships_on_user_id"
+  end
+
   create_table "user_disputes", force: :cascade do |t|
     t.bigint "dispute_id", null: false
     t.bigint "user_id", null: false
@@ -307,6 +327,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_153941) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "banks_fiat_currencies", "banks"
   add_foreign_key "banks_fiat_currencies", "fiat_currencies"
+  add_foreign_key "blocked_relationships", "users"
+  add_foreign_key "blocked_relationships", "users", column: "blocked_user_id"
   add_foreign_key "cancellation_reasons", "orders"
   add_foreign_key "contracts", "users"
   add_foreign_key "dispute_files", "user_disputes"
@@ -322,6 +344,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_153941) do
   add_foreign_key "orders", "users", column: "cancelled_by_id"
   add_foreign_key "orders", "users", column: "seller_id"
   add_foreign_key "transactions", "orders"
+  add_foreign_key "trusted_relationships", "users"
+  add_foreign_key "trusted_relationships", "users", column: "trusted_user_id"
   add_foreign_key "user_disputes", "disputes"
   add_foreign_key "user_disputes", "users"
 end
