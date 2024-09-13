@@ -1,10 +1,10 @@
-# app/controllers/api/V1/users_controller.rb
+# app/controllers/api/V1/user_search_controller.rb
 module Api
   module V1
-    class UsersController < BaseController
+    class UserSearchController < BaseController
       def show
         begin
-          @user = User.find_or_create_by_address(params[:id].downcase)
+          @user = User.where('LOWER(address) = ?', params[:id].downcase).first
         rescue Eth::Address::CheckSumError
           @user = nil
         end
