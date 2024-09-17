@@ -22,6 +22,20 @@ class User < ApplicationRecord
 
   has_many :contracts
 
+    # Trusted users
+    has_many :trusted_relationships, dependent: :destroy
+    has_many :trusted_users, through: :trusted_relationships
+  
+    has_many :inverse_trusted_relationships, class_name: "TrustedRelationship", foreign_key: "trusted_user_id"
+    has_many :trusting_users, through: :inverse_trusted_relationships, source: :user
+  
+    # Blocked users
+    has_many :blocked_relationships, dependent: :destroy
+    has_many :blocked_users, through: :blocked_relationships
+  
+    has_many :inverse_blocked_relationships, class_name: "BlockedRelationship", foreign_key: "blocked_user_id"
+    has_many :blocking_users, through: :inverse_blocked_relationships, source: :user
+
   def orders
     Order.left_joins(:list).where('orders.buyer_id = ? OR orders.seller_id = ?', id, id)
   end

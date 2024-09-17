@@ -38,8 +38,14 @@ module Api
       protected
 
       def user_params
-        params.require(:user_profile).permit(:image, :email, :name, :twitter, :timezone, :available_from,
+        params = params.require(:user_profile).permit(:image, :email, :name, :twitter, :timezone, :available_from,
         :available_to, :weekend_offline, :telegram_user_id, :telegram_username, :whatsapp_country_code, :whatsapp_number)
+        
+        # Convert integers to Time objects if necessary
+        params[:available_from] = Time.parse("#{params[:available_from]}:00") if params[:available_from].present?
+        params[:available_to] = Time.parse("#{params[:available_to]}:00") if params[:available_to].present?
+        
+        params
       end
     end
   end

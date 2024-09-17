@@ -1,3 +1,4 @@
+# config/routes.rb
 require 'sidekiq/web'
 
 Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
@@ -34,6 +35,15 @@ Rails.application.routes.draw do
       get '/layer3/ad', to: 'layer3#ad'
       get '/layer3/ordered', to: 'layer3#ordered'
       get '/prices/:token/:fiat', to: 'prices#show'
+      get '/user_search/:id', to: 'user_search#show'
+      
+      # New routes for user relationships
+      resources :user_relationships, only: [:index] do
+        collection do
+          post ':relationship_type/:target_user_id', action: :create
+          delete ':relationship_type/:target_user_id', action: :destroy
+        end
+      end
     end
 
     get '/webhooks', to: 'webhooks#index'
