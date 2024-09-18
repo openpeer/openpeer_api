@@ -99,7 +99,7 @@ module Api
       def set_target_user
         @target_user = User.where('lower(address) = ?', params[:target_user_id].downcase).first
         unless @target_user
-          render json: { data: { message: 'Target user not found in the database', errors: 'user_not_found' } }, status: :not_found
+          render json: { data: { message: 'This address is not available in the database.', errors: 'user_not_found' } }, status: :not_found
         end
       rescue Eth::Address::CheckSumError, ArgumentError
         render json: { data: { message: 'Invalid target user address', errors: 'invalid_address' } }, status: :bad_request
