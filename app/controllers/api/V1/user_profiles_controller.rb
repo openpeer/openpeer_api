@@ -30,7 +30,7 @@ module Api
           else
             Rails.logger.error("User update failed: #{current_user.errors.full_messages.join(', ')}")
             if current_user.errors[:name].include?("has already been taken")
-              render json: { data: { message: 'Username already exists', errors: current_user.errors.full_messages }}, status: :unprocessable_entity
+              render json: { data: { message: 'Username already exists. Please try a different one.', errors: current_user.errors.full_messages }}, status: :unprocessable_entity
             else
               render json: { data: { message: 'User not updated', errors: current_user.errors.full_messages }}, status: :unprocessable_entity
             end
