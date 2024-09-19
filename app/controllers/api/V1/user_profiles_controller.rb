@@ -53,9 +53,9 @@ module Api
         user_profile_params = params.require(:user_profile).permit(:image, :email, :name, :twitter, :timezone, :available_from,
         :available_to, :weekend_offline, :telegram_user_id, :telegram_username, :whatsapp_country_code, :whatsapp_number)
         
-        # Convert integers to Time objects if necessary
-        user_profile_params[:available_from] = Time.parse("#{user_profile_params[:available_from]}:00") if user_profile_params[:available_from].present?
-        user_profile_params[:available_to] = Time.parse("#{user_profile_params[:available_to]}:00") if user_profile_params[:available_to].present?
+        # Ensure available_from and available_to are integers
+        user_profile_params[:available_from] = user_profile_params[:available_from].to_i if user_profile_params[:available_from].present?
+        user_profile_params[:available_to] = user_profile_params[:available_to].to_i if user_profile_params[:available_to].present?
         
         user_profile_params
       end
