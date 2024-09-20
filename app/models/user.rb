@@ -36,6 +36,12 @@ class User < ApplicationRecord
     has_many :inverse_blocked_relationships, class_name: "BlockedRelationship", foreign_key: "blocked_user_id"
     has_many :blocking_users, through: :inverse_blocked_relationships, source: :user
 
+    has_many :lists, foreign_key: :seller_id
+    has_many :buy_orders, foreign_key: :buyer_id, class_name: 'Order'
+    has_many :sell_orders, foreign_key: :seller_id, class_name: 'Order'
+    has_many :user_disputes
+    has_many :list_payment_methods
+
   def orders
     Order.left_joins(:list).where('orders.buyer_id = ? OR orders.seller_id = ?', id, id)
   end
