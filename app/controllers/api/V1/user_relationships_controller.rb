@@ -88,8 +88,8 @@ module Api
       private
 
       def set_current_user
-        access_token = request.headers['Authorization']&.split(' ')&.last
-        @current_user = User.find_by(address: access_token)
+        address = request.headers['X-User-Address']
+        @current_user = User.find_by(address: address)
       
         unless @current_user
           render json: { data: { message: 'User not found', errors: 'invalid_token' } }, status: :unauthorized
