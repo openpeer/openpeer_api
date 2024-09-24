@@ -9,7 +9,8 @@ module Api
         render json: {
           data: {
             trusted_users: @current_user.trusted_users.as_json(only: [:id, :name, :address]),
-            blocked_users: @current_user.blocked_users.as_json(only: [:id, :name, :address])
+            blocked_users: @current_user.blocked_users.as_json(only: [:id, :name, :address]),
+            blocked_by_users: User.joins(:blocked_users).where(blocked_users: { id: @current_user.id }).as_json(only: [:id, :name, :address])
           }
         }, status: :ok
       end
