@@ -1,3 +1,5 @@
+# app/controllers/api/V1/lists_controller.rb
+
 module Api
   module V1
     class ListsController < BaseController
