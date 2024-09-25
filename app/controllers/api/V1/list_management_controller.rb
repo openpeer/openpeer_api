@@ -1,3 +1,5 @@
+# app/controllers/api/V1/list_management_controller.rb
+
 module Api
   module V1
     class ListManagementController < JwtController

@@ -1,3 +1,5 @@
+# app/models/list.rb
+
 class List < ApplicationRecord
   enum status: [:created, :active, :closed], _default: :active
   enum margin_type: [:fixed, :percentage]
