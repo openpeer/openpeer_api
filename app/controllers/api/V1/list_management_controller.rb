@@ -47,7 +47,7 @@ module Api
         params.require(:list)
               .permit(:margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
                       :token_id, :fiat_currency_id, :type, :deposit_time_limit, :payment_time_limit,
-                      :accept_only_verified, :escrow_type, :chain_id, :price_source, :bank_ids => [])
+                      :accept_only_verified, :escrow_type, :chain_id, :price_source, :accept_only_trusted, :bank_ids => [])
       end
 
       def payment_methods_params
@@ -58,7 +58,7 @@ module Api
         params.require(:list)
               .permit(:id, :margin_type, :margin, :total_available_amount, :limit_min, :limit_max, :terms,
                       :deposit_time_limit, :payment_time_limit, :accept_only_verified, :status,
-                      :price_source, :bank_ids => [])
+                      :price_source, :accept_only_trusted, :bank_ids => [])
       end
 
       private

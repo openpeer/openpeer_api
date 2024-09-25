@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_13_212957) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_25_173252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -172,6 +172,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_212957) do
     t.boolean "accept_only_verified", default: false
     t.integer "escrow_type", default: 0
     t.integer "price_source", default: 0
+    t.boolean "accept_only_trusted", default: false
     t.index ["bank_id"], name: "index_lists_on_bank_id"
     t.index ["chain_id", "seller_id"], name: "index_lists_on_chain_id_and_seller_id"
     t.index ["fiat_currency_id"], name: "index_lists_on_fiat_currency_id"
