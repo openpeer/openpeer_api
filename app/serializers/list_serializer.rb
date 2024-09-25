@@ -1,7 +1,7 @@
 class ListSerializer < ActiveModel::Serializer
   attributes :id, :automatic_approval, :chain_id, :limit_min, :limit_max, :margin_type,
              :margin, :status, :terms, :total_available_amount, :price, :type, :deposit_time_limit,
-             :payment_time_limit, :accept_only_verified, :escrow_type, :contract, :price_source
+             :payment_time_limit, :accept_only_verified, :escrow_type, :contract, :price_source, :accept_only_trusted
 
   belongs_to :seller
   belongs_to :token

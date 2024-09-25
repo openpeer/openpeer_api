@@ -1,3 +1,5 @@
+# app/models/list.rb
+
 class List < ApplicationRecord
   enum status: [:created, :active, :closed], _default: :active
   enum margin_type: [:fixed, :percentage]
@@ -20,6 +22,7 @@ class List < ApplicationRecord
   validate :ensure_bank_or_payment_methods_present
   validates :chain_id, presence: true
   validates :payment_time_limit, numericality: { greater_than_or_equal_to: 15, less_than_or_equal_to: 1440 }
+  validates :accept_only_trusted, inclusion: { in: [true, false] }
 
 
   def price
