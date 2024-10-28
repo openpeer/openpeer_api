@@ -2,6 +2,7 @@
 class User < ApplicationRecord
   before_validation :set_random_name, on: :create
   before_validation :generate_unique_identifier, on: :create
+  after_commit :sync_to_talkjs, if: :should_sync_to_talkjs?
 
   validates :address, presence: true, uniqueness: { case_sensitive: false }
   validates :email, 'valid_email_2/email': true, allow_blank: true
@@ -75,6 +76,14 @@ class User < ApplicationRecord
   end
 
   private
+
+  def sync_to_talkjs
+    Talkjs::SyncUserJob.perform_later(id)
+  end
+
+  def should_sync_to_talkjs?
+    saved_changes.keys.intersect?(['name', 'email', 'image'])
+  end
 
   def generate_unique_identifier
     self.unique_identifier ||= SecureRandom.uuid
