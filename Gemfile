@@ -92,3 +92,6 @@ gem 'telegram-bot-ruby'
 
 ## 9/10/24
 gem 'random_name_generator'
+
+## 10/28/24
+gem 'httparty'
